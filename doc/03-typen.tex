@@ -1,0 +1,33 @@
+% !TeX root = ./ab-doc.tex
+
+\part{Dokumenttypen}
+
+Jedes Dokument, das mit \pkg*{arbeitsblatt} gesetzt wird, hat einen \emph{Dokumententyp}.
+Der Typ bestimmt vor allem das Layout der Seite und erstellt zum Teil einige Kommandos,
+die für einen bestimmten Typ sinnvoll sind. Außerdem laden einige Typen automatisch
+\hyperref{part:module}{Module}, die für diesen Typ sinnvoll sind. (Zum Beispiel \module*{aufgaben}
+und \module*{bewertung} für \module*{klausur}.)
+
+Der Typ wird beim Laden des Pakets bzw. der Dokumentenklasse mit der Option \option*{typ}
+angegeben. Jeder Typ besitzt auch eine Kurzform. Werden mehrere Typen angegeben, wird der
+erste Typ geladen und der Rest ignoriert. (Ein Dokument hat genau einen Typ.)
+
+\begin{options}
+	\keychoice{typ}{\alleTypen}
+	Setzt den Arbeitsblatt-Typ für das Dokument.
+
+	\def\do#1{\opt{#1} Kurzform für \keyis*-{typ}{#1}}
+	\docsvlist{arbeitsblatt,klassenarbeit,klausur,checkup,lerntheke}
+\end{options}
+
+\section{Typ \texttt{arbeitsblatt}}
+
+Dies ist der Standard, wenn kein anderer Typ gewählt wurde.
+
+\section{Typ \texttt{klassenarbeit}}
+
+\section{Typ \texttt{klausur}}
+
+\section{Typ \texttt{checkup}}
+
+\section{Typ \texttt{lerntheke}}

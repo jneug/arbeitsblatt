@@ -1,0 +1,477 @@
+\NeedsTeXFormat{LaTeX2e}[2011/11/11]
+\ProvidesPackage{arbeitsblatt}[2021/04/07 v0.0.1  Paket Arbeitsblätter: Modul Basis]
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%          Debugging           %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\swarnung}[1]{\PackageWarning{schule}{#1}}
+\newcommand{\sfehler}[1]{\PackageError{schule}{#1}}
+\newcommand{\sinfo}[1]{\PackageInfo{schule}{#1}}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Grundlagenpakete zur Implementierung der Module %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\RequirePackage{pgfopts}
+\RequirePackage{etoolbox}
+\RequirePackage{xparse}
+\RequirePackage{environ}
+\RequirePackage{xstring}
+
+\RequirePackage{xspace}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Sprache und Codierung setzen %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\RequirePackage[utf8]{inputenc}
+\RequirePackage[TS1,T1]{fontenc}
+
+\RequirePackage[ngerman]{babel}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%          Modullader          %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Listen aller Typen, Module und Fächer
+\forcsvlist{\listadd\ab@alleTypen}
+	{arbeitsblatt,klausur,klassenarbeit,checkup,lerntheke}
+\forcsvlist{\listadd\ab@alleModule}
+	{meta,typo,aufgaben,icons,boxen,muster,tabellen,theme,varianten,qrcodes}
+\forcsvlist{\listadd\ab@alleFaecher}
+	{informatik,mathematik}
+
+% Chache für geladene Module
+\listadd{\ab@module@cache}{base}
+
+%% Angepasst aus dem schulepaket
+%% Lädt Moduldateien des Pakets nach
+\newcommand{\ifmodulgeladen}[3]{\ifinlist{#1}{\ab@module@cache}{#2}{#3}}
+
+\newcommand{\ab@modul@laden}[2][code]{%
+	\ifmodulgeladen{#2}{}{%
+		\InputIfFileExists{ab.#2.#1.tex}{%
+			\listadd{\ab@module@cache}{#2}
+			\sinfo{Moduldatei ab.#2.#1 geladen!}
+		}{%
+			\swarnung{Moduldatei ab.#2.#1 konnte nicht geladen werden!}
+		}%
+	}%
+}
+
+\newcommand{\ladeFach}[2][]{%
+\makeatletter%
+	\ab@modul@laden{#2}%
+	\renewcommand*{\do}[1]{\ab@modul@laden{#2.##1}}%
+	\docsvlist{#1}%
+\makeatother%
+}
+\newcommand{\ladeModule}[1]{%
+\makeatletter%
+	\forcsvlist{\ab@modul@laden}{#1}%
+\makeatother%
+}
+
+%% Lädt den Dokumententyp
+\newtoggle{ab@typGeladen}
+\newcommand{\ab@typ@laden}[1]{%
+	\nottoggle{ab@typGeladen}{%
+		\toggletrue{ab@typGeladen}%
+		\ab@modul@laden{typ.#1}%
+	}{%
+		\swarnung{Typ #1 kann nicht geladen werden: Es wurde schon ein Typ geladen!}
+	}%
+}
+
+%% Prüft ob eine Option ein Typ, Modul oder Fach
+%% ist, das geladen werden soll.
+\newcommand{\ab@checkModulOption}[1]{%
+	\ifinlist{#1}{\ab@alleModule}{
+		\ab@modul@laden{#1}
+	}{}%
+	\ifinlist{#1}{\ab@alleFaecher}{
+		\ab@modul@laden{#1}
+	}{}%
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%        Optionen laden        %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\ab@typ}{arbeitsblatt}
+
+\newtoggle{ab@farbig}
+\toggletrue{ab@farbig}
+
+\pgfkeys{
+	/ab/.search also=/absetup,
+	/ab/.cd,
+		typ/.is choice,
+		farben/.default=true,
+		farben/.code=\settoggle{ab@farbig}{#1},
+		%.unknown/.code=\listadd{\ab@autoLaden}{#1}
+}
+%% Typen als Option
+\renewcommand*{\do}[1]{\pgfkeys{
+	/ab/.cd,
+		typ/#1/.code=\def\ab@typ{#1},
+		#1/.value forbidden,
+		#1/.style={typ=#1},
+}}
+\dolistloop{\ab@alleTypen}
+%% Module auto-laden
+\renewcommand*{\do}[1]{\pgfkeys{
+	/ab/.cd,
+		#1/.value forbidden,
+		#1/.code=\listadd{\ab@autoLaden}{#1},
+}}
+\dolistloop{\ab@alleModule}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%            Setup             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\ab@typName}{Arbeitsblatt}
+\newcommand{\ab@name}{}
+\newcommand{\ab@kuerzel}{}
+\newcommand{\ab@schule}{}
+\newcommand{\ab@url}{}
+
+\newcommand{\ab@fach}{}
+\newcommand{\ab@kurs}{}
+\newcommand{\ab@nummer}{}
+\newcommand{\ab@datum}{\today}
+\newcommand{\ab@version}{}
+
+\newcommand{\ab@lizenz}{}
+
+\newcommand{\ab@reihe}{}
+\newcommand{\ab@titel}{}
+
+\pgfkeys{
+	/absetup/.cd,
+		typ/.store in=\ab@typName,
+		fach/.store in=\ab@fach,
+		version/.store in=\ab@version,
+		url/.store in=\ab@url,
+		kurs/.store in=\ab@kurs,
+		nummer/.store in=\ab@nummer,
+		kuerzel/.store in=\ab@kuerzel,
+		schule/.store in=\ab@schule,
+		reihe/.store in=\ab@reihe,
+		name/.store in=\ab@name,
+		titel/.store in=\ab@titel,
+		lizenz/.code=\ab@lizenzSetzen{#1},
+		farbe primary/.code={\colorlet{primary}{#1}\farbschemaAktualisieren},
+		farbe secondary/.code={\colorlet{secondary}{#1}\farbschemaAktualisieren},
+		farbe muted/.code={\colorlet{muted}{#1}\farbschemaAktualisieren},
+		.unknown/.code={}, % Unbekannte Optionen ignorieren.
+}
+
+\newcommand{\aboptionen}[1]{\pgfqkeys{/absetup}{#1}}
+
+\ProcessPgfPackageOptions{/ab}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Erweiterungen der LaTeX Grundfunktionen %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Farben und Grafiken
+\PassOptionsToPackage{table,dvipsnames}{xcolor}
+\RequirePackage{xcolor}
+
+\RequirePackage{graphicx}
+\RequirePackage{tikz}
+\usetikzlibrary{math}
+
+% Fix file extension parsing of graphicx:
+% See: https://tex.stackexchange.com/questions/110513/unknown-graphics-extension-1-png
+% Erlaubt Punkte in Dateinamen (z.B. 06.bruchrechnen-1.abb.jpg)
+\RequirePackage{grffile}
+
+% Floats für Grafiken
+\RequirePackage{subcaption}
+
+\RequirePackage{wrapfig}
+\NewDocumentEnvironment{wrapfig}{}{\begingroup\setlength\intextsep{0pt}}{\par\endgroup}
+
+\captionsetup[figure]{format=plain}
+
+% Referenzen
+
+% hyperref should be (one of) the last package to load
+\PassOptionsToPackage{pdftex,hidelinks,bookmarks,bookmarksnumbered}{hyperref}
+\AtEndPreamble{%
+	\RequirePackage{hyperref}%
+	\hypersetup{
+		colorlinks         = true,
+		allcolors          = secondary,
+		bookmarksopen      = true,
+		bookmarksopenlevel = 1,
+		bookmarksnumbered  = true
+	}%
+}
+
+\RequirePackage{prettyref}
+\def\pref{\prettyref}% Kurzform für \prettyref
+
+\newrefformat{aufg}{\hyperref[#1]{Aufgabe\,\ref*{#1}}}
+\newrefformat{taufg}{\hyperref[#1]{Teilaufgabe\,\ref*{#1}}}
+
+\newrefformat{anh}{\hyperref[#1]{\appendixname\,\ref*{#1}}}
+\newrefformat{abb}{\hyperref[#1]{\figurename\,\ref*{#1}}}
+\newrefformat{tab}{\hyperref[#1]{\tablename\,\ref*{#1}}}
+
+\def\splitab#1:#2!!!{#2}
+\newrefformat{ab}{Arbeitsblatt\,\splitab#1!!!}
+
+% Anführungszeichen
+\AtEndPreamble{% csquotes erst später laden, da sonst Probleme mit minted
+	\RequirePackage{csquotes}
+	\ExecuteQuoteOptions{german=quotes}
+}
+
+% Mathematik
+\RequirePackage{amsmath}
+
+% Komma als Trenzeichen für Dezimalstellen nutzen
+\RequirePackage{textualicomma}
+
+% Einheiten
+\RequirePackage{siunitx}
+\sisetup{
+	group-digits = integer,
+	output-decimal-marker = {,},
+	per-mode = symbol-or-fraction,
+}
+
+% Zusätzliche Einheiten
+\DeclareSIUnit\eur{\text{\euro}}
+\DeclareSIUnit\cent{ct}
+\DeclareSIUnit\uhr{Uhr}
+\DeclareSIUnit\pa{\,p.A.}
+\DeclareSIUnit\are{a} % offiziell keine SI-Einheit
+
+% Euro Beträge mit eurosym
+\RequirePackage{eurosym}
+\DeclareUnicodeCharacter{20AC}{\euro}
+
+\let\ab@eur\EUR
+\renewcommand{\EUR}[1]{\ab@eur{\num[round-mode=places,round-precision=2,round-integer-to-decimal,zero-decimal-to-integer]{#1}}}
+
+
+%% Farben
+\nottoggle{ab@farbig}{
+	\selectcolormodel{gray}
+	\definecolor{primary}{named}{black}
+	\definecolor{secondary}{gray}{.2}
+	\definecolor{muted}{gray}{.8}
+}{
+	\selectcolormodel{rgb}
+	\definecolor{primary}{rgb}{.22,.34,.60} %{.16,.23,0.65}
+	\definecolor{secondary}{rgb}{0.69,0.20,0.32}
+	\definecolor{muted}{gray}{0.8}
+}
+
+\colorlet{primary.hg}{primary!10}
+\colorlet{secondary.hg}{secondary!10}
+\colorlet{muted.hg}{muted!20}
+
+\definecolor{ab.kopf.text}{named}{primary}
+\definecolor{ab.fuss.text}{gray}{0.33}
+
+\definecolor{ab.reihe.text}{gray}{0.33}
+\definecolor{ab.titel.text}{named}{primary}
+
+%% Wenn die Primärfarben geändert werden, müssen die
+%% Abhängigen Farben neu berechnet werden
+\newcommand{\farbschemaAktualisieren}{%
+	\colorlet{primary.hg}{primary!10}
+	\colorlet{secondary.hg}{secondary!10}
+	\colorlet{muted.hg}{muted!20}
+	\definecolor{ab.kopf.text}{named}{primary}
+	\definecolor{ab.titel.text}{named}{primary}
+}
+
+%% Mehrere Spalten
+\RequirePackage{multicol}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%            Module            %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%          Metadaten           %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\Typ}{\makeatletter\ab@typName\makeatother\xspace}
+
+%% Ändern des Typnamens für Dokumenttypen
+%% (ggf. wurde schon als Option ein eigener Typname gesetzt)
+\newcommand{\ab@typnameSetzen}[1]{%
+	\ifdefstring{\ab@typName}{Arbeitsblatt}{%
+		\edef\ab@typName{#1}%
+	}{}%
+}
+
+\newcommand{\Name}{\makeatletter\ab@name\makeatother\xspace}
+\newcommand{\Kuerzel}{\makeatletter\ab@kuerzel\makeatother\xspace}
+\newcommand{\Schule}{\makeatletter\ab@schule\makeatother\xspace}
+\newcommand{\Url}{\makeatletter\ab@url\makeatother\xspace}
+
+
+\newcommand{\Fach}{\makeatletter\ab@fach\makeatother\xspace}
+\newcommand{\Kurs}{\makeatletter\ab@kurs\makeatother\xspace}
+\newcommand{\Nummer}{\makeatletter\ab@nummer\makeatother\xspace}
+\newcommand{\Datum}{\makeatletter\ab@datum\makeatother\xspace}
+\newcommand{\Version}{\makeatletter\ab@version\makeatother\xspace}
+\newcommand{\Lizenz}{\makeatletter\ab@lizenz\makeatother\xspace}
+
+\newcommand{\Reihe}{\makeatletter\ab@reihe\makeatother\xspace}
+\newcommand{\Titel}{\makeatletter\ab@titel\makeatother\xspace}
+
+% Set document data
+\title{\Name}
+\author{\Autor}
+\date{\Datum}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%           Lizenzen           %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\RequirePackage{xmpincl}
+
+\def\ab@lizenzName{}
+\newcommand{\ab@lizenzSetzen}[1]{
+	\renewcommand{\ab@lizenz}{#1}
+
+	\def\ab@lizenzName{}
+	\ifdefstring{\ab@lizenz}{cc-by-nc-sa-eu-4}{
+		\def\ab@lizenzName{ccbyncsaeu}
+		\includexmp{\ab@lizenz}
+	}{}
+	\ifdefstring{\ab@lizenz}{cc-by-nc-sa-4}{
+		\def\ab@lizenzName{ccbyncsa}
+		\includexmp{\ab@lizenz}
+	}{}
+	\ifdefstring{\ab@lizenz}{cc-by-sa-4}{
+		\def\ab@lizenzName{ccbysa}
+		\includexmp{\ab@lizenz}
+	}{}
+	\ifdefstring{\ab@lizenz}{cc-by-4}{
+		\def\ab@lizenzName{ccby}
+		\includexmp{\ab@lizenz}
+	}{}
+}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%         Seitenzahlen         %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\RequirePackage{lastpage}
+\RequirePackage{zref-totpages}
+\RequirePackage{refcount}
+
+\newcommand{\Seitenzahl}{\thepage\xspace}
+\newcommand{\AnzahlSeiten}{\ztotpages\xspace}
+\newcommand{\AnzahlInhaltsseiten}{\getpagerefnumber{LastPage}\xspace}
+\newcommand{\AnzahlZusatzseiten}{\tikzmath{
+	integer \ab@pagesAfterDoc;
+	\ab@pagesAfterDoc = \ztotpages-\getpagerefnumber{LastPage};}\ab@pagesAfterDoc\xspace}
+
+\newcommand{\Seitenzahlen}{%
+	\ifnumgreater{\getpagerefnumber{LastPage}}{2}
+		{\Seitenzahl von \AnzahlInhaltsseiten}
+		{\ifnumgreater{\getpagerefnumber{LastPage}}{1}{\Seitenzahl}{}}%
+}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%         Seitenlayout         %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\RequirePackage[top=3cm,left=2.5cm,bottom=2cm,right=2cm]{geometry}
+%\RequirePackage[includeheadfoot,top=1.69cm,left=1.69cm,bottom=1.69cm,right=1.69cm,bindingoffset=0.72cm]{geometry}
+\RequirePackage[includeheadfoot,top=1.69cm,left=1.69cm,bottom=1.69cm,right=1.69cm]{geometry}
+
+\RequirePackage{scrlayer-scrpage}
+\pagestyle{scrheadings}
+
+\setkomafont{pagehead}{\normalfont\small\color{primary}}
+\setkomafont{pagefoot}{\normalfont\small\color{ab.fuss.text}}
+
+\newcommand{\linie}[1][6cm]{\underline{\hspace{#1}}}
+\newcommand{\Datumsfeld}[1][3cm]{Datum: \linie[#1]}
+\newcommand{\Namensfeld}[1][3cm]{Name: \linie[#1]}
+
+% % Kopfzeilen
+\newcommand{\KopfLinks}{%
+	\Fach%
+	\ifdefempty{\ab@kurs}{}{\xspace\Kurs}%
+	\ifdefempty{\ab@kuerzel}{}{\xspace(\Kuerzel)}%
+}
+\newcommand{\KopfMitte}{%
+	\ifnumequal{\value{page}}{1}{\Datumsfeld}{}%
+}
+\newcommand{\KopfRechts}{%
+	\Typ%
+	\ifdefempty{\ab@nummer}{}{\space Nr. \Nummer}%
+}
+\ihead{\KopfLinks}
+\chead{\KopfMitte}
+\ohead{\KopfRechts}
+
+%% Fußzeilen
+\newcommand{\FussLinks}{\color{muted}%
+	\ifdefempty{\ab@version}{}{v.\Version}%
+}
+\newcommand{\FussMitte}{\color{muted}%
+	\Lizenz%
+}
+\newcommand{\FussRechts}{%
+	{\usekomafont{pagenumber}\Seitenzahlen}%
+}
+\ifoot{\FussLinks}
+\cfoot{\FussMitte}
+\ofoot{\FussRechts}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%    Überschriften und Titel   %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newkomafont{reihe}{\usefontofkomafont{title}\normalsize\textcolor{ab.reihe.text}}
+\newkomafont{titel}{\usefontofkomafont{title}\textcolor{ab.titel.text}}
+
+\renewcommand*{\do}[1]{\addtokomafont{#1}{\color{primary}}}
+\docsvlist{part,section,subsection}
+
+\newcommand{\titlerule}{\noindent\\[-2ex]\rule{\textwidth}{1pt}\vspace{-1ex}}
+\def\linievoll{\leaders\hbox{\rule[-1ex]{1pt}{.1pt}}\hfill\;}
+
+\newcommand{\TITEL}[1][\Titel]{%
+	\begin{center}
+		\usekomafont{titel}#1
+	\end{center}%
+}
+
+\newcommand{\ReiheTitel}[1][\Titel]{%
+	\begin{center}
+		\usekomafont{reihe}\Reihe\\[-1ex]
+		\usekomafont{titel}#1
+		\titlerule
+	\end{center}%
+}
+
+\newcommand{\Anhang}{\clearpage\appendix\chead{\centering Anhang}}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%      Typ, Module, Fächer     %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Typ des Dokuments laden
+\ab@typ@laden{\ab@typ}
+%% Module / Fächer automatisch laden
+\ifdef{\ab@autoLaden}{%
+	\forlistloop{\ab@checkModulOption}{\ab@autoLaden}%
+}{}

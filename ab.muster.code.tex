@@ -1,0 +1,72 @@
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%           Optionen           %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\def\ab@muster@lfarbe{gray}
+\def\ab@muster@kfarbe{gray}
+\def\ab@muster@mmfarbe{gray}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%            Makros            %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% liniertes Feld
+\NewDocumentCommand \liniert {s O{\linewidth} m O{1cm}} {%
+	\begin{tikzpicture}
+		\draw(0, 0); % Abstand zum oberen Rand wahren
+		\foreach \n in {1,...,#3} % Linien zeichnen
+			\draw[\ab@muster@lfarbe](0, -#4*\n )--(0.99\linewidth, -#4*\n );
+	\end{tikzpicture}%
+}
+
+% kariertes Feld
+\NewDocumentCommand \kariert {s O{0} m O{0.5cm}} {%
+	\begin{tikzpicture}
+		% Star option
+		\IfBooleanTF{#1}{% Größe mit festen Maßen festlegen
+			\ifstrequal{#2}{0}{%
+				\pgfmathsetlengthmacro{\width}{\linewidth-\pgflinewidth}
+			}{%
+				\pgfmathsetlengthmacro{\width}{#2-\pgflinewidth}
+			}
+			\pgfmathsetlengthmacro{\height}{#3}
+		}{% Größe als Anzahl Kästchen festlegen
+			\ifnumequal{#2}{0}{%
+				\pgfmathsetlengthmacro{\width}{
+					floor((\linewidth-\pgflinewidth)/#4)*#4
+				}
+			}{%
+				\pgfmathsetlengthmacro{\width}{#2*#4}
+			}%
+			\pgfmathsetlengthmacro{\height}{#3*#4}
+		}
+		\draw[\ab@muster@kfarbe,step=#4]
+			(0,0) rectangle (\width,-1*\height)
+			(0,0) grid (\width,-1*\height);
+	\end{tikzpicture}
+}
+
+% Feld mit Milimetermuster
+\NewDocumentCommand \millimeter {s O{0} m} {%
+	\begin{tikzpicture}
+		\pgfmathtruncatemacro{\anza}{
+			(\linewidth-\pgflinewidth)/1cm
+		}
+		\pgfmathtruncatemacro{\anzb}{
+			(\linewidth-(0.5\pgflinewidth))/1cm
+		}
+		\pgfmathtruncatemacro{\anzc}{
+			(\linewidth-(0.1\pgflinewidth))/1cm
+		}
+		\draw[\ab@muster@mmfarbe!50,step=1mm,very thin]
+			(0,0) grid ((\anzc,#3);
+		\draw[\ab@muster@mmfarbe,step=5mm,thin]
+			(0,0) grid ((\anzb,#3);
+		\draw[\ab@muster@mmfarbe,step=10mm,thick]
+			(0,0) grid ((\anza,#3);
+	\end{tikzpicture}
+}
+
+% punktiert
+% hex
+% iso

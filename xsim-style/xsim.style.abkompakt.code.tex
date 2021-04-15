@@ -1,0 +1,21 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%      xsim Aufgabenstile      %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\xsimstyle{abkompakt}
+
+%% "Kompakt"
+%%% Aufgabe 1 (Subtile): ...
+%%%
+\DeclareExerciseEnvironmentTemplate{abkompakt} {%
+	\addpenalty{-3000}\smallskip\noindent{\usekomafont{aufgabe}%
+		% Falls Zusatzaufgabe:
+		\ifthenelse{\equal{\ExerciseType}{zusatzaufgabe}}{\llap{\GetExerciseProperty{symbol}$\bigstar$}~}{\llap{\GetExerciseProperty{symbol}~}}%
+		\XSIMmixedcase{\GetExerciseName}\nobreakspace
+		\GetExerciseProperty{counter}\addcontentsline{toc}{section}{\XSIMmixedcase{\GetExerciseName}\nobreakspace\GetExerciseProperty{counter}}%
+		\IfInsideSolutionF{%
+			\IfExercisePropertySetT{subtitle}{
+				{\nobreakspace\GetExercisePropertyT{subtitle}{ (\PropertyValue})}}% Subtitle setzten
+		}:\hspace{1em}%
+	}%
+}
+{\IfInsideSolutionT{\par}}%

@@ -1,0 +1,50 @@
+
+%% -----------------
+%%
+%% Ein 'theme' zur Dokumentgestaltung (Schriftarten, Farben, ...)
+%%
+%% -----------------
+\setlength{\parindent}{0em}
+%\setlength{\parskip}{2ex plus0.5ex minus0.5ex}
+\setlength{\parskip}{1ex plus0.5ex minus0.9ex}
+
+% Schriftarten
+%% Standard Textkörper (Serifenlos)
+\usepackage[sfdefault,light,scaled=.85]{FiraSans}
+% \usepackage[sfdefault,light]{FiraSans}
+\renewcommand*\oldstylenums[1]{{\firaoldstyle #1}}
+
+%% Überschriften (mit Serifen)
+\usepackage{tgschola}
+\addtokomafont{disposition}{\rmfamily}
+
+%% Monospace font
+%\usepackage{courier}
+%\usepackage[light]{noto-mono}
+\usepackage[mono,scaled=0.9]{inconsolata}
+
+%% Math font
+%\usepackage{newtxsf}
+
+% Zeilenabstand anpassen
+% https://texwelt.de/wissen/fragen/3/wie-stelle-ich-einen-zeilenabstand-von-15-ein
+\usepackage{setspace}
+\usepackage{scrhack}
+\onehalfspacing
+
+% Farben
+%% Allgemein
+\definecolor{ngb.reihe.text}{gray}{0.33}
+
+% Koma Schriften
+\addtokomafont{title}{\Large}
+%\addtokomafont{reihe}{\normalsize}
+
+%% Informatik
+% \ifdefstring{\schule@fach}{Informatik}{
+% 	\definecolor{ngb.syntax.hg}{gray}{0.98}
+% 	\lstset{
+% 		frame=single,
+% 		backgroundcolor=\color{ngb.syntax.hg}
+% 	}
+% }{}

@@ -1,0 +1,83 @@
+
+
+%% Modul typo
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%           Optionen           %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\definecolor{ab.anmerkung.text}{named}{secondary}
+
+
+\newkomafont{code}{\color{primary}\small\ttfamily}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%            Pakete            %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\RequirePackage{enumitem}
+\RequirePackage[normalem]{ulem}
+
+% Zeilenumbruch in \url zulassen
+% See: https://tex.stackexchange.com/questions/3033/forcing-linebreaks-in-url
+%\g@addto@macro{\UrlBreaks}{\UrlOrds}
+\RequirePackage{xurl}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%      Textauszeichnungen      %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Personen
+\newcommand*{\person}[1]{\textsc{#1}}
+
+% Operatoren
+\newcommand*{\operator}[1]{\textsc{#1}}
+
+% Inline code
+% \code wird von anderen Paketen auch verwendet
+\ifdef{\code}{}{
+	\newcommand*{\code}[1]{{\usekomafont{code}#1}}
+}
+
+% Ordner, Dateien und Programme
+\newcommand*{\ordner}[1]{%
+	{\usekomafont{code}#1}%
+}
+\newcommand*{\datei}[1]{%
+	{\usekomafont{code}#1}%
+}
+\newcommand*{\programm}[1]{%
+	{\usekomafont{code}\texttt{#1}}%
+}
+
+%% Anmerkungen
+\providecommand{\anmerkung}[3]{\parshape 2 0pt \textwidth 2em \dimexpr\textwidth-2em\relax%
+	\textcolor{ab.anmerkung.text}{\textbf{\llap{#1\hspace{1ex}}#2}} {\itshape #3}%
+}
+% Hinweis
+\providecommand{\hinweis}[1]{\anmerkung{}{Hinweis}{#1}}
+% Achtung
+\providecommand{\warnung}[1]{\anmerkung{}{Achtung}{#1}}
+% Tipp
+\providecommand{\tipp}[1]{\anmerkung{}{Tipp}{#1}}
+% Frage
+\providecommand{\frage}[1]{\anmerkung{}{Frage}{#1}}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%            Listen            %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\setlist[1]{labelindent=\parindent}
+
+\newlist{smallitem}{itemize}{1}
+\setlist[smallitem]{label=\textbullet,noitemsep}
+\newlist{smallenum}{enumerate}{1}
+\setlist[smallenum]{label=\arabic*.,noitemsep}
+\newlist{smalldescr}{description}{1}
+\setlist[smalldescr]{noitemsep}
+
+\newlist{enuma}{enumerate}{1}
+\setlist[enuma]{label=\alph*)}
+\newlist{enumn}{enumerate}{1}
+\setlist[enumn]{label=\arabic*)}
+\newlist{enumnn}{enumerate}{1}
+\setlist[enumnn]{label=(\arabic*)}

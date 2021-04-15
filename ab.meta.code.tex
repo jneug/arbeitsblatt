@@ -1,0 +1,24 @@
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%           Optionen           %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%            Pakete            %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\RequirePackage{pgfmorepages}
+%\RequirePackage{pdfpages}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%            Makros            %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Jobnamen aufteilen
+\newcommand{\jobbasename}{\jobname}
+\newcommand{\jobsuffix}{}
+\newcommand{\dateinamenTeilen}{%
+  \def\split##1--##2!!!{\def\jobbasename{##1}\def\jobsuffix{##2}}%
+  \expandafter\split\jobname!!!%
+}

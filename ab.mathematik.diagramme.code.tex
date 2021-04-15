@@ -1,0 +1,82 @@
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%           Optionen           %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\pgfkeys{
+	/absetup/.cd,
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%            Pakete            %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%            Makros            %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Anteile zeichnen
+\NewDocumentCommand \tikzRechteck {O{} D(){0,0} m} {\draw[#1] (#2) |- +(#3) |- (#2);}
+\NewDocumentCommand \tikzQuadrat {O{} D(){0,0} m} {\draw[#1] (#2) |- +(#3,#3) |- (#2);}
+
+\def\tikzAnteilFarbe{black!20}
+
+\newcounter{ngb@anteile}
+\NewDocumentCommand \tikzAnteile {s >{\SplitArgument{1}{,}}D(){0,0} >{\SplitArgument{1}{,}}o m m m} {%
+	\IfNoValueTF{#3}{%
+		\IfBooleanTF{#1}{%
+			\@tikzAnteileZeichnen #2 {#4} {#5} {#4} {#5} {#6-(#4*#5)+1}
+		}{%
+			\@tikzAnteileZeichnen #2 {#4} {#5} {#4} {#5} {#6}
+		}
+	}{%
+		\IfBooleanTF{#1}{%
+			\@tikzAnteileZeichnen #2 #3 {#4} {#5} {#6-(#4*#5)+1}
+		}{%
+			\@tikzAnteileZeichnen #2 #3 {#4} {#5} {#6}
+		}
+	}
+}
+\NewDocumentCommand \@tikzAnteileZeichnen {m m m m m m m}{%
+	\pgfmathsetmacro \xMax {#5-1}
+	\pgfmathsetmacro \yMax {#6-1}
+	\pgfmathsetmacro \xs {#3/#5}
+	\pgfmathsetmacro \ys {#4/#6}
+	\pgfmathsetmacro \d {sign(#7)*-1}
+	\setcounter{ngb@anteile}{#7-1}
+	\tikzRechteck(#1,#2){#3,#4};
+	\foreach \x in {0,...,\xMax} {%
+		\foreach \y in {0,...,\yMax} {%
+			\ifnum\value{ngb@anteile}<0
+				\tikzRechteck(#1+\x*\xs,#2+\y*\ys){\xs,\ys};
+			\else
+				\tikzRechteck[fill=\tikzAnteilFarbe](#1+\x*\xs,#2+\y*\ys){\xs,\ys}
+			\fi
+			\addtocounter{ngb@anteile}{\d}
+		}
+	}
+}
+
+\NewDocumentCommand \tikzAnteileKreis {s D(){0,0} O{1} m m O{0}} {%
+	\pgfmathsetmacro \a {#4}
+	\pgfmathsetmacro \b {#5}
+	\pgfmathsetmacro \ang {360/#5}
+	\pgfmathsetmacro \r {#6}
+	\draw (#2) circle (#3);
+	\foreach \i in {1,...,\a} {%
+		\draw[fill=\tikzAnteilFarbe] (#2) -- +({(\i-1)*\ang+\r}:#3) arc ({(\i-1)*\ang+\r}:{\i*\ang+\r}:#3) -- cycle;
+	}
+	\foreach \i in {\a,...,\b} {%
+		\draw (#2) -- +({(\i-1)*\ang+\r}:#3);
+	}
+}
+
+\NewDocumentCommand \tikzWinkel {s D(){0,0} O{1} m} {%
+	\fill[yellow,fill opacity=.5,draw=red,thick] (#2) -- +(0:{#3/2}) arc (0:#4:{#3/2}) -- cycle;
+	\IfBooleanT{#1}{\draw[draw=red,thick,->] (#2)+(0:{#3/2}) arc (0:#4:{#3/2});}
+	\draw[thick] (#2)+(#4:#3) -- (#2) -- +(#3,0);
+}
+
+\NewDocumentCommand \tikzBall {s D(){0,0} m O{black!80}} {%
+	\shade[ball color=#4] (#2) circle (#3);
+}

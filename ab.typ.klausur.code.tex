@@ -1,0 +1,48 @@
+
+
+%% Dokumenttyp für Klausuren
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%           Optionen           %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\ab@kl@dauer}{90}
+\newcommand{\ab@kl@hmft}{0}
+
+\pgfkeys{
+	/absetup/.cd,
+	dauer/.code=\ab@kl@renewTimes{#1}{\ab@kl@hmft},
+	hmft/.code=\ab@kl@renewTimes{\ab@kl@dauer}{#1},
+}
+
+\newcommand{\ab@kl@renewTimes}[2]{%
+	\renewcommand{\ab@kl@dauer}{#1}\renewcommand{\ab@kl@hmft}{#2}%
+	\pfgmathtruncatemacro{\ab@kl@hmt}{\ab@kl@dauer-\ab@kl@hmft}%
+}
+
+\ab@typnameSetzen{Klausur}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%            Pakete            %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\ab@modul@laden{aufgaben}
+\ab@modul@laden{bewertung}
+\ab@modul@laden{boxen}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%            Makros            %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Metadaten
+\newcommand{\Dauer}{\makeatletter\ab@kl@dauer\makeatother\@\xspace}
+\newcommand{\Hmft}{\makeatletter\ab@kl@hmft\makeatother\@\xspace}
+\newcommand{\Hmt}{\makeatletter\ab@kl@hmt\makeatother\@\xspace}
+
+%% Seitenlayout
+\renewcommand{\KopfMitte}{\relax}
+
+%% Überschriften etc.
+% https://tex.stackexchange.com/questions/223694/how-to-draw-a-text-box-with-shadow-borders-i-have-tried-the-following-but-it-gi#223738
+\newcommand{\ArbeitTitel}[1][none]{\begin{center}\LARGE\rmfamily\Titel\ifstrequal{#1}{none}{}{- #1}\end{center}}
+
+\newcommand{\vielErfolg}{\begin{flushright}\bfseries Viel Erfolg\end{flushright}}

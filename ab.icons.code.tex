@@ -1,0 +1,99 @@
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%           Optionen           %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\pgfkeys{
+	/absetup/.cd,
+	listen mit icons/.value forbidden,
+	listen mit icons/.code=\ab@renewLists,
+	listen icon/.code=\renewcommand{\iconListItem}{#1},
+	lizenz icon/.code=\renewcommand{\LizenzIcon}{#1}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%            Pakete            %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\RequirePackage{fontawesome5}
+\RequirePackage{ccicons}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%            Makros            %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Einige vordefinierte Icons
+\newrobustcmd{\iconTipp}{\faLightbulb[regular]} %\faMedapps
+\newrobustcmd{\iconWarnung}{\faExclamationTriangle}
+\newrobustcmd{\iconHinweis}{\faInfo}
+\newrobustcmd{\iconFrage}{\faQuestionCircle[regular]}
+
+\newrobustcmd{\iconLehrer}{\faUserTie}
+\newrobustcmd{\iconSchueler}{\faUser}
+\newrobustcmd{\iconMann}{\faMale}
+\newrobustcmd{\iconFrau}{\faFemale}
+
+\newrobustcmd{\iconEinzel}{\faUser}
+\newrobustcmd{\iconPartner}{\faUserFriends}
+\newrobustcmd{\iconGruppe}{\faUsers}
+
+\newrobustcmd{\iconZustimmung}{\faThumbsUp}
+\newrobustcmd{\iconAblehnung}{\faThumbsDown}
+
+\newrobustcmd{\iconBuch}{\faBook}
+\newrobustcmd{\iconHeft}{\faBookOpen}
+\newrobustcmd{\iconStift}{\faPencil*}
+\newrobustcmd{\iconRechner}{\faCalculator}
+\newrobustcmd{\iconComputer}{\faDesktop}
+\newrobustcmd{\iconLaptop}{\faLaptop}
+\newrobustcmd{\iconSmartphone}{\faMobile*}
+\newrobustcmd{\iconTablet}{\faTablet*}
+\newrobustcmd{\iconTastatur}{\faKeyboard[regular]}
+
+\newrobustcmd{\iconDatei}{\faFile*[regular]}
+\newrobustcmd{\iconOrdner}{\faFolderOpen[regular]}
+
+\newrobustcmd{\iconStern}{\faStar}
+
+\NewDocumentCommand{\iconBox}{s}{%
+	\IfBooleanTF{#1}{\faCheckSquare[regular]}{\faSquare[regular]}%
+}
+
+% Smilies
+\newrobustcmd{\iconLachen}{\faGrinBeam[regular]} %\faLaugh[regular]
+\newrobustcmd{\iconFroh}{\faSmile[regular]}
+\newrobustcmd{\iconNeutral}{\faMeh[regular]}
+\newrobustcmd{\iconTraurig}{\faFrown[regular]}
+\newrobustcmd{\iconBoese}{\faAngry[regular]}
+
+\NewDocumentCommand{\iconSkala}{s}{%
+	\IfBooleanT{#1}{\iconBoese\;}\iconTraurig\;\iconNeutral\;\iconFroh\;\iconLachen%
+}
+
+% Einige Kommandos neu definieren, damit sie Icons nutzen
+% CC Lizenzen
+\newcommand{\LizenzIcon}{\csuse{\ab@lizenzName}}
+\renewcommand{\Lizenz}{\ifcsempty{ab@lizenzName}{\makeatletter\ab@lizenz\makeatother}{\LizenzIcon}\xspace}
+
+%% Anpassungen für Textauszeichnungen
+\ifmodulgeladen{typo}{
+	%% Anmerkungen
+	\renewcommand{\hinweis}[1]{\anmerkung{\iconHinweis}{Hinweis}{#1}}
+	\renewcommand{\warnung}[1]{\anmerkung{\iconWarnung}{Achtung}{#1}}
+	\renewcommand{\tipp}[1]{\anmerkung{\iconTipp}{Tipp}{#1}}
+	\renewcommand{\frage}[1]{\anmerkung{\iconFrage}{Frage}{#1}}
+
+	%% Hervorhebungen
+	% \renewcommand*{\ordner}[1]{{\usekomafont{code}\iconOrdner\,#1}}
+	% \renewcommand*{\datei}[1]{{\usekomafont{code}\iconDatei\,#1}}
+	%\pretocmd\ordner{{\usekomafont{code}\iconOrdner}\,}{}{}
+	\pretocmd\ordner{{\usekomafont{code}\iconOrdner}\,}{}{}
+	\pretocmd\datei{{\usekomafont{code}\iconDatei}\,}{}{}
+}
+
+
+% Listen neu definieren
+\newrobustcmd{\iconListItem}{\faAngleRight} %\faHandPointRight[regular]
+\newcommand{\ab@renewLists}{%
+	\setlist[itemize]{label=\iconListItem}%
+	\setlist[smallitem,1]{label=\iconListItem}%
+}

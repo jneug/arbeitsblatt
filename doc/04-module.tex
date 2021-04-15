@@ -1,0 +1,443 @@
+% !TeX root = ./ab-doc.tex
+
+\part{Module}\label{part:module}
+
+\pkg*{arbeitsblatt} stellt die meisten Funktionen in kleinen
+\emph{Modulen} bereit. Jedes Modul ist eine Sammlung von
+Paketen und Kommandos für einen bestimmten Zweck. Es gibt
+beispielsweise Module um Icons einzufügen oder QR-Codes zu
+setzen.
+
+Module werden mit \cs*{ladeModule} in der Preambel des Dokuments
+geladen. Danach können sie mit \cs*{aboptionen} konfiguriert werden.
+
+\begin{commands}
+	\command{ladeModule}[\marg{csvlist}]
+	\meta{csvlist} ist eine kommagetrennte Liste von Modulnamen,
+	die in das Dokument geladen werden sollen.
+
+	Derzeit stehen diese Module zur Auswahl:
+	\def\do#1{\module*{#1}, }
+	\dolistloop{\listAlleModule}
+\end{commands}
+
+\section{Modul \texttt{typo}}\label{sec:modul-typo}
+\begin{itemize}
+	\item Benötigte Pakete: \pkg{enumitem}, \pkg{ulem}, \pkg{xurl}
+\end{itemize}
+
+Das Modul \module{typo} fügt einige Umgebungen zur  Verbesserung und
+der Typographie in das Dokument ein. Vor allem Kommandos zur zusätzlichen
+Textauszeichnung und neue Listentypen mit \pkg*{enumitem}.
+
+\begin{commands}
+	\command{person}[\marg{text}]
+	Auszeichnung von Namen.
+
+	\begin{example}[side-by-side,add-silent-cmds={person}]
+  \person{J. Neugebauer}\end{example}
+
+	\command{operator}[\marg{text}]
+	Auszeichnung von Operatoren aus dem Lehrplan.
+
+	\begin{example}[side-by-side,add-silent-cmds={operator}]
+  \operator{Analysiere}\end{example}
+\end{commands}
+
+\subsection{Anmerkungen}\label{subsec:typo-anmerkungen}
+Anmerkungen können zur Hervorhebung von Text genutzt werden. Durch das laden einiger
+anderer Module (zum Beispiel \module*{icons}), kann die Gestlatung der Anmerkungen
+angepasst werden.
+
+% Typo-Anmerkungen wiederherstellen
+\loadAnmerkungen{Typo}
+\begin{commands}
+	\command{tipp}
+	\begin{example}[side-by-side,add-silent-cmds={hinweis,tipp,frage,warnung}]
+  \tipp{Dies ist ein kurzer Tipp.}\end{example}
+
+	\command{hinweis}[\marg{text}]
+	\begin{example}[side-by-side,add-silent-cmds={hinweis,tipp,frage,warnung}]
+  \hinweis{Dies ist ein kurzer Hinweis.}\end{example}
+
+	\command{warnung}[\marg{text}]
+	\begin{example}[side-by-side,add-silent-cmds={hinweis,tipp,frage,warnung}]
+  \warnung{Dies ist eine kurze Warnung.}\end{example}
+
+	\command{frage}[\marg{text}]
+	\begin{example}[side-by-side,add-silent-cmds={hinweis,tipp,frage,warnung}]
+  \frage{Dies ist eine Frage.}\end{example}
+
+	\command{anmerkung}[\marg{markierung}\marg{name}\marg{text}]
+	Dies ist das generische Kommando für Anmerkungen, dass von den konkreten Anmerkungen
+	genutzt wird. Durch Neudefinition kann das Aussehen der Anmerkungen angepasst werden.
+\end{commands}
+% Icons-Anmerkungen wiederherstellen
+\loadAnmerkungen{Icon}
+
+\subsection{Listen}\label{subsec:typo-listen}
+
+Mit \pkg*{enumitem} werden einige neue Listenarten definiert. Zu den Standardlisten
+werden \texttt{small*}-Varianten erstellt, die den Abstand zwischen Listeneinträgen
+entfernen (dies entspricht der \pkg*{enumitem} Option \option*{noitemsep}).
+
+Für Aufzählungen werden neue Listenarten mit verschiedenen Aufzählungsarten erstellt.
+Falls diese auch ihne Abstand genutzt werden sollen, kann ihnen als Option
+\option*{noitemsep} mitgegeben werden.
+
+\begin{environments}
+	\environment{smallitem}[\oarg{opts}]
+	\env{itemize} ohne Abstände.
+
+	\environment{smallenum}[\oarg{opts}]
+	\env{enumerate} ohne Abstände.
+
+	\environment{smalldescr}[\oarg{opts}]
+	\env{description} ohne Abstände.
+
+	\environment{enuma}[\oarg{opts}]
+	\env{enumerate} mit Kleinbuschtaben im Format \texttt{a)}.
+
+	\environment{enumn}[\oarg{opts}]
+	\env{enumerate} mit Zahlen im Format \texttt{1)}.
+
+	\environment{enumnn}[\oarg{opts}]
+	\env{enumerate} mit Zahlen im Format \texttt{(1)}.
+\end{environments}
+
+\begin{example}
+  \begin{smallitem}
+    \item Eins
+    \item Zwei
+  \end{smallitem}
+  \begin{enuma}
+    \item Eins
+    \item Zwei
+  \end{enuma}
+\end{example}
+
+\section{Modul \texttt{theme}}\label{sec:modul-theme}
+\begin{itemize}
+	\item Benötigte Pakete:
+\end{itemize}
+
+\section{Modul \texttt{icons}}\label{sec:modul-icons}
+\begin{itemize}
+	\item Benötigte Pakete: \pkg{fontawesome5}, \pkg{ccicons}
+\end{itemize}
+
+Das Modul \module{icons} fügt skalierbare Icons in das Dokument ein.
+
+\begin{options}
+	\opt{listen mit icons}
+	Ändert das Symbol in \env*{itemize} Listen auf das
+	Icon \option*{listen icon} um.
+
+	\keyval-{listen icon}{icon kommando}\Default{\cs*{faAngleRight}}
+	Setzt das Icon für \env*{itemize} Listen, falls \option*{listen mit icons}
+	gesetzt wurde.
+
+	\keyval-{lizenz icon}{icon kommando}
+	Setzt das Icon für die Lizenz, das mit \cs*{LizenzIcon} gesetzt werden kann.
+	Das Modul versucht das passende Icon aus der \option*{lizenz} Option auszulesen,
+	falls diese gesetzt wurde. Mit dieser Option kann aber ein beliebiges anderes
+	der \pkg*{ccicons} oder ein völlig anderes gesetzt werden. So lässt sich auch
+	ein Lizenzicon angeben, ohne dass zuvor die Lizenz-Option gesetzt wurde.
+\end{options}
+
+\subsection{Zusätzliche Icon-Kommandos}\label{subsec:icons-kommandos}
+Das \texttt{icon} Modul erstellt zusätzlich zu den \pkg*{fontawesome5} Kommandos
+noch einige zusätzliche, die im schulischen Kontext sinnvoll sind und die einheitliche
+Gestaltung erleichtern sollen.
+
+Innerhalb des \pkg*{arbeitsblatt} Pakets werden nur diese Icon-Kommandos verwendet.
+\\Durch \cs*{renewcommand}\Marg{\cs*{iconTipp}}\Marg{\cs*{faMagic}} kann so zum Beispiel
+das Tipp-Icon im gesamten Dokument geändert werden.
+
+\def\splitIcon#1=#2!{\command{icon#1} \csuse{icon#1} (\cs*{#2})}
+\renewcommand*{\do}[1]{\splitIcon#1!}
+
+\begin{multicols}{2}
+	\begin{commands}
+		\docsvlist{%
+			Tipp=faLightbulb[regular],
+			Hinweis=faInfo,
+			Warnung=faExclamationTriangle,
+			Frage=faQuestionCircle[regular],
+			Lehrer=faUserTie,Schueler=faUser,
+			Mann=faMale,Frau=faFemale,%
+			Einzel=faUser,Partner=faUserFriends,Gruppe=faUsers,
+			Zustimmung=faThumbsUp,Ablehnung=faThumbsDown,%
+			Buch=faBook,Heft=faBookOpen,
+			Stift=faPencil*,Rechner=faCalculator,
+			Computer=faDesktop,Laptop=faLaptop,
+			Smartphone=faMobile*,Tablet=faTablet*,
+			Tastatur=faKeyboard[regular],
+			Datei=faFile*[regular],Ordner=faFolderOpen[regular],
+			Stern=faStar,
+			Lachen=faGrinBeam[regular],Froh=faSmile[regular],
+			Neutral=faMeh[regular],Traurig=faFrown[regular],
+			Boese=faAngry[regular]
+		}
+		\command{iconSkala} \iconSkala
+			\command{iconBox} \iconBox* (\cs*{faSquare[regular]})
+			\command{iconBox*} \iconBox* (\cs*{faCheckSquare[regular]})
+	\end{commands}
+\end{multicols}
+
+\subsection{Anmerkungen}\label{subsec:icons-anmerkungen}
+Durch das Laden des \module*{icon} Moduls werden die \hyperref[subsec:typo-anmerkungen]{Anmerkungen}
+\cs*{tipp}, \cs*{hinweis}, \cs*{warnung} und \cs*{frage} automatisch
+mit Icons angereichert.
+
+\begin{example}
+	\tipp{\blindtext}
+\end{example}
+
+\subsection{Listen}\label{subsec:icons-listen}
+
+Mit der Option \option*{listen mit icons} werden \env*{itemize} Listen
+mit einem Icon als Markierung gesetzt. Wenn vor \module*{icon} das Modul
+\module*{typo} geladen wurde, dann wird auch \env*{smallitem} angepasst.
+
+\setlist[itemize]{label=\iconListItem}
+\begin{example}
+	\begin{itemize}
+		\item Eintrag 1
+		\item Eintrag 2
+		\item Eintrag 3
+	\end{itemize}
+\end{example}
+
+Das Icon kann entweder in \cs*{aboptionen} mit \key*-{listen icon}{icon} oder
+direkt durch \renewcs{iconListItem}{\meta{icon}} geändert werden.
+
+\begin{example}
+	\aboptionen{
+		listen icon=\faAngleDoubleRight
+	}
+	\begin{itemize}
+		\item Eintrag 1
+		\item Eintrag 2
+		\renewcommand{\iconListItem}{%
+			\textcolor{secondary}{\faHandPointRight[regular]}%
+		}
+		\item Eintrag 3
+		\item Eintrag 4
+	\end{itemize}
+\end{example}
+%% Reset itemize
+\setlist[itemize]{label=\textbullet}
+
+\section{Modul \texttt{boxen}}\label{subsec:icons-boxen}
+\begin{itemize}
+	\item Benötigte Pakete: \pkg{mdframed}, \pkg{awesomebox} (\pkg{fontawesome5})
+\end{itemize}
+
+Das Modul \module{boxen} ermöglich den Satz von hervorgehobenen Absätzen, die
+durch Rahmen, Hintergrundfarben oder Schattierungen markiert sind. Dazu werden
+die Pakete \pkg*{mdframed} und \pkg*{awesomebox} eingebunden. Deren Dokumentationen
+enthalten umfassende Informationen zur Verwendung.
+
+\pkg*{awesomebox} bindet auch \pkg*{fontawesome5} ein und nutzt Icons zur Darstellung
+der Hervorhebungen. Das Modul \module*{icons} wird dazu nicht benötigt.
+
+\begin{options}
+	\opt{anmerkungen als boxen}
+	Modifiziert die \hyperref[subsec:typo-anmerkungen]{Anmerkungen} \cs*{tipp}, \cs*{hinweis},
+	\cs*{warnung} und \cs*{frage}, sodass sie mit \pkg*{awesomebox} gesetzt werden.
+
+	\important{Wird das Modul \module*{icons} nach \module*{boxen} geladen, dann werden die
+		Anmerkungen wieder zurückgesetzt und verwenden Icons. Soll also \option*{anmerkungen als boxen}
+		genutzt werden, sollte \module*{boxen} nach \module*{icons} geladen werden.}
+\end{options}
+
+\begin{example}[add-silent-cmds={frage,aboptionen}]
+	\frage{Wie viele Planeten hat unser Sonnensystem?}
+	\aboptionen{anmerkungen als boxen}
+	\frage{Wie viele Planeten hat unser Sonnensystem?}
+\end{example}
+
+\begin{environments}
+	\environment{rahmen}[\oarg{opts}]
+	Zeichnet eine \env*{mdframed} um den Inhalt. \meta{opts} sind zusätzliche Optionen
+	für \env*{mdframed}.
+
+	\begin{example}[add-silent-envs={rahmen}]
+		\begin{rahmen}
+			\blindtext
+		\end{rahmen}
+	\end{example}
+
+	\environment{schattenbox}[\oarg{opts}]
+	Zeichnet einen \env*{rahmen} mit zusätzlichem Schatten um den Inhalt. \meta{opts}
+	sind zusätzliche Optionen für \env*{mdframed}.
+
+	\begin{example}[add-silent-envs={schattenbox}]
+		\begin{schattenbox}
+			\blindtext
+		\end{schattenbox}
+	\end{example}
+
+	\environment{infobox}[\oarg{opts}]
+	Zeichnet eine \env*{mdframed} mit Hintergrundfarbe und Schatten um den Inhalt. \meta{opts}
+	sind zusätzliche Optionen für \env*{mdframed}. Als Hintergrundfarbe wird \clr*{primary.hg}
+	verwendet.
+
+	\begin{example}[add-silent-envs={infobox}]
+		\begin{infobox}
+			\blindtext
+		\end{infobox}
+	\end{example}
+\end{environments}
+
+\section{Modul \texttt{muster}}\label{sec:modul-muster}
+\begin{itemize}
+	\item Benötigte Pakete: (\pkg{tikz})
+\end{itemize}
+
+Mit dem Modul \module{muster} können Felder verschiedener Papiertypen (liniert,
+kariert, Millimeterpapier) gezeichnet werden. Die Felder werden mit \pkg*{tikz}
+gezeichnet und können zum Beispiel mit \env*{figure} oder \pkg*{wrapfig} als
+Floats gesetzt werden.
+
+\begin{commands}
+	\command{liniert}[\sarg\oarg{linienbreite}\marg{anzahl}\oarg{abstand}]
+	Zeichnet \meta{anzahl} Linien mit der Länge \meta{linienbreite} und dem
+	Abstand \meta{abstand} untereinander.
+
+	\command{kariert}[\sarg\oarg{breite}\marg{höhe}\oarg{größe}]
+
+	\command{millimeter}[\sarg\oarg{breite}\marg{höhe}]
+
+	\command{punktiert}[\sarg\oarg{breite}\marg{höhe}\oarg{abstand}]
+\end{commands}
+\begin{example}
+	\liniert{3}
+\end{example}
+\begin{example}
+	\begin{center}
+		\kariert{4}
+		\kariert[4]{4}
+	\end{center}
+\end{example}
+\begin{example}
+	\millimeter{4}
+\end{example}
+
+\section{Modul \texttt{tabellen}}\label{sec:modul-tabellen}
+\begin{itemize}
+	\item Benötigte Pakete: \pkg{tabularx}, \pkg{longtable}
+\end{itemize}
+
+Mit dem Modul \module{tabellen} werden Zusatzpakete und Kommandos für den
+Tabellensatz geladen.
+
+\section{Modul \texttt{qrcodes}}\label{sec:modul-qrcodes}
+\begin{itemize}
+	\item Benötigte Pakete: \pkg{qrcode}
+\end{itemize}
+
+Mit dem Modul \module{qrcodes} können Links und Texte (und beliebige
+andere Daten) als QR-Codes in das Dokument gesetzt werden.
+
+\begin{options}
+	\opt{qr breite}\Default{1.5cm}
+	Setzt die Standardgröße für QR-Codes, die mit einem der Kommandos unten
+	gesetzt werden. Die Größe kann noch individuell pro Code mit der
+	\option*{height} Option des \pkg*{qrcode} Pakets festgelegt werden.
+
+	Die Option setzt die Länge \cs*{qrbreite}, die auch manuell mit
+	\cs*{setlength} verändert werden kann.
+\end{options}
+
+\begin{commands}
+	\command{qrcode}[\oarg{opts}\marg{content}]
+	Das normale Kommando aus dem \pkg*{qrcode} Paket. Eine vollständige
+	Beschreibung und die Optionen können der Dokumentation des Pakets
+	entnommen werden.
+
+	Sinnvolle Optionen sind \key*-{height}{length}, um die Breite festzulegen
+	und \option*{nolink}, wenn \meta{content} keine URL ist.
+
+	\important{Das \cs*{qrcode} Kommando hat Probleme mit Sonderzeichen wie
+		Umlauten. Wenn auf einem Arbeitsblatt Hinweise als QR-Code gesetzt werden
+		sollen, dann ist oftmals das Kommando \cs*{includeqrcode} besser geeignet.}
+
+	\command{includeqrcode}[\oarg{opts}\marg{dateiname}]
+	Bindet einen QR-Code mit \cs*{includegraphics} als PNG-Bild ein.
+	Das Bild hat den Namen \enquote{\meta{dateiname}.png}. (\meta{dateiname})
+	muss also ohne Endung angegeben werden!)
+	\meta{opts} wird direkt an \cs*{includegraphics} weitergegeben.
+
+	Der QR-Code
+	muss mit anderen Tools generiert werden / worden sein. Siehe
+	\autoref{subsec:qrcodes-einbetten} für eine Anleitung, die QR-Codes dynamisch
+	mit \pkg{latexmk} zu generieren.
+
+	\command{qrlink}[\oarg{breite}\marg{url}\oarg{kurzurl}\marg{beschreibung}]
+	Erstellt einen hervorgehobenen Link zu einer \meta{url} in einer
+	\env*{minipage}. Die Breite ist auf 33\,\% von \cs*{textwidth} festglegt,
+	kann aber durch \meta{breite} verändert werden.
+
+	Die \meta{url} wird als QR-Code gesetzt und darunter die \meta{beschreibung}.
+	Wenn \meta{kurzlink} angegeben wird, wird dieser unterhalb der Beschreibung angezeigt,
+	andernfalls wird die vollständige \meta{url} gesetzt.
+
+	Es ist ratsam immer einen \meta{kurzlink} anzugeben, der abgetippt werden kann,
+	wenn kein QR-Scanner verfügbar ist. Im Zweifel kann ein Kurzlink mit einem Dienst
+	wie \hyperlink{https://www.is.gd}{is.gd} erstellt werden.
+\end{commands}
+
+\begin{example}
+	\qrcode[height=2.5cm,nolink]{Dieser Text wird als QR-Code gesetzt und kann mit einem QR-Scanner
+		gelesen werden. Umlaute sind nicht erlaubt!}
+\end{example}
+\begin{example}
+	\qrlink{https://ngb.schule/wiki}[ngb.schule/wiki]{Informatik-Wiki}
+\end{example}
+
+\subsection{QR-Codes einbetten}\label{subsec:qrcodes-einbetten}
+
+Einfache QR-Codes können mit \cs*{qrcode} gesetzt werden. Sollen im QR-Code
+komplexere Inhalte (Umlaute, Sonderzeichen, Emojis, ...) codiert werden, dann
+muss auf andere Tools zurückgegriffen werden und der Code als Bild eingebettet
+werden. \cs*{includeqrcode}\marg{dateiname} hilft dabei.
+
+Es gibt haufenweise Tools, um QR-Codes zu generieren. Wenn \pkg*{latexmk}
+verwendet wird, um das Dokument zu kompilieren, kann eine
+\href{https://mg.readthedocs.io/latexmk.html#advanced-options}{custom dependency}\footnote{\url{https://mg.readthedocs.io/latexmk.html\#advanced-options}}
+(\enquote{eigene Abhängigkeit}) angelegt werden, mit der eine Textdatei automatisch
+in ein PNG-Bild transformiert wird.
+
+Zum Beispiel kann das Kommandozeilentool \href{http://fukuchi.org/works/qrencode}{\texttt{qrencode}}\footnote{\url{http://fukuchi.org/works/qrencode}}
+zusammen mit dieser Regel in \texttt{.latexmkrc} genutzt werden:
+
+\begin{verbatim}
+add_cus_dep( "qr", "png", 0, "compileqr" );
+sub compileqr {
+  system("cat \"$_[0].qr\" | qrencode -m 0 -o \"$_[0].png\""); }
+\end{verbatim}
+
+Der Inhalt des QR-Codes wird dann in der Datei \enquote{\meta{dateiname}.qr} gespeichert.
+Wenn \pkg*{latexmk} erkennt, dass keine PNG-Datei mit dem passenden Namen
+vorhanden ist, oder die \enquote{.qr}-Datei bearbeitet wurde, wird der
+QR-Code beim kompilieren neu erstellt.
+
+Das Beispiel lässt sich leicht für andere Tools anpassen, die über die Kommandozeile
+aufgerufen werden können.
+
+\section{Modul \texttt{aufgaben}}\label{sec:modul-aufgaben}
+\begin{itemize}
+	\item Benötigte Pakete: \pkg{xsim}, \pkg{tasks}
+\end{itemize}
+
+\section{Modul \texttt{bewertung}}\label{sec:modul-bewertung}
+\begin{itemize}
+	\item Benötigte Pakete: \pkg{xsim}
+	\item Benötigte Module: \module*{aufgaben}
+\end{itemize}
+
+\section{Modul \texttt{varianten}}\label{sec:modul-varianten}
+
+\section{Modul \texttt{meta}}\label{sec:modul-meta}

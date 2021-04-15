@@ -1,0 +1,73 @@
+
+
+%% Dokumenttyp für Klassen- und Kursarbeiten
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%           Optionen           %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\def\ab@kl@dauer{90}
+\def\ab@kl@erfolg{\ente}
+
+\pgfkeys{
+	/absetup/.cd,
+	dauer/.store in=\ab@kl@dauer,
+	viel erfolg/.is choice,
+	viel erfolg/tier/.code=\def\ab@kl@erfolg{Viel Erfolg \;\tier},
+	viel erfolg/ente/.code=\def\ab@kl@erfolg{\ente},
+	viel erfolg/text/.code=\def\ab@kl@erfolg{Viel Erfolg!},
+}
+
+%% Ggf. wurde schon als Option ein eigener Typname gesetzt
+\ab@typnameSetzen{Arbeit}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%            Pakete            %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\RequirePackage{tikzducks}
+\ab@modul@laden{aufgaben}
+\ab@modul@laden{bewertung}
+\ab@modul@laden{varianten}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%            Makros            %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Metadaten
+\newcommand{\Dauer}{\makeatletter\ab@kl@dauer\makeatother\@\xspace}
+
+%% Seitenlayout
+
+
+\renewcommand{\KopfLinks}{%
+	\Fach%
+	\ifdefempty{\ab@kurs}{}{\@\xspace\Kurs}%
+	\ifdefempty{\ab@kuerzel}{}{\@\xspace(\Kuerzel)}%
+
+	\Typ%
+	\ifdefempty{\ab@nummer}{}{\space Nr. \Nummer}%
+	\ifdefempty{\ab@variante}{}{\@\xspace- \Variante}%
+}
+\renewcommand{\KopfMitte}{\Datum}
+\renewcommand{\KopfRechts}{\Namensfeld}
+
+%% Überschriften etc.
+% https://tex.stackexchange.com/questions/223694/how-to-draw-a-text-box-with-shadow-borders-i-have-tried-the-following-but-it-gi#223738
+\newcommand{\ArbeitTitel}[1][none]{\begin{center}\LARGE\rmfamily\Titel\ifstrequal{#1}{none}{}{- #1}\end{center}}
+
+
+\graphicspath{{assets/animal-icons/}}
+\newcommand{\tier}{%
+	\raisebox{-.3\height}{%
+		\pgfmathrandom{1,46}\includegraphics[height=1.5cm]{\pgfmathresult.png}%
+	}%
+}
+\newcommand{\ente}{%
+	\begin{tikzpicture}
+		\shuffleducks
+		\duck[\randomhead,\randomaccessories,speech={Viel Erfolg!},laughing]
+	\end{tikzpicture}%
+}
+
+\newcommand{\vielErfolg}{\begin{flushright}
+	\bfseries\ab@kl@erfolg
+\end{flushright}}

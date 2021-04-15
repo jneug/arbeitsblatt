@@ -1,0 +1,56 @@
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%           Optionen           %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\pgfkeys{
+	/absetup/.cd,
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%            Pakete            %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%            Makros            %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newenvironment{systeme}{\begin{align*}}{\end{align*}}
+
+\NewDocumentCommand \gls {s O{\rightsquigarrow} m O{.8em}} {
+	\IfBooleanTF{#1}{
+		\begin{gmatrix}[v]
+		#3
+		\end{gmatrix}
+	}{
+		#2& \begin{gmatrix}[v]
+		#3
+		\end{gmatrix}\\[#4]
+	}
+}
+\NewDocumentCommand \kom {s O{\rightsquigarrow} m O{.8em}} {
+	\IfBooleanTF{#1}{
+		\begin{gmatrix}[p]
+			#3
+		\end{gmatrix}
+	}{
+		#2& \begin{gmatrix}[p]
+			#3
+		\end{gmatrix}\\[#4]
+	}
+}
+
+\newenvironment{terme}{\begin{alignat*}{3}}{\end{alignat*}}
+
+\NewDocumentCommand \gl {O{\Leftrightarrow} m O{=} m} {
+	#1\quad&& #2 &#3 #4 &&
+}
+\NewDocumentCommand \tu {o d() o d() o} {
+	\qquad\vert \IfNoValueTF{#1}{%
+		\,\text{\IfNoValueTF{#2}{TU}{#2}}}{%
+		#1\IfNoValueF{#2}{\quad\vert\,\text{#2}}}%
+	\IfNoValueF{#3}{\quad\vert #3}%
+	\IfNoValueF{#4}{\quad\vert\,\text{#4}}%
+	\IfNoValueF{#5}{\quad\vert #5}%
+}

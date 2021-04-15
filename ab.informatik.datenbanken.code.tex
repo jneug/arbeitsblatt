@@ -1,0 +1,24 @@
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%           Optionen           %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\pgfkeys{
+	/absetup/.cd,
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%            Pakete            %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usetikzlibrary{er}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%            Makros            %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% TikZ Styles für ER Diagramme
+\tikzstyle{entity} = [rectangle,text centered,draw=black]
+\tikzstyle{relation} = [diamond,aspect=2,text centered,draw=black]
+\tikzstyle{attribute} = [ellipse,text centered,draw=black]
+\newcommand{\foreignkey}{\ifmodulgeladen{icons}{\faLongArrowAltUp}{\uparrow}\,}

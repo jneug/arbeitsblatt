@@ -1,0 +1,47 @@
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%           Optionen           %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newlength{\qrbreite}
+\setlength{\qrbreite}{1.5cm}
+
+\pgfkeys{
+	/absetup/.cd,
+		qr breite/.code={\setlength{\qrbreite}{#1}\qrset{height=#1}},
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%            Pakete            %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\RequirePackage{qrcode}
+
+\qrset{height=\qrbreite}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%            Makros            %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Einfügen eines Qr-Codes als PNG-Bild per \includegraphics.
+% Als option wird immer "width=\qrbreite" übergeben.
+% [1]: Zusätzliche Optionen für \includegraphics
+%  2 : Name des PNG-Bildes (ohne ".png" Endung)
+\newcommand*{\includeqrcode}[2][]{\includegraphics[width=\qrbreite,#1]{#2.png}}
+
+%% Einen Link mit QR-Code un d Beschreibung setzen
+%  [1]: Breite der minipage (default: .33\textwidth)
+%   2 : URL für QR-Code
+%  [3]: Angezeigte URL (default: der Wert von 2)
+%   4 : Beschreibung
+\NewDocumentCommand \qrlink { O{0.33\textwidth} m o m } {%
+	\begin{minipage}{#1}
+		\begin{center}
+			\begin{singlespace}\small
+				\qrcode[nolink]{#2}\\[0.75em]
+				\textit{#4}\\
+				\footnotesize{\IfNoValueTF{#3}{\href{#2}{#2}}{\href{#2}{#3}}}
+			\end{singlespace}
+		\end{center}
+	\end{minipage}
+}

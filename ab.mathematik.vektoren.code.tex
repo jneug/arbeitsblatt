@@ -1,0 +1,63 @@
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%           Optionen           %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\pgfkeys{
+	/absetup/.cd,
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%            Pakete            %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%            Makros            %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\punkt}{\@ifstar\@@punkt\@punkt}
+\newcommand{\@punkt}[2]{\ensuremath{\left(#1 \,\middle|\, #2\right)}}
+\newcommand{\@@punkt}[3]{\ensuremath{\left(#1 \,\middle|\, #2 \,\middle|\, #3\right)}}
+
+%\def\pkt{\@ifstar\@@pkt\@pkt}
+%\def\@pkt(#1|#2){\ensuremath{\left(#1 \,\middle|\, #2\right)}}
+%\def\@@pkt(#1|#2|#3){\ensuremath{\left(#1 \,\middle|\, #2 \,\middle|\, #3\right)}}
+
+\NewDocumentCommand \pkt
+	{s o >{\SplitArgument{3}{|}} r()}
+	{ \ensuremath{\IfNoValueF{#2}{#2\!}\@pkt #3} }
+\NewDocumentCommand \@pkt {m m m m} {
+	\left(#1 \,\middle|\, #2 \IfNoValueF{#3}{\,\middle|\, #3}\right)
+}
+
+% Better vector arrow
+\RequirePackage[f]{esvect}
+\def\vec#1{\vv{#1}}
+\def\vect#1{\vv{#1}} % Deprecated
+% See: https://tex.stackexchange.com/a/114636/179614
+%\newcommand{\vect}[1]{%
+%  \vbox{\m@th \ialign {##\crcr
+%  \vectfill\crcr\noalign{\kern-\p@ \nointerlineskip}
+%  $\hfil\displaystyle{#1}\hfil$\crcr}}}
+%\def\vectfill{%
+%  $\m@th\smash-\mkern-7mu%
+%  \cleaders\hbox{$\mkern-2mu\smash-\mkern-2mu$}\hfill
+%  \mkern-7mu\raisebox{-3.81pt}[\p@][\p@]{$\mathord\mathchar"017E$}$}
+
+%\def\vector(#1|#2|#3){\begin{pmatrix} #1 \\ #2 \\ #3 \end{pmatrix}}
+
+\RenewDocumentCommand \vector
+	{s >{\SplitArgument{3}{|}} r()}
+	{ \IfBooleanTF{#1}{\@tvector #2}{\@vector #2} }
+\NewDocumentCommand \@vector {m m m m} {
+	\begin{pmatrix}\IfNoValueTF{#3}
+		{ #1 \\ #2 }
+		{ #1 \\ #2 \\ #3 }
+	\end{pmatrix}
+}
+\NewDocumentCommand \@tvector {m m m m} {
+	\left(\begin{smallmatrix}\IfNoValueTF{#3}
+		{ #1 \\ #2 }
+		{ #1 \\ #2 \\ #3 }
+	\end{smallmatrix}\right)
+}

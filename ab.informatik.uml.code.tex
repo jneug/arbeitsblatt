@@ -1,0 +1,46 @@
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%           Optionen           %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\pgfkeys{
+	/absetup/.cd,
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%            Pakete            %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\RequirePackage[school]{pgf-umlcd}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%            Makros            %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% UML (pgf-umlcd)
+\renewcommand{\umltextcolor}{black}
+\renewcommand{\umldrawcolor}{black}
+\renewcommand{\umlfillcolor}{white}
+
+\newenvironment{klassendiagramm}{\begin{tikzpicture}}{\end{tikzpicture}}
+
+%% Notizen/Templates für Inhaltsobjekte!
+\newcommand{\contentobject}[2]{\node[draw,dashed,rectangle,fill=white,anchor=west,xshift=-1cm] at (#1.north east) {#2};}
+
+\def\uses{\unidirectionalAssociation}
+% Selbstassoziation
+% Von: https://tex.stackexchange.com/questions/98021/how-to-extend-pgf-umlcd-with-self-association-connection#98023
+\newcommand{\usesself}[3]{%
+\coordinate (a) at ($(#1.east) + (0,1)$);
+\coordinate (b) at ($(#1.east) + (1,1)$);
+\coordinate (d) at ($(#1.east) + (1,-1)$);
+\coordinate (e) at ($(#1.east) + (0,-1)$);
+\coordinate (t) at ($(#1.east) + (1,0)$);
+\coordinate (c) at ($(d)!(b)!(t)$);
+  \draw [umlcd style,<-] (a) -- (b)
+  node[midway, above]{#2}
+  node[midway, below]{#3};
+  \draw [umlcd style] (b) -- (c);
+  \draw [umlcd style] (c) -- (d);
+  \draw [umlcd style] (d) -- (e);
+}

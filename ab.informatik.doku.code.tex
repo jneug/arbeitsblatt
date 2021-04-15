@@ -1,0 +1,42 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%           Optionen           %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\pgfkeys{
+	/absetup/.cd,
+	doku stil/.code=\ab@inf@renewDoku{#1}
+}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%            Makros            %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\ab@modul@laden{tabellen}
+
+% Klassendokumentation
+\newenvironment{kdokudefault}[1]{%
+	\tabularx{\textwidth}{|l|X|}\hline
+		%\rowcolor{ab.tabelle.kopf.hg}
+		\textbf{Methode} & \textbf{Beschreibung} \\ \hline
+	}{\endtabularx}
+\newcommand{\mdokudefault}[2]{%\label{methode:#1}
+	\textbf{\texttt{#1}} & #2 \tabularnewline \hline
+}
+
+% Klassendokumentation wie im Abitur NRW (ab 2021)
+\newenvironment{kdokuabineu}[1]{}{\par}
+\newcommand{\mdokuabineu}[2]{%\label{methode:#1}
+	\colorbox{gray!30}{\parbox{\dimexpr\linewidth-2\fboxsep\relax}{\bfseries\texttt{#1}}}\newline #2
+}
+
+\newenvironment{klassendoku}[1]{\kdokudefault{#1}\label{doku:#1}}{\endkdokudefault}
+\newcommand{\methodendoku}[2]{\mdokudefault{#1}{#2}}
+
+\newcommand{\ab@inf@renewDoku}[1]{%
+	\ifstrequal{#1}{abi21}{%
+		\renewenvironment{klassendoku}[1]{\kdokuabineu{##1}\label{doku:##1}}{\endkdokuabineu}%
+		\renewcommand{\methodendoku}[2]{\mdokuabineu{##1}{##2}}
+	}{
+		\renewenvironment{klassendoku}[1]{\kdokudefault{##1}\label{doku:##1}}{\endkdokudefault}%
+		\renewcommand{\methodendoku}[2]{\mdokudefault{##1}{##2}}
+	}
+}

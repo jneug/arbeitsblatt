@@ -1,0 +1,68 @@
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%           Optionen           %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\definecolor{ab.aufgabe.icons}{named}{secondary}
+\definecolor{ab.aufgabe.nummer}{named}{primary}
+\definecolor{ab.aufgabe.titel}{named}{black}
+
+%% Horizontale listen z.B. für Unteraufgaben
+\RequirePackage{tasks}
+
+\DeclareInstance {tasks} {enumerate} {default}{ label = \arabic*) }
+\ifdef{\theteilaufgabeni}{
+\setlist[teilaufgaben]{
+	% Fettdruck von Teilaufgaben entfernen
+	label=\alph{teilaufgabeni}),
+}}{}
+
+%% Paket xsim laden und initialisieren
+
+%\RequirePackage[clear-aux]{xsim}
+\RequirePackage[use-files,blank]{xsim}
+
+\xsimsetup{
+	file-extension=xsim,
+}
+
+\DeclareExerciseProperty{icon}
+
+\loadxsimstyle{abnormal,abkompakt,abohne}
+
+% Aufgabentypen
+\DeclareExerciseType{aufgabe}{
+	exercise-env = aufgabe,
+	solution-env = loesung,
+	exercise-name = Aufgabe,
+	exercises-name = Aufgaben,
+	solution-name = Lösung,
+	solutions-name = Lösungen,
+	exercise-template = abnormal,
+	solution-template = abnormal,
+}
+
+\DeclareExerciseType{teilaufgabe}{
+	exercise-env = teilaufgabe,
+	solution-env = teilloesung,
+	exercise-name = Teilaufgabe,
+	exercises-name = Teilaufgaben,
+	solution-name = Teillösung,
+	solutions-name = Teillösungen,
+	exercise-template = abkompakt,
+	solution-template = abkompakt,
+	within = aufgabe,
+	the-counter = \alph{teilaufgabe},
+	exercise-heading = \theteilaufgabe)\quad
+}
+
+\DeclareExerciseType{zusatzaufgabe}{
+	exercise-env = aufgabe*,
+	solution-env = loesung*,
+	exercise-name = Zusatzaufgabe,
+	exercises-name = Zusatzaufgaben,
+	solution-name = Lösung,
+	solutions-name = Lösungen,
+	exercise-template = abnormal,
+	solution-template = abnormal,
+}

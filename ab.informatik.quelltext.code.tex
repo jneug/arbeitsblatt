@@ -1,0 +1,52 @@
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%           Optionen           %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\pgfkeys{
+	/absetup/.cd,
+	quelltext stil/.code = \usemintedstyle{#1},
+	minted/.code = \setminted{#1},
+}
+
+\definecolor{ab.inf.quelltext.hg}{gray}{0.98}
+\definecolor{ab.inf.quelltext.rand}{gray}{0.2}
+\definecolor{ab.inf.quelltext.nummern}{gray}{0.25}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%            Pakete            %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\RequirePackage{minted}
+\RequirePackage{mdframed}
+
+\setminted{
+	autogobble,
+	escapeinside=§§,
+	numbers=left,
+	%numbersep=5pt,
+	%frame=single,
+	%framesep=4pt,
+	%framerule=1pt,
+	%rulecolor=black,
+	%bgcolor=ab.inf.quelltext.hg,
+	tabsize=4,
+	breaklines=true,
+}
+\nottoggle{ab@farbig}{%
+	\usemintedstyle{bw}
+}{%
+	\usemintedstyle{colorful}
+}
+% Zeilennummern formatieren
+\renewcommand{\theFancyVerbLine}{\sffamily\scriptsize\color{ab.inf.quelltext.nummern}\arabic{FancyVerbLine}\space}
+
+% Rahmen um Quelltexte
+\surroundwithmdframed[
+	backgroundcolor=ab.inf.quelltext.hg,
+	linecolor=ab.inf.quelltext.rand
+]{minted}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%            Makros            %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

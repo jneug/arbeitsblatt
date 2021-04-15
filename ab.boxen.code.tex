@@ -1,0 +1,83 @@
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%           Optionen           %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\pgfkeys{
+	/absetup/.cd,
+	anmerkungen als boxen/.value forbidden,
+	anmerkungen als boxen/.code=\ab@renewAnmerkungen
+}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%            Pakete            %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\RequirePackage{awesomebox}
+\RequirePackage{mdframed}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%            Makros            %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Verschiedene Boxen für Hervorhebungen
+\newmdenv[
+	default,
+	linewidth=2pt,
+	linecolor=black,
+]{rahmen}
+% \newenvironment{rahmen}[1][]{%
+% 	\begin{tcolorbox}[
+% 		enhanced,
+% 		colback=white,
+% 		boxrule=2pt,
+% 		sharp corners,#1]%
+% }{%
+% 	\end{tcolorbox}%
+% }
+
+\newmdenv[
+	default,
+	linewidth=2pt,
+	linecolor=black,
+	backgroundcolor=white,
+	shadow=true,
+	shadowsize=6pt,
+	shadowcolor=black!50,
+]{schattenbox}
+% \newenvironment{schattenbox}[1][]{%
+% 	\begin{rahmen}[drop shadow southeast,#1]%
+% }{%
+% 	\end{rahmen}%
+% }
+
+\newmdenv[
+	default,
+	linewidth=1pt,
+	linecolor=black,
+	backgroundcolor=primary.hg,
+	shadow=true,
+	shadowsize=6pt,
+	shadowcolor=black!50,
+	roundcorner=4pt,
+]{infobox}
+% \newenvironment{infobox}[1][]{%
+% 	\begin{tcolorbox}[
+% 		enhanced,
+% 		colframe=black,
+% 		colback=primary.hg,
+% 		rounded corners,
+% 		width=.95\textwidth,
+% 		center,
+% 		boxrule=1pt,
+% 		drop shadow southeast,#1]%
+% }{%
+% 	\end{tcolorbox}%
+% }
+
+% Anmerkungen als Boxen setzen (sofern Modul "typo" geladen wurde)
+\newcommand{\ab@renewAnmerkungen}{%
+	\ifdef{\tipp}{\renewcommand}{\newcommand}{\tipp}[1]{\tipbox{##1}}
+	\ifdef{\hinweis}{\renewcommand}{\newcommand}{\hinweis}[1]{\notebox{##1}}
+	\ifdef{\warnung}{\renewcommand}{\newcommand}{\warnung}[1]{\warningbox{##1}}
+	\ifdef{\frage}{\renewcommand}{\newcommand}{\frage}[1]{\awesomebox[green!70!red]{2pt}{\faQuestionCircle[regular]}{green!70!red}{##1}}
+}

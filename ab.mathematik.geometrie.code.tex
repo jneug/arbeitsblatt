@@ -1,0 +1,228 @@
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%           Optionen           %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\pgfkeys{
+	/absetup/.cd,
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%            Pakete            %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\RequirePackage{tkz-base,tkz-euclide,tkz-fct} % requires gnuplot
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%            Makros            %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Subgrid farbe
+\def\tkzCoeffSubColor{25}
+\def\tkzCoeffSubLw{0.2}
+
+% Einstellungen für Subgrid
+%\def\geogrid{5mm}
+%\def\geogridcolor{gray!50}
+%\def\geoaxiscolor{black}
+%\def\georeset{%
+%	\renewcommand{\geogrid}{5mm}%
+%	\renewcommand{\geogridcolor}{gray!50}%
+%	\renewcommand{\geoaxiscolor}{black}%
+%}
+
+\tikzset{
+	crossing/.style={%
+		draw,
+		cross out,
+		minimum size=2mm,
+		inner sep=0pt,
+		outer sep=0pt,
+		thick
+	},
+	%	point style/.style={%
+	%		shape=cross out
+	%	}
+	% Pfeilspitzen generell auf latex
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                Umgebungen                %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newenvironment{koordinatensystem}[5][1cm]{%
+	\begin{tikzpicture}[x=#1, y=#1, smooth]
+	% Setup tkz
+	\tkzInit[xmin=#2,xmax=#3,ymin=#4,ymax=#5]
+	\tkzClip[space=1]
+	\tkzGrid[color=gray!50,step=#1]
+	\tkzAxeX[below right,label=$x$]
+	\tkzAxeY[above left,label=$y$]
+	\tkzClip[space=.5]
+}{\end{tikzpicture}}
+
+\newenvironment{koordinatensystem*}[1]{%
+	\begin{tikzpicture}[smooth]
+	% Setup tkz
+	\tkzInit[#1]
+	\tkzClip[space=1]
+	\tkzGrid[color=gray!50]
+	\tkzAxeX[below right,label=$x$]
+	\tkzAxeY[above left,label=$y$]
+	\tkzClip[space=.5]
+}{\end{tikzpicture}}
+
+\newenvironment{koordinatensystemNO}[3][1cm]{\begin{koordinatensystem}[#1]{0}{#2}{0}{#3}}{\end{koordinatensystem}}
+
+\newenvironment{koordinatensystemN}[4][1cm]{\begin{koordinatensystem}[#1]{#2}{#3}{0}{#4}}{\end{koordinatensystem}}
+
+%\newenvironment{zahlenstrahl}[3][1cm]{%
+%	\begin{tikzpicture}[]
+%}{\end{tikzpicture}}
+
+\newcommand{\geoLinienbreite}[1][1.2pt]{%
+\tikzset{
+	line style/.style={line width=#1},
+	every path/.append style={line width=#1}
+}}
+\newcommand{\geoPunktform}[1][cross out]{\tikzset{point style/.style={shape=#1}}}
+
+\newcommand{\geoInit}[1][]{\tkzInit[#1]}
+\newcommand{\geoGitter}[1][]{\tkzGrid[#1]}
+\newcommand{\geoAxen}[1][]{\tkzAxeXY[#1]}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                Objekte                %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Text mittig am Punkt #2
+\NewDocumentCommand \geoText { O{} r() m } {\tkzText[#1](#2){#3}}
+
+% Punkte
+\NewDocumentCommand \geoUrsprung {s O{O}}{
+	\IfBooleanTF {#1}
+	{ \geoPunkt(0,0){#2} }
+	{ \geoKoordinate(0,0){#2} }
+}
+\NewDocumentCommand \geoKoordinate { r() m }{\tkzDefPoint(#1){#2}}
+\NewDocumentCommand \geoKoordinaten {m}{\tkzDefPoints{#1}}
+
+\NewDocumentCommand \geoPunkt {s O{} r() m}{
+	\tkzDefPoint(#3){#4}\tkzDrawPoint[size=10,#2](#4)
+	\IfBooleanT {#1}
+	{ \geoPunktBeschriften(#4){#4} }
+}
+
+\NewDocumentCommand \geoPunktMarkieren { r() }{\tkzPointShowCoord(#1)}
+
+\NewDocumentCommand \geoPunktBeschriften { O{} r() m }{\tkzLabelPoint[#1](#2){#3}}
+
+% TODO: Spiegelpuntke auch shape=cross out setzen, oder als Kreis lassen?
+\NewDocumentCommand \geoSpiegelpunkt {s O{} r() r() m}{
+	\IfBooleanTF {#1}
+	{\tkzDefPointBy[reflection=over #4](#3)\tkzGetPoint{#5}\tkzDrawPoint[size=10,#2](#5)}
+	{\tkzDefPointBy[symmetry=center #4](#3)\tkzGetPoint{#5}\tkzDrawPoint[size=10,#2](#5)}
+}
+
+\NewDocumentCommand \geoDrehpunkt {s O{} r() r() m m}{
+	\IfBooleanTF {#1}
+	{\tkzDefPointBy[rotation=center #4 angle #5](#3)\tkzGetPoint{#6}\tkzDrawPoint[size=10,#2](#6)}
+	{\tkzDefPointBy[rotation=center #4 angle {-1*#5}](#3)\tkzGetPoint{#6}\tkzDrawPoint[size=10,#2](#6)}
+}
+
+% Linien und Vektoren %
+
+\NewDocumentCommand \geoStrecke { O{} r() }{\tkzDrawSegment[#1](#2)}
+\NewDocumentCommand \geoStrecken { O{} r() }{\tkzDrawSegments[#1](#2)}
+\NewDocumentCommand \geoStreckeBeschriften { O{} r() m }{\tkzLabelSegment[#1](#2){#3}}
+
+\NewDocumentCommand \geoLaenge { O{} r() O{} m } {\tkzDrawSegment[|-|,#1](#2)\tkzLabelSegment[#3](#2){#4}}
+
+% See: https://tex.stackexchange.com/questions/285578/how-to-draw-parallelepiped-and-cube-with-latex
+% Args:
+% location: below, above, left, right
+% options for the line
+% line endings
+% options for the label
+% label text
+\NewDocumentCommand \geoAbmessung { m O{} r() O{} m } {%
+	\pgfmathsetmacro \xd {0}
+	\pgfmathsetmacro \yd {0}
+	\ifstrequal{#1}{right}{\pgfmathsetmacro \xd {.2}}{}
+	\ifstrequal{#1}{left}{\pgfmathsetmacro \xd {-.2}}{}
+	\ifstrequal{#1}{above}{\pgfmathsetmacro \yd {.2}}{}
+	\ifstrequal{#1}{below}{\pgfmathsetmacro \yd {-.2}}{}
+	\begin{scope}[transform canvas={shift={(\xd,\yd)}}]
+	 	\geoLaenge[#2](#3)[#1,#4]{#5}
+	\end{scope}%
+}
+
+\NewDocumentCommand \geoGerade { O{} r() }{\tkzDrawLine[add=10 and 10,#1](#2)}
+\NewDocumentCommand \geoGeradeBeschriften { O{} r() m }{\tkzLabelSegment[#1](#2){#3}}
+
+\NewDocumentCommand \geoStrahl { O{} r() }{\tkzDrawLine[add=0 and 10,#1](#2)}
+
+\NewDocumentCommand \geoVektor { O{} r() }{\tkzDrawSegment[>=latex,->,thick,#1](#2)}
+
+% Formen und Polygone %
+\NewDocumentCommand \geoRechteck { O{} r() m m }{\draw[#1] (#2) |- +(#3,#4) |- (#2);}
+\NewDocumentCommand \geoQuadrat{ O{} r() m }{\draw[#1] (#2) |- +(#3,#3) |- (#2);}
+
+%\NewDocumentCommand \geoPolygon { O{} r() }{\tkzDrawPolySeg[#1](#2)}
+\NewDocumentCommand \geoPolygon { O{} r() }{\tkzDrawPolygon[#1](#2)}
+
+\NewDocumentCommand \geoPolygonzug { O{} m }{\draw[#1] #2;}
+
+%\newcommand{\geoWuerfel}[4]{
+%	\pgfmathsetmacro \angle {45}
+%	\pgfmathsetmacro \xd {{.5*cos(\angle)}}
+%	\pgfmathsetmacro \yd {{.5*sin(\angle)}}
+%	\pgfmathsetmacro \x {{#1-1+(#2-1)*(\xd)}}
+%	\pgfmathsetmacro \y {{#3-1+(#2-1)*(\yd)}}
+%
+%	\draw[fill=#4] (\x,\y) -- (\x+1,\y) -- (\x+1,\y+1) -- (\x,\y+1) -- cycle;
+%	\draw[fill=#4] (\x,\y+1) -- (\x+\xd,\y+1+\yd) -- (\x+1+\xd,\y+1+\yd) -- (\x+1,\y+1) -- cycle;
+%	\draw[fill=#4] (\x+1,\y+1) -- (\x+1+\xd,\y+1+\yd) -- (\x+1+\xd,\y+\yd) -- (\x+1,\y) -- cycle;
+%}
+% See: https://tex.stackexchange.com/questions/12020/what-is-the-easiest-way-to-draw-a-3d-cube-with-tikz
+% And: https://tex.stackexchange.com/questions/224854/how-to-draw-stacked-cubes-of-different-sizes-and-colors
+\newcommand{\geoWuerfel}[4]{
+	\geoWuerfelVorne{#1}{#2}{#3}{#4}
+	\geoWuerfelOben{#1}{#2}{#3}{#4}
+	\geoWuerfelRechts{#1}{#2}{#3}{#4}
+}
+\newcommand{\geoWuerfelVorne}[4]{
+	\pgfmathsetmacro \xd {.5}
+	\pgfmathsetmacro \yd {.5}
+	\pgfmathsetmacro \x {{#1-1+.5*(#2-1)}}
+	\pgfmathsetmacro \y {{#3-1+.5*(#2-1)}}
+	\draw[fill=#4] (\x,\y) -- (\x+1,\y) -- (\x+1,\y+1) -- (\x,\y+1) -- cycle;
+}
+\newcommand{\geoWuerfelOben}[4]{
+	\pgfmathsetmacro \xd {.5}
+	\pgfmathsetmacro \yd {.5}
+	\pgfmathsetmacro \x {{#1-1+.5*(#2-1)}}
+	\pgfmathsetmacro \y {{#3-1+.5*(#2-1)}}
+	\draw[fill=#4] (\x,\y+1) -- (\x+\xd,\y+1+\yd) -- (\x+1+\xd,\y+1+\yd) -- (\x+1,\y+1) -- cycle;
+}
+\newcommand{\geoWuerfelRechts}[4]{
+	\pgfmathsetmacro \xd {.5}
+	\pgfmathsetmacro \yd {.5}
+	\pgfmathsetmacro \x {{#1-1+.5*(#2-1)}}
+	\pgfmathsetmacro \y {{#3-1+.5*(#2-1)}}
+	\draw[fill=#4] (\x+1,\y+1) -- (\x+1+\xd,\y+1+\yd) -- (\x+1+\xd,\y+\yd) -- (\x+1,\y) -- cycle;
+}
+
+% Transformationen %
+\NewDocumentCommand \geoSpiegeln { s r() r() O{} }{%
+	\IfBooleanTF {#1} {%
+		\foreach \p in {#2}{%
+			\geoSpiegelpunkt*(\p)(#3){\p#4}
+		}%
+	}{%
+		\foreach \p in {#2}{%
+			\geoSpiegelpunkt(\p)(#3){\p#4}
+		}%
+	}
+}
+%\newcommand{\geoSpiegelnUndZeichnen}[3][']{\Spiegeln[#1]{#2}{#3}\Polygon{\MitSuffixVersehen{#2}{#1}}}
+
+\newcommand{\geoMitSuffixVersehen}[2][']{\foreach \i in {#2}{\i#1,}}

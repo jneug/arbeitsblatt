@@ -1,0 +1,78 @@
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%           Optionen           %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\ab@variante}{A}
+\newcommand{\ab@varianten}{A,B,C}
+
+\pgfkeys{
+	/absetup/.cd,
+	variante/.code=\ab@renewVarianten{#1},
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%            Pakete            %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%            Makros            %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Metadaten
+\newcommand{\Variante}{\makeatletter\ab@variante\makeatother\xspace}
+
+%% Kopfzeile anpassen
+\renewcommand{\KopfRechts}{%
+	\Typ%
+	\ifdefempty{\ab@nummer}{}{\space Nr. \Nummer}%
+	(\Variante)
+}
+
+
+%% Befehle für A/B/C-Varianten
+\newcommand{\ab@renewVarianten}[1]{%
+	\ifstrequal{#1}{A}{%
+		\renewcommand*{\ab@variante}{A}%
+		\renewcommand{\A}[1]{##1}%
+		\renewcommand{\B}[1]{}%
+		\renewcommand{\C}[1]{}%
+		\renewcommand{\AB}[2]{##1}%
+		\renewcommand{\ABC}[3]{##1}%
+		\RenewEnviron{variA}{\BODY}%
+		\RenewEnviron{variB}{}%
+		\RenewEnviron{variC}{}%
+	}{}
+	\ifstrequal{#1}{B}{%
+		\renewcommand*{\ab@variante}{B}%
+		\renewcommand{\A}[1]{}%
+		\renewcommand{\B}[1]{##1}%
+		\renewcommand{\C}[1]{}%
+		\renewcommand{\AB}[2]{##2}%
+		\renewcommand{\ABC}[3]{##2}%
+		\RenewEnviron{variA}{}%
+		\RenewEnviron{variB}{\BODY}%
+		\RenewEnviron{variC}{}%
+	}{}
+	\ifstrequal{#1}{C}{%
+		\renewcommand*{\ab@variante}{C}%
+		\renewcommand{\A}[1]{}%
+		\renewcommand{\B}[1]{}%
+		\renewcommand{\C}[1]{##1}%
+		\renewcommand{\AB}[2]{}%
+		\renewcommand{\ABC}[3]{##3}%
+		\RenewEnviron{variA}{}%
+		\RenewEnviron{variB}{}%
+		\RenewEnviron{variC}{\BODY}%
+	}{}
+}
+
+% Lade zunächst Variante A
+\newcommand{\A}[1]{#1}
+\newcommand{\B}[1]{}
+\newcommand{\C}[1]{}
+\newcommand{\AB}[2]{#1}
+\newcommand{\ABC}[3]{#1}
+\NewEnviron{variA}{\BODY}
+\NewEnviron{variB}{}
+\NewEnviron{variC}{}

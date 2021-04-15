@@ -1,0 +1,43 @@
+%% Fachmodul Mathematik
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%            Pakete            %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\RequirePackage{amssymb,amstext,amscd}
+\RequirePackage{bm} % bold math
+\RequirePackage{xfrac,cancel} % fractions
+\iftoggle{ab@farbig}{%
+	\renewcommand{\CancelColor}{\color{secondary}}%
+}{}
+
+\RequirePackage[notation=german]{skmath}
+\RequirePackage{interval}
+\intervalconfig{
+	separator symbol = {;\,},
+}
+
+
+% Pseudo-Einheiten für Paket siunitx
+\DeclareSIUnit\le{LE}
+\DeclareSIUnit\fe{FE}
+\DeclareSIUnit\ve{VE}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%            Makros            %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Rest
+\def\rest{\,\mathsf{R}}
+% Gradzahlen
+\def\grad{\ang}
+% Prozentzahlen
+\def\prozent#1{#1\,\%}
+% Absolutbetrag
+\def\abs#1{\left|#1\right|}
+
+%% Mengen
+\newcommand{\Z}{\ensuremath{\mathbb{Z}}}
+\newcommand{\N}{\ensuremath{\mathbb{N}}}
+\newcommand{\Q}{\ensuremath{\mathbb{Q}}}
+\newcommand{\R}{\ensuremath{\mathbb{R}}}

@@ -1,0 +1,122 @@
+\PassOptionsToPackage{colaction}{multicol}
+\PassOptionsToPackage{skins}{tcolorbox}
+\documentclass[a4paper,babel-options=ngerman,add-index,adapt-layout]{cnltx-doc}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[ngerman]{babel}
+
+\usepackage{booktabs}
+\usepackage{blindtext}
+\usepackage{weva}
+\usepackage{todonotes}
+\usepackage{pdfpages}
+\usepackage{setspace}
+
+\usepackage{arbeitsblatt}
+
+\def\alleTypen{arbeitsblatt,klassenarbeit,klausur,checkup,lerntheke}
+\def\alleModule{meta,aufgaben,bewertung,typo,muster,varianten,qrcodes,icons,boxen}
+\def\alleFaecher{mathematik,informatik}
+\def\alleAnmerkungen{tipp,hinweis,frage,warnung}
+
+\def\makeList#1#2{\forcsvlist{\listadd#1}{#2}}
+
+\expandafter\makeList\expandafter\listAlleTypen\expandafter{\alleTypen}
+\expandafter\makeList\expandafter\listAlleFaecher\expandafter{\alleFaecher}
+\expandafter\makeList\expandafter\listAlleModule\expandafter{\alleModule}
+\expandafter\makeList\expandafter\listAlleAnmerkungen\expandafter{\alleAnmerkungen}
+
+\ladeModule{meta,aufgaben,bewertung,typo,muster,varianten,qrcodes}
+
+% Anmerkungen vor laden des icons-Moduls zwischenspeichern
+\newcommand{\saveAnmerkungen}[1]{%
+	\def\do##1{\csletcs{##1#1}{##1}}%
+	\dolistloop{\listAlleAnmerkungen}%
+}
+\newcommand{\loadAnmerkungen}[1]{%
+	\def\do##1{\csletcs{##1}{##1#1}}%
+	\dolistloop{\listAlleAnmerkungen}%
+}
+
+
+\saveAnmerkungen{Typo}
+\ladeModule{icons,boxen}
+\saveAnmerkungen{Icon}
+
+\AtEndPreamble{
+	\hypersetup{
+		colorlinks         = true,
+		allcolors          = link,
+		plainpages         = false,
+		bookmarksopen      = true,
+		bookmarksopenlevel = 1,
+		bookmarksnumbered  = true
+	}
+}
+
+\aboptionen{
+	titel=Dokumentation des Pakets ``arbeitsblatt'',
+}
+
+\setcnltx{
+	name     = arbeitsblatt,
+	title    = arbeitsblatt,
+	version  = 0.0.3,
+	date     = 2021-04-13,
+	subtitle = {\LaTeX-Paket zum Satz von Materialien für die Schule.},
+	info     = Paketdokumentation,
+	authors  = {Jonas Neugebauer},
+	email    = schule@neugebauer.cc,
+	url      = https://neugebauer.cc,
+	abstract = {%
+		Das Paket \enquote{arbeitsblatt} ist als Alternative zum Paket \enquote{schule} entstanden,
+		um Arbeitsmaterial (Arbeitsblätter, Klassenarbeiten, Klausuren, usw.) für die Schule zu
+		erstellen. Das Paket richtet sich an deutsche Lehrkräfte.
+	},
+	index-setup = {othercode=\footnotesize,level=\section},
+%	add-listings-options= {
+%		morekeywords={
+%
+%		}
+%	},
+}
+
+\newnote*\sidenote[1]{#1}
+
+\NewDocumentCommand \clr {s o m}{%
+	\colorbox{#3}{\IfValueT{#2}{\color{#2}}\code{#3}}%
+	\IfBooleanF{#1}{\index{#3 (Farbe)}}
+}
+%\newidxcmd\clr{\colorbox{#1}{\code{#1}}}[ (Farbe)]
+
+\NewDocumentCommand \renewcs {s m m}{%
+	\cs*{renewcommand}\Marg{\cs*{#2}}\Marg{#3}%
+}
+
+\newcommand{\important}[1]{%
+	\awesomebox[cnltx]{2pt}{\faExclamationTriangle}{cnltx}{#1}%
+}
+
+\usepackage{prettyref}
+\newrefformat{part}{Kapitel\,\ref{#1}, S.\,\pageref{#1}}
+\newrefformat{sec}{Abschnitt\,\ref{#1}, S.\,\pageref{#1}}
+
+\includeonly{04-module}
+
+
+\begin{document}
+
+\include{01-einleitung}
+
+\include{02-grundlagen}
+
+\include{03-typen}
+
+\include{04-module}
+
+\include{05-faecher}
+\include{05-faecher-mathematik}
+\include{05-faecher-informatik}
+
+\end{document}

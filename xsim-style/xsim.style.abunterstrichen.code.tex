@@ -1,0 +1,43 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%      xsim Aufgabenstile      %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\xsimstyle{abunterstrichen}
+
+%% Standard: Unterstrichen
+%%% Aufgabe 1: Subtitle (X Punkte)
+%%% ------------------------------
+\DeclareExerciseEnvironmentTemplate{abunterstrichen} {%
+	\addpenalty{-3000}\smallskip\noindent\textbf{\rmfamily%
+		% Falls Zusatzaufgabe:
+		\ifthenelse{\equal{\ExerciseType}{zusatzaufgabe}}{\llap{\GetExerciseProperty{symbol}$\bigstar$}~}{\llap{\GetExerciseProperty{symbol}~}}%
+		\XSIMmixedcase{\GetExerciseName}\nobreakspace
+		\GetExerciseProperty{counter}\addcontentsline{toc}{section}{\XSIMmixedcase{\GetExerciseName}\nobreakspace\GetExerciseProperty{counter}}%
+		\IfInsideSolutionF{%
+			\IfExercisePropertySetT{subtitle}{
+				{\nobreakspace\GetExercisePropertyT{subtitle}{\hspace{1cm}\PropertyValue}}}% Subtitle setzten
+		}%
+		% Stil für Punkteanzeige
+		\GetExercisePropertyTF{points}{%
+			\nobreakspace(\PropertyValue
+			\GetExercisePropertyT{bonus-points}
+			{\nobreakspace(+\PropertyValue)}% Kleinere Bonuspunkte?
+			\nobreakspace%
+			\IfExerciseGoalSingularTF{points}
+			{\XSIMtranslate{point}}
+			{\XSIMtranslate{points}}%
+			)
+		}{%Keine Punkte
+			\GetExercisePropertyT{bonus-points}{
+				\nobreakspace(0\nobreakspace(+\PropertyValue)% Kleinere Bonuspunkte?
+				\nobreakspace%
+				\IfExerciseGoalSingularTF{bonus-points}
+				{\XSIMtranslate{point}}
+				{\XSIMtranslate{points}}%
+				)
+			}
+		}
+	}\\[-2ex]\rule{\textwidth}{1pt}\par\smallskip
+	%
+	%
+}
+{\IfInsideSolutionT{\par}}%

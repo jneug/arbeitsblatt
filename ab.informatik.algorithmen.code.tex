@@ -1,0 +1,27 @@
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%           Optionen           %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\pgfkeys{
+	/absetup/.cd,
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%            Pakete            %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\RequirePackage[pict2e]{struktex}
+\RequirePackage{syntaxdi}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%            Makros            %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Erweiterungen struktex
+\sBoolValue{\texttt{true}}{\texttt{false}}
+\newcommand{\ifthen}[4][8]{\ifthenelse[#1]{#2}{#3}{#4}{\sTrue}{\sFalse}}
+\newcommand{\instruction}[2][8]{\assign[#1]{#2}}
+\newcommand{\empty}[1][8]{\assign[#1]{}}
+% \def\selse{\change}
+
