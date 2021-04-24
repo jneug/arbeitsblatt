@@ -9,13 +9,19 @@
 \DeclareExerciseEnvironmentTemplate{abkompakt} {%
 	\addpenalty{-3000}\smallskip\noindent{\usekomafont{aufgabe}%
 		% Falls Zusatzaufgabe:
-		\ifthenelse{\equal{\ExerciseType}{zusatzaufgabe}}{\llap{\GetExerciseProperty{symbol}$\bigstar$}~}{\llap{\GetExerciseProperty{symbol}~}}%
+		\ifthenelse{\equal{\ExerciseType}{zusatzaufgabe}}{\llap{\GetExerciseProperty{icon}}~}{\llap{\GetExerciseProperty{icon}~}}%
 		\XSIMmixedcase{\GetExerciseName}\nobreakspace
 		\GetExerciseProperty{counter}\addcontentsline{toc}{section}{\XSIMmixedcase{\GetExerciseName}\nobreakspace\GetExerciseProperty{counter}}%
 		\IfInsideSolutionF{%
 			\IfExercisePropertySetT{subtitle}{
 				{\nobreakspace\GetExercisePropertyT{subtitle}{ (\PropertyValue})}}% Subtitle setzten
-		}:\hspace{1em}%
-	}%
+		}%
+		\GetExercisePropertyTF{points}{%
+			\nobreakspace(\PropertyValue
+			\GetExercisePropertyT{bonus-points}
+			{\nobreakspace(+\PropertyValue)}% Kleinere Bonuspunkte?
+			)
+		}{}:\hspace{1em}%
+	}
 }
 {\IfInsideSolutionT{\par}}%

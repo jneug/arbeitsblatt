@@ -3,19 +3,51 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %           Optionen           %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newtoggle{ab@aufg@lsg@seite}
+
+\pgfkeys{
+	/absetup/.cd,
+		loesungen/.is choice,
+		loesungen/keine/.style 	= {loesungen=ohne},
+		loesungen/ohne/.code 		= \settoggle{ab@aufg@lsg@seite}{false}\xsimsetup{loesung/print = false,loesung*/print = false},
+		loesungen/seite/.code 	= \settoggle{ab@aufg@lsg@seite}{true},
+		loesungen/folgend/.code = \settoggle{ab@aufg@lsg@seite}{false}\xsimsetup{loesung/print = true,loesung*/print = true},
+}
+
+\def\ab@aufg@lsg@seite{\clearpage
+	\clearpairofpagestyles\pagenumbering{Roman}%
+	\ihead{\KopfLinks}\chead{}\ohead{Lösungen}%
+	\cfoot{\Seitenzahl}%
+	\printallsolutions*%
+}
+\AtEndDocument{\iftoggle{ab@aufg@lsg@seite}{\ab@aufg@lsg@seite}{}}
+
 \definecolor{ab.aufgabe.icons}{named}{secondary}
 \definecolor{ab.aufgabe.nummer}{named}{primary}
 \definecolor{ab.aufgabe.titel}{named}{black}
 
+\appto\farbschemaAktualisieren{%
+	\definecolor{ab.aufgabe.icons}{named}{secondary}%
+	\definecolor{ab.aufgabe.nummer}{named}{primary}%
+}
+
+\newkomafont{aufgabe}{\usefontofkomafont{subsection}}
+\newkomafont{teilaufgabe}{\usefontofkomafont{subsection}}
+\newkomafont{loseung}{\usefontofkomafont{subsection}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%            Pakete            %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\RequirePackage{enumitem}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%            Makros            %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 %% Horizontale listen z.B. für Unteraufgaben
 \RequirePackage{tasks}
-
-\DeclareInstance {tasks} {enumerate} {default}{ label = \arabic*) }
-\ifdef{\theteilaufgabeni}{
-\setlist[teilaufgaben]{
-	% Fettdruck von Teilaufgaben entfernen
-	label=\alph{teilaufgabeni}),
-}}{}
+\DeclareInstance{tasks}{alphabetize}{default}{}
+\NewTasksEnvironment[label=\arabic*)]{tasks*}
 
 %% Paket xsim laden und initialisieren
 
@@ -42,25 +74,28 @@
 	solution-template = abnormal,
 }
 
-\DeclareExerciseType{teilaufgabe}{
-	exercise-env = teilaufgabe,
-	solution-env = teilloesung,
-	exercise-name = Teilaufgabe,
-	exercises-name = Teilaufgaben,
-	solution-name = Teillösung,
-	solutions-name = Teillösungen,
-	exercise-template = abkompakt,
-	solution-template = abkompakt,
-	within = aufgabe,
-	the-counter = \alph{teilaufgabe},
-	exercise-heading = \theteilaufgabe)\quad
+\newcounter{teilaufgabe}[aufgabe]
+\renewcommand*{\theteilaufgabe}{\alph{teilaufgabe})}
+
+\NewDocumentEnvironment {aufgabenteil} { s o }{%
+	\refstepcounter{teilaufgabe}\theteilaufgabe
+}{}
+
+\newlist{teilaufgaben}{enumerate}{1}
+\setlist[teilaufgaben,1]{label=\alph*)}
+
+\NewDocumentCommand \teilaufgabe {s o} {%
+	\item
 }
 
 \DeclareExerciseType{zusatzaufgabe}{
 	exercise-env = aufgabe*,
 	solution-env = loesung*,
-	exercise-name = Zusatzaufgabe,
-	exercises-name = Zusatzaufgaben,
+	counter			 = aufgabe,
+	%exercise-name = Zusatzaufgabe,
+	%exercises-name = Zusatzaufgaben,
+	exercise-name = Aufgabe,
+	exercises-name = Aufgaben,
 	solution-name = Lösung,
 	solutions-name = Lösungen,
 	exercise-template = abnormal,

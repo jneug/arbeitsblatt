@@ -11,9 +11,11 @@
 	variante/.code=\ab@renewVarianten{#1},
 }
 
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %            Pakete            %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\RequirePackage{expl3}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -23,12 +25,25 @@
 \newcommand{\Variante}{\makeatletter\ab@variante\makeatother\xspace}
 
 %% Kopfzeile anpassen
-\renewcommand{\KopfRechts}{%
-	\Typ%
-	\ifdefempty{\ab@nummer}{}{\space Nr. \Nummer}%
-	(\Variante)
-}
+% \renewcommand{\KopfRechts}{%
+% 	\Typ%
+% 	\ifdefempty{\ab@nummer}{}{\space Nr. \Nummer}%
+% 	(\Variante)
+% }
+\let\ab@vari@nummer\Nummer
+\renewcommand{\Nummer}{\ab@vari@nummer(\Variante)\xspace}
 
+%% Wenn meta geladen, MetaVariante erstellen
+\ExplSyntaxOn
+\ifmodulgeladen{meta}{
+	\seq_set_split:NnV \l_tmpb_seq {--} \c__ab_clean_jobname_tl
+
+	\edef\MetaVariante{\seq_item:Nn \l_tmpb_seq {-1}}
+	\edef\MetaJobname{\seq_item:Nn \l_tmpb_seq {1}}
+
+	\tl_gset:Nx \c__ab_clean_jobname_tl {\seq_item:Nn \l_tmpb_seq {1}}
+}{}
+\ExplSyntaxOff
 
 %% Befehle für A/B/C-Varianten
 \newcommand{\ab@renewVarianten}[1]{%

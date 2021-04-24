@@ -9,7 +9,7 @@
 \DeclareExerciseEnvironmentTemplate{abnormal} {%
 	\addpenalty{-3000}\smallskip\noindent\textbf{\rmfamily%
 		% Falls Zusatzaufgabe:
-		\textcolor{ab.aufgabe.icons}{\ifthenelse{\equal{\ExerciseType}{zusatzaufgabe}}{\llap{\GetExerciseProperty{icon}$\bigstar$}~}{\llap{\GetExerciseProperty{icon}~}}}%
+		\textcolor{ab.aufgabe.icons}{\ifthenelse{\equal{\ExerciseType}{zusatzaufgabe}}{\llap{\GetExerciseProperty{icon}\ifmodulgeladen{icons}{\,\iconStern}{\,$\star$}}~}{\llap{\GetExerciseProperty{icon}~}}}%
 		\textcolor{ab.aufgabe.nummer}{\XSIMmixedcase{\GetExerciseName}\nobreakspace
 		\GetExerciseProperty{counter}}\addcontentsline{toc}{section}{\XSIMmixedcase{\GetExerciseName}\nobreakspace\GetExerciseProperty{counter}}%
 		\IfInsideSolutionF{%

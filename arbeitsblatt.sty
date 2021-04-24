@@ -5,9 +5,9 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %          Debugging           %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\newcommand{\swarnung}[1]{\PackageWarning{schule}{#1}}
-\newcommand{\sfehler}[1]{\PackageError{schule}{#1}}
-\newcommand{\sinfo}[1]{\PackageInfo{schule}{#1}}
+\newcommand{\swarnung}[1]{\PackageWarning{arbeitsblatt}{#1}}
+\newcommand{\sfehler}[1]{\PackageError{arbeitsblatt}{#1}}
+\newcommand{\sinfo}[1]{\PackageInfo{arbeitsblatt}{#1}}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -20,6 +20,10 @@
 \RequirePackage{xstring}
 
 \RequirePackage{xspace}
+
+%% Wurde die Klasse geladen oder nur das Paket?
+%% Wurde ggf. von arbeitsblatt.cls auf true gesetzt.
+\providetoggle{ab@class@loaded}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Sprache und Codierung setzen %
@@ -35,7 +39,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Listen aller Typen, Module und Fächer
 \forcsvlist{\listadd\ab@alleTypen}
-	{arbeitsblatt,klausur,klassenarbeit,checkup,lerntheke}
+	{arbeitsblatt,klausur,klassenarbeit,test,checkup,lerntheke}
 \forcsvlist{\listadd\ab@alleModule}
 	{meta,typo,aufgaben,icons,boxen,muster,tabellen,theme,varianten,qrcodes}
 \forcsvlist{\listadd\ab@alleFaecher}
@@ -97,8 +101,10 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %        Optionen laden        %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 \newcommand{\ab@typ}{arbeitsblatt}
+
+\newtoggle{ab@layout}
+\toggletrue{ab@layout}
 
 \newtoggle{ab@farbig}
 \toggletrue{ab@farbig}
@@ -107,6 +113,8 @@
 	/ab/.search also=/absetup,
 	/ab/.cd,
 		typ/.is choice,
+		layout/.default=true,
+		layout/.code=\settoggle{ab@layout}{#1},
 		farben/.default=true,
 		farben/.code=\settoggle{ab@farbig}{#1},
 		%.unknown/.code=\listadd{\ab@autoLaden}{#1}
@@ -169,7 +177,8 @@
 
 \newcommand{\aboptionen}[1]{\pgfqkeys{/absetup}{#1}}
 
-\ProcessPgfPackageOptions{/ab}
+%\ProcessPgfPackageOptions{/ab}
+\ProcessPgfOptions{/ab} % Prüft auch Klassenoptionen
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Erweiterungen der LaTeX Grundfunktionen %
@@ -192,7 +201,7 @@
 \RequirePackage{subcaption}
 
 \RequirePackage{wrapfig}
-\NewDocumentEnvironment{wrapfig}{}{\begingroup\setlength\intextsep{0pt}}{\par\endgroup}
+\NewDocumentEnvironment{wrapfix}{}{\begingroup\setlength\intextsep{0pt}}{\par\endgroup}
 
 \captionsetup[figure]{format=plain}
 
@@ -202,6 +211,7 @@
 \PassOptionsToPackage{pdftex,hidelinks,bookmarks,bookmarksnumbered}{hyperref}
 \AtEndPreamble{%
 	\RequirePackage{hyperref}%
+	\RequirePackage{hypcap}%
 	\hypersetup{
 		colorlinks         = true,
 		allcolors          = secondary,
@@ -267,8 +277,8 @@
 	\definecolor{muted}{gray}{.8}
 }{
 	\selectcolormodel{rgb}
-	\definecolor{primary}{rgb}{.22,.34,.60} %{.16,.23,0.65}
-	\definecolor{secondary}{rgb}{0.69,0.20,0.32}
+	\definecolor{primary}{rgb}{.22,.34,.60}
+	\definecolor{secondary}{rgb}{.8,.29,.28}
 	\definecolor{muted}{gray}{0.8}
 }
 
@@ -285,11 +295,11 @@
 %% Wenn die Primärfarben geändert werden, müssen die
 %% Abhängigen Farben neu berechnet werden
 \newcommand{\farbschemaAktualisieren}{%
-	\colorlet{primary.hg}{primary!10}
-	\colorlet{secondary.hg}{secondary!10}
-	\colorlet{muted.hg}{muted!20}
-	\definecolor{ab.kopf.text}{named}{primary}
-	\definecolor{ab.titel.text}{named}{primary}
+	\colorlet{primary.hg}{primary!10}%
+	\colorlet{secondary.hg}{secondary!10}%
+	\colorlet{muted.hg}{muted!20}%
+	\definecolor{ab.kopf.text}{named}{primary}%
+	\definecolor{ab.titel.text}{named}{primary}%
 }
 
 %% Mehrere Spalten
@@ -386,18 +396,13 @@
 }
 
 
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %         Seitenlayout         %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%\RequirePackage[top=3cm,left=2.5cm,bottom=2cm,right=2cm]{geometry}
-%\RequirePackage[includeheadfoot,top=1.69cm,left=1.69cm,bottom=1.69cm,right=1.69cm,bindingoffset=0.72cm]{geometry}
-\RequirePackage[includeheadfoot,top=1.69cm,left=1.69cm,bottom=1.69cm,right=1.69cm]{geometry}
-
 \RequirePackage{scrlayer-scrpage}
 \pagestyle{scrheadings}
 
-\setkomafont{pagehead}{\normalfont\small\color{primary}}
+\setkomafont{pagehead}{\normalfont\small\color{ab.kopf.text}}
 \setkomafont{pagefoot}{\normalfont\small\color{ab.fuss.text}}
 
 \newcommand{\linie}[1][6cm]{\underline{\hspace{#1}}}

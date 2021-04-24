@@ -1,0 +1,659 @@
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%           Optionen           %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newtoggle{ab@ew@anzeigen}
+\newtoggle{ab@nv@anzeigen}
+\toggletrue{ab@nv@anzeigen}
+\newtoggle{ab@nv@rel}
+\toggletrue{ab@nv@rel}
+
+\def\namenKmk{
+	15 = 15, 14 = 14, 13 = 13,
+	12 = 12, 11 = 11, 10 = 10,
+	 9 =  9,  8 =  8,  7 =  7,
+	 6 =  6,  5 =  5,  4 =  4,
+	 3 =  3,  2 =  2,  1 =  1,
+	 0 =  0
+}
+\edef\kurznamenKmk{\namenKmk}
+\def\verteilungKmk{
+	15 = .95, 14 = .90, 13 = .85,
+	12 = .80, 11 = .75, 10 = .7,
+	 9 = .65,  8 = .60,  7 = .55,
+	 6 = .50,  5 = .45,  4 = .40,
+	 3 = .33,  2 = .27,  1 = .2,
+	 0 = .0
+}
+
+\def\verteilungNormalMitTendenzen{
+	15 = .95, 14 = .90, 13 = .85,
+	12 = .80, 11 = .75, 10 = .7,
+	 9 = .65,  8 = .60,  7 = .55,
+	 6 = .50,  5 = .45,  4 = .40,
+	 3 = .33,  2 = .27,  1 = .2,
+	 0 = .0
+}
+\def\namenNormalMitTendenzen{
+	15 = {sehr gut\,$+$},
+	14 = {sehr gut},
+	13 = {sehr gut\,$-$},
+	12 = {gut\,$+$},
+	11 = {gut},
+	10 = {gut\,$-$},
+	 9 = {befriedigend\,$+$},
+	 8 = {befriedigend},
+	 7 = {befriedigend\,$-$},
+	 6 = {ausreichend\,$+$},
+	 5 = {ausreichend},
+	 4 = {ausreichend\,$-$},
+	 3 = {mangelhaft\,$+$},
+	 2 = {mangelhaft},
+	 1 = {mangelhaft\,$-$},
+	 0 = {ungenügend}
+}
+\def\kurznamenNormalMitTendenzen{
+	15 = {1$+$},
+	14 = {1},
+	13 = {1$-$},
+	12 = {2$+$},
+	11 = {2},
+	10 = {2$-$},
+	 9 = {3$+$},
+	 8 = {3},
+	 7 = {3$-$},
+	 6 = {4$+$},
+	 5 = {4},
+	 4 = {4$-$},
+	 3 = {5$+$},
+	 2 = {5},
+	 1 = {5$-$},
+	 0 = {6}
+}
+
+\def\verteilungNormalMitTendenzen{
+	15 = .95, 14 = .90, 13 = .85,
+	12 = .80, 11 = .75, 10 = .7,
+	 9 = .65,  8 = .60,  7 = .55,
+	 6 = .50,  5 = .45,  4 = .40,
+	 3 = .33,  2 = .27,  1 = .2,
+	 0 = .0
+}
+\def\namenNormalMitTendenzen{
+	15 = {sehr gut\,$+$},
+	14 = {sehr gut},
+	13 = {sehr gut\,$-$},
+	12 = {gut\,$+$},
+	11 = {gut},
+	10 = {gut\,$-$},
+	 9 = {befriedigend\,$+$},
+	 8 = {befriedigend},
+	 7 = {befriedigend\,$-$},
+	 6 = {ausreichend\,$+$},
+	 5 = {ausreichend},
+	 4 = {ausreichend\,$-$},
+	 3 = {mangelhaft\,$+$},
+	 2 = {mangelhaft},
+	 1 = {mangelhaft\,$-$},
+	 0 = {ungenügend}
+}
+\def\kurznamenNormalMitTendenzen{
+	15 = {1$+$},
+	14 = {1},
+	13 = {1$-$},
+	12 = {2$+$},
+	11 = {2},
+	10 = {2$-$},
+	 9 = {3$+$},
+	 8 = {3},
+	 7 = {3$-$},
+	 6 = {4$+$},
+	 5 = {4},
+	 4 = {4$-$},
+	 3 = {5$+$},
+	 2 = {5},
+	 1 = {5$-$},
+	 0 = {6}
+}
+
+\def\verteilungNormalOhneTendenzen{
+	 5 = .85, 4 = .7,
+	 3 = .55, 2 = .40,
+	 1 = .20, 0 = .0
+}
+\def\namenNormalOhneTendenzen{
+	 5 = {sehr gut},
+	 4 = {gut},
+	 3 = {befriedigend},
+	 2 = {ausreichend},
+	 1 = {mangelhaft},
+	 0 = {ungenügend}
+}
+\def\kurznamenNormalOhneTendenzen{
+	 5 = {1},
+	 4 = {2},
+	 3 = {3},
+	 2 = {4},
+	 1 = {5},
+	 0 = {6}
+}
+
+
+\pgfkeys{
+	/absetup/.cd,
+		erwartungshorizont/.style = {erwartungshorizont/anzeigen = true},
+		erwartungshorizont/anzeigen/.code = \settoggle{ab@ew@anzeigen}{#1},
+		erwartungshorizont/stil/.code = \xsimsetup{grading-table/template=#1},
+		%
+		noten/.style = {noten/#1},
+		noten/mit-tendenzen/.style = {
+			noten/namen      = \namenNormalMitTendenzen,
+			noten/kurznamen  = \kurznamenNormalMitTendenzen,
+			noten/verteilung = \verteilungNormalMitTendenzen,
+		},
+		noten/ohne-tendenzen/.style = {
+			noten/namen      = \namenNormalOhneTendenzen,
+			noten/kurznamen  = \kurznamenNormalOhneTendenzen,
+			noten/verteilung = \verteilungNormalOhneTendenzen,
+		},
+		noten/kmk-punkte/.style = {
+			noten/namen      = \namenKmk,
+			noten/kurznamen  = \kurznamenKmk,
+			noten/verteilung = \verteilungKmk,
+		},
+		%
+		noten/stil/.code = {},
+		noten/anzeigen/.code = \settoggle{ab@nv@anzeigen}{#1},
+		noten/relativ/.code = \settoggle{ab@nv@rel}{#1},
+		noten/namen/.code = \expandafter\NotennamenFestlegen\expandafter{#1},
+		noten/kurznamen/.code = \expandafter\NotenkurznamenFestlegen\expandafter{#1},
+		noten/verteilung/.code = {%
+			\ab@clearGradingTable%
+			\NotenverteilungFestlegen{#1}%
+		}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%            Pakete            %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\RequirePackage{expl3}
+\ab@modul@laden{tabellen}
+\ab@modul@laden{aufgaben}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%            Makros            %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Teilaufgaben zu Aufgaben hinzufügen
+%\DeclareExerciseProperty{erwartungen}
+%\DeclareExerciseProperty{teilaufgaben}
+
+\ExplSyntaxOn
+%% Utilities
+\cs_new:Npn \ab_aufg_id:n #1 {
+	aufg#1
+}
+\cs_new:Npn \ab_taufg_id:nn #1#2 {
+	\ab_aufg_id:n {#1}-taufg#2
+}
+\cs_new:Npn \ab__aufg_seq_cs:n #1 {
+	g__ab_\ab_aufg_id:n {#1}_taufg_seq
+}
+\cs_new:Npn \ab__taufg_ew_seq_cs:n #1 {
+	g__ab_#1_ew_seq
+}
+
+%% Temp Variables
+\tl_new:N 	\l__ab_tmpa_tl
+\tl_new:N 	\l__ab_tmpb_tl
+
+\seq_new:N 	\l__ab_tmpa_seq
+\seq_new:N 	\l__ab_tmpb_seq
+
+\int_new:N 	\l__ab_tmpa_int
+\int_new:N 	\l__ab_tmpb_int
+
+\str_new:N 	\l__ab_tmpa_str
+\str_new:N 	\l__ab_tmpb_str
+
+\seq_new:N	\l__ab_tmpa_rows_seq
+\seq_new:N	\l__ab_tmpb_rows_seq
+
+%% Variables
+% Notennamen
+\prop_new:N \l__ab_grade_names_prop
+\prop_new:N \l__ab_grade_shortnames_prop
+
+%% Data storage
+% 1: xsim-ID Aufgabe
+% 2: label Teilaufgabe
+% 3: Nummer Teilaufgabe
+\cs_new:Npn \ab_aufg_put_taufg:nnn #1#2#3 {
+	\tl_set:Nx \l__ab_tmpb_tl {\ab__aufg_seq_cs:n {#1}}
+	\seq_if_exist:cTF {\l__ab_tmpb_tl}{}{
+		\seq_gclear_new:c {\l__ab_tmpb_tl}
+	}
+	\seq_gput_right:cx {\l__ab_tmpb_tl} {{#2}{#3}}
+}
+
+% 1: ID Teilaufgabe
+% 2: Erwartung
+% 3: Punkte
+\cs_new:Npn \ab_taufg_put_ew:nnn #1#2#3 {
+	\tl_set:Nx \l__ab_tmpb_tl {\ab__taufg_ew_seq_cs:n {#1}}
+	\seq_if_exist:cTF {\l__ab_tmpb_tl}{}{
+		\seq_gclear_new:c {\l__ab_tmpb_tl}
+	}
+	\seq_gput_right:cx {\l__ab_tmpb_tl} {{#2}{#3}}
+}
+
+%% Noten
+% Prozentuale untere Schwelle der Note
+% 1: Note (Zahl)
+% 2: Suffix, wenn Note definiert
+% 3: Text, wenn Note nicht definiert
+\cs_new_protected:Npn \xsim_get_relative_grade_goal:nnn #1#2#3 {
+	\prop_get:NnNTF \l__xsim_relative_grades_prop {#1} \l__xsim_tmpa_tl {
+		\fp_to_decimal:n {round( 100*(\l__xsim_tmpa_tl),0)}#2
+	}{ #3 }
+}
+
+% Definition der Notennamen
+% 1: declare-Kommando für Kurz- oder Langnamen
+% 2: Kommaliste mit Note=Name Zuordnung
+\cs_new_protected:Npn \ab_declare_grade_names:Nn #1#2 {
+	\seq_set_split:NVn \l__ab_tmpa_seq \l__xsim_grade_split_tl {#2}
+  \seq_map_inline:Nn \l__ab_tmpa_seq {
+		#1 ##1 \q_stop
+	}
+}
+% Speicherung eines Langnamen
+\cs_new_protected:Npn \__ab_declare_grade_name:w #1 = #2 \q_stop {
+	\tl_set:Nx \l__ab_tmpa_tl { \tl_trim_spaces:n {#1} }
+	\tl_set:Nx \l__ab_tmpb_tl { \tl_trim_spaces:n {#2} }
+	\prop_put:NVV \l__ab_grade_names_prop
+		\l__ab_tmpa_tl
+		\l__ab_tmpb_tl
+}
+% Speicherung eines Kursnamens
+\cs_new_protected:Npn \__ab_declare_grade_shortname:w #1 = #2 \q_stop {
+	\tl_set:Nx \l__ab_tmpa_tl { \tl_trim_spaces:n {#1} }
+	\tl_set:Nx \l__ab_tmpb_tl { \tl_trim_spaces:n {#2} }
+	\prop_put:NVV \l__ab_grade_shortnames_prop
+		\l__ab_tmpa_tl
+		\l__ab_tmpb_tl
+}
+
+\NewDocumentEnvironment {erwartungen} {}
+	{}
+	{}
+\NewDocumentCommand \erwartung { o m m }{%
+	\IfNoValueTF{#1}
+		{\tl_set:Nx \l__ab_tmpa_tl {\ab_taufg_id:nn {\GetExerciseProperty{ID}} {0}}}
+		{\tl_set:Nx \l__ab_tmpa_tl {\ab_taufg_id:nn {\GetExerciseProperty{ID}} {#1}}}
+	\ab_taufg_put_ew:nnn {\l__ab_tmpa_tl} {#2} {#3}
+	\addpoints*{#3}%
+}
+
+\RenewDocumentEnvironment {aufgabenteil} { s o } {%
+	\refstepcounter{teilaufgabe}%
+	\IfNoValueTF{#2}{%
+		\tl_set:Nx \l__ab_tmpa_tl {\ab_taufg_id:nn {\GetExerciseProperty{ID}} {\alph{teilaufgabe}}}%
+	}{%
+		\tl_set:Nx \l__ab_tmpa_tl {\ab_taufg_id:nn {\GetExerciseProperty{ID}} {#2}}%
+	}%
+	\ab_aufg_put_taufg:nnn {\GetExerciseProperty{ID}} {\l__ab_tmpa_tl} {\theteilaufgabe}%
+	\theteilaufgabe\label{taufg:\l__ab_tmpa_tl}
+}{}
+\RenewDocumentCommand \teilaufgabe {s o} {%
+	\item%
+	\IfNoValueTF{#2}{%
+		\tl_set:Nx \l__ab_tmpa_tl {\ab_taufg_id:nn {\GetExerciseProperty{ID}} {\alph{teilaufgabeni}}}%
+	}{%
+		\tl_set:Nx \l__ab_tmpa_tl {\ab_taufg_id:nn {\GetExerciseProperty{ID}} {#2}}%
+	}%
+	\label{taufg:\l__ab_tmpa_tl}%
+	\ab_aufg_put_taufg:nnn {\GetExerciseProperty{ID}} {\l__ab_tmpa_tl} {\theteilaufgabeni}%
+}
+
+\def\tabularxcolumn#1{m{#1}}
+\newcolumntype{M}[1]{>{\large\centering\arraybackslash}m{#1}}
+
+
+\cs_new:Npn \ab_punkte_gesamt: {
+	\xsim_print_goal_sum:nnnn {aufgabe} {points} {} {}
+}
+\cs_new:Npn \ab_bonus_gesamt: {
+	\xsim_print_goal_sum:nnnn {aufgabe} {bonus-points} {} {}
+}
+\cs_new:Npn \ab_punkte_total: {
+	\xsim_print_goals_sum:nnnn {aufgabe} {points+bonus-points} {} {}
+}
+\cs_new:Npn \ab_punkte_aufg:n #1 {
+	\xsim_get_property:nnn {aufgabe} {#1} {points}
+}
+\cs_new:Npn \ab_punkte_taufg:nn #1#2 {
+	\tl_set:Nx \l__ab_tmpa_tl {\ab_taufg_id:nn {#1} {#2}}
+	\ab_punkte_taufg:n \l__ab_tmpa_tl
+}
+\cs_new:Npn \ab_punkte_taufg:n #1 {
+	\tl_set:Nx \l__ab_tmpb_tl {\ab__taufg_ew_seq_cs:n {#1}}
+	\seq_if_exist:cTF {\l__ab_tmpb_tl} {
+		\int_zero:N \l_tmpa_int
+		\seq_map_inline:cn {\l__ab_tmpb_tl} {
+			\int_add:Nn \l_tmpa_int {\tl_item:nn {##1} {2}}
+		}
+		\int_use:N \l_tmpa_int
+	}{0}
+}
+
+%% Loops
+%% Loop over all used exercises
+% #1: Code
+\cs_new:Npn \ab_foreach_aufg:n #1 {
+	\xsim_foreach_exercise_id_type:nn {used} {#1}
+}
+
+\cs_new:Npn \__ab_ta_loop_item:nn #1#2 {}
+\cs_generate_variant:Nn \__ab_ta_loop_item:nn {xx}
+
+%% Loop over teilaufgaben of an exercise
+% #1: ID der Aufgabe
+% #2: Code
+\cs_new:Npn \ab_foreach_taufg:nn #1#2 {
+	\cs_set:Nn \__ab_ta_loop_item:nn {#2}
+	%
+	\tl_set:Nx \l__ab_tmpa_tl {\ab__aufg_seq_cs:n {#1}}
+	\seq_if_exist:cTF {\l__ab_tmpa_tl} {
+		\seq_map_inline:cn {\l__ab_tmpa_tl} {
+			% TODO: Was ist in item 2 gespeichert?
+			\__ab_ta_loop_item:xx
+				{\tl_item:Nn {##1} {1}}
+				{\tl_item:Nn {##1} {2}}
+		}
+	}{}
+}
+
+\cs_new:Npn \__ab_ew_item_a:nn #1#2 {}
+\cs_generate_variant:Nn \__ab_ew_item_a:nn {xx}
+
+%% Loop over erwartungen of an exercise
+% #1: ID der Teilaufgabe
+% #2: Code
+\cs_new:Npn \ab_foreach_erwartung:nn #1#2 {
+	\cs_set:Nn \__ab_ew_item_a:nn {#2}
+	%
+	\tl_set:Nx \l__ab_tmpb_tl {\ab__taufg_ew_seq_cs:n {#1}}
+	\seq_if_exist:cTF {\l__ab_tmpb_tl} {
+		\seq_map_inline:cn {\l__ab_tmpb_tl} {
+			\__ab_ew_item_a:xx
+				{\tl_item:Nn {##1} {1}}
+				{\tl_item:Nn {##1} {2}}
+		}
+	}{}
+}
+
+\cs_new:Npn \ab__ew_tabellen:n #1 {
+	\seq_clear:N \l__ab_tmpa_rows_seq
+	\ab__ew_tabellen_erwartungen:n {aufg#1-taufg0}
+	% Erwartungen der Aufgabe
+	\seq_if_empty:NTF \l__ab_tmpa_seq {} {
+		\seq_put_right:Nn \l__ab_tmpa_rows_seq {&}
+		\seq_put_right:Nx \l__ab_tmpa_rows_seq {\seq_use:Nn \l__ab_tmpa_seq {\newline}}
+		\seq_put_right:Nn \l__ab_tmpa_rows_seq {& \ab_punkte_aufg:n #1 & \\\hline}
+	}
+	% Erwartungen der Teilaufgaben
+	\ab_foreach_taufg:nn {#1} {
+		\ab__ew_tabellen_erwartungen:n {##1}
+		\seq_put_right:Nn \l__ab_tmpa_rows_seq {##2 &}
+		\seq_put_right:Nx \l__ab_tmpa_rows_seq {\seq_use:Nn \l__ab_tmpa_seq {\newline}}
+		\seq_put_right:Nn \l__ab_tmpa_rows_seq {& \ab_punkte_taufg:n #1 & \\\hline}
+	}
+}
+
+\cs_new:Npn \ab__ew_tabellen_erwartungen:n #1 {
+	\seq_clear:N \l__ab_tmpa_seq
+	\ab_foreach_erwartung:nn {#1} {
+		\seq_put_right:Nn \l__ab_tmpa_seq {##1}
+	}
+}
+
+\DeclareExerciseTableTemplate{tabellen}{
+	\underline{Name: \Large\hspace{6cm}}
+
+	\begin{center}\renewcommand{\arraystretch}{1.4}
+		%
+		\exp_args:NNx \dim_set:Nn \l_tmpa_dim {\textwidth}
+		\dim_sub:Nn \l_tmpa_dim {6cm}
+		%
+		\ab_foreach_aufg:n {
+			\ab__ew_tabellen:n {#2}
+			\begin{tabularx}{\textwidth}{|M{1cm}|X|M{1.5cm}|M{1.5cm}|} \hline
+				% Kopfzeile
+				\rowcolor{ab.tabelle.kopf.hg}
+				& \textbf{Aufgabe~#2} & \textbf{\ab_punkte_aufg:n #2} & \small  \tabularnewline\hline\hline %
+				%
+				\seq_use:Nn \l__ab_tmpa_rows_seq {}
+			\end{tabularx}\par
+		}
+	\end{center}
+
+	\begin{flushright}
+		\underline{\today, \hspace{3cm}}
+	\end{flushright}
+}
+
+\def\ab@ew@et@taufg#1#2{
+	\detokenize{X &}
+	#2 ~ #1
+	\detokenize{& 0 & \tabularnewline\hline}
+}
+
+
+\DeclareExerciseTableTemplate{tabelle}{\ab@ew@tabelle}
+\def\ab@ew@tabelle{
+	\underline{Name: \Large\hspace{6cm}}
+
+	\begin{center}
+		\renewcommand{\arraystretch}{1.4}
+		\exp_args:NNx \dim_set:Nn \l_tmpa_dim {\textwidth}
+		\dim_sub:Nn \l_tmpa_dim {6cm}
+		\begin{tabularx}{\textwidth}{|M{1cm}|X|M{1.5cm}|M{1.5cm}|} \hline
+			% Kopfzeile
+			\rowcolor{ab.tabelle.kopf.hg}
+			Afg & Die~Schülerin/der~Schüler\dots & mögl.\newline Punkte & \small erreicht \tabularnewline\hline\hline %
+			%
+			%% Aufgaben, Teilaufgaben und Erwartungen
+			% ForEachUsedExerciseByID breaks for tables. Store all used IDs in
+			% a (temporary) seq first and loop over that.
+			\seq_clear:N \l_tmpa_seq
+			\ForEachUsedExerciseByID{\seq_put_right:Nn \l_tmpa_seq {##3}}
+			\seq_map_function:NN \l_tmpa_seq \ab@ew@aufgabe
+			&&&\\\hline % Somewhere the table ending is messed up. We need to add a blank row for some reason.
+			%
+			% Fusszeile
+			\multicolumn{2}{|r|}{Summe:} & \textbf{\ab_punkte_total:} & \tabularnewline\hline
+			% \multicolumn{2}{|r|}{Prozentual:} &  & \tabularnewline\hline
+			\multicolumn{2}{|r|}{Note:} & \multicolumn{2}{c|}{} \tabularnewline\hline
+		\end{tabularx}
+	\end{center}
+
+	\begin{flushright}
+		\underline{\today, \hspace{3cm}}
+	\end{flushright}
+}
+
+\newcommand{\ab@ew@aufgabe}[1]{
+	\textbf{#1} &
+	\tl_set:Nx \l__ab_tmpa_tl {\ab_taufg_id:nn {#1} {0}}
+	\ab_foreach_erwartung:nn {\l__ab_tmpa_tl} {\ab@ew@erwartung{##1}{##2}}
+	& \textbf{\PunkteAufgabe{#1}} & \tabularnewline \hline
+	%
+	% \ab_foreach_taufg:nnn {#1} {\ab@ew@teilaufgabe{#1}{#2}} {\ab@ew@teilaufgabe{#1}{#2}}
+	\tl_set:Nx \l__ab_tmpb_tl {\ab__aufg_seq_cs:n {#1}}
+	\seq_if_exist:cTF {\l__ab_tmpb_tl} {
+		\seq_map_inline:cn {\l__ab_tmpb_tl} {\ab@ew@teilaufgabe##1}
+	}{~}
+}
+
+\NewDocumentCommand \ab@ew@teilaufgabe {s m m} {
+	\int_gzero_new:N \g__ab_taufg_points
+	\ref{taufg:#2} &
+	\tl_set:Nx \l__ab_tmpa_tl {\ab__taufg_ew_seq_cs:n {#2}}
+	\seq_if_exist:cTF {\l__ab_tmpa_tl} {
+		%\seq_map_inline:cn {\l__ab_tmpa_tl} {\ab@ew@erwartung##1}
+		\int_step_inline:nn {\seq_count:c {\l__ab_tmpa_tl}} {
+			\tl_set:Nx \l_tmpb_tl {\seq_item:cn {\l__ab_tmpa_tl} {##1}}
+			\int_compare:nNnTF {\seq_count:c {\l__ab_tmpa_tl}}={##1} {
+				\ab@ew@erwartung*{\tl_item:Nn \l_tmpb_tl {1}}{\tl_item:Nn \l_tmpb_tl {2}}
+			}{
+				\ab@ew@erwartung{\tl_item:Nn \l_tmpb_tl {1}}{\tl_item:Nn \l_tmpb_tl {2}}
+			}
+		}
+	}{~}
+	& \int_use:N \g__ab_taufg_points & \\ \hline
+}
+\NewDocumentCommand \ab@ew@erwartung {s m m} {
+	\int_gadd:Nn \g__ab_taufg_points {#3}
+	#2~(#3P) \IfBooleanF{#1}{\newline}
+}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%       Notenverteilung        %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\notenverteilungA}{
+	\begin{tabular}{|l|*{\use:n {\prop_count:N \l__xsim_relative_grades_prop}}{c|}} \hline
+		\rowcolor{ab.tabelle.kopf.hg}
+		\textbf{Note}
+		\prop_map_inline:Nn \l__xsim_relative_grades_prop {
+			& \prop_get:NnNTF \l__ab_grade_shortnames_prop {##1} \l__ab_tmpa_tl
+					{\l__ab_tmpa_tl}
+					{##1}
+		}
+		\\ \hline
+		\iftoggle{ab@nv@rel}{\rowcolor{muted.hg}
+		\textbf{Schwelle}
+		\prop_map_inline:Nn \l__xsim_relative_grades_prop {
+			& \xsim_get_relative_grade_goal:nnn {##1}{\,\%}{}
+		}
+		\\ \hline}{}
+		\rowcolor{muted.hg}
+		\textbf{Punkte}
+		\prop_map_inline:Nn \l__xsim_relative_grades_prop {
+			& \xsim_get_grade_goal:nnnn {##1}{points}{}{}% \xsim_get_grade_requirement:nnnn {##1}{points+bonus-points}{}{}
+		}
+		\\ \hline
+	\end{tabular}
+}
+
+\cs_new:Npn \ab__verteilung_row:nn #1#2 {
+	\prop_get:NnNTF \l__ab_grade_names_prop {#1} \l__ab_tmpa_tl
+				{\l__ab_tmpa_tl}
+				{#1}
+	& \xsim_get_relative_grade_goal:nnn {#1}{\,\%}{}
+	& \xsim_get_absolute_grade_requirement:nnn {#1}{}{}
+	\\\hline
+}
+\newcommand{\notenverteilungB}{%
+	\rowcolors{2}{muted.hg!10}{muted.hg}
+	\begin{tabular}{|l|c|c|} \hline
+		\rowcolor{ab.tabelle.kopf.hg}
+		Note & Schwelle & Punkte \\\hline
+		\prop_map_function:NN \l__xsim_relative_grades_prop \ab__verteilung_row:nn
+	\end{tabular}
+	\hiderowcolors
+}
+
+\newcommand{\notenverteilungC}{%
+	\int_set:Nn \l_tmpa_int {\prop_count:N \l__xsim_relative_grades_prop}
+	\int_set:Nn \l_tmpa_int {\fp_eval:n { round(\l_tmpa_int/4,0)-1 }}
+	\int_zero:N \l_tmpb_int
+
+	\tl_clear_new:N \g__ab_nvc
+
+	\prop_map_inline:Nn \l__xsim_relative_grades_prop {
+		\int_compare:nNnTF {0}={\l_tmpb_int} {
+			% \tl_put_right:Nn \g__ab_nvc { \begin{minipage}{.20\linewidth} }
+			\tl_put_right:Nn \g__ab_nvc { \begin{tabular}{|p{.15\linewidth}|c|}\hline }
+			\tl_put_right:Nn \g__ab_nvc { \rowcolor{ab.tabelle.kopf.hg} Note & Punkte \\ \hline }
+		}{}
+
+		\tl_put_right:Nn \g__ab_nvc { \prop_get:NnNTF \l__ab_grade_names_prop {##1} \l__ab_tmpa_tl {\l__ab_tmpa_tl} {##1} & }
+		\tl_put_right:Nn \g__ab_nvc { \xsim_get_absolute_grade_requirement:nnn {##1}{}{} \\ \hline }
+
+		\int_compare:nNnTF {\l_tmpa_int}={\l_tmpb_int} {
+			\tl_put_right:Nn \g__ab_nvc { \end{tabular}\hfill }
+			% \tl_put_right:Nn \g__ab_nvc { \end{minipage}\hfill }
+			\int_zero:N \l_tmpb_int
+		}{
+			\int_incr:N \l_tmpb_int
+		}
+	}
+
+	\rowcolors{2}{muted.hg!10}{muted.hg}
+	\tl_use:N \g__ab_nvc
+}
+
+
+\def\ab@ew{\iftoggle{ab@ew@anzeigen}{\Erwartungshorizont}{}}
+\AtEndDocument{\ab@ew}
+
+\def\notenverteilung{\notenverteilungA}
+\def\erwartungshorizont{\gradingtable}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%          Interface           %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\NewDocumentCommand \PunkteGesamt {} {%
+	\ab_punkte_gesamt:
+}
+\NewDocumentCommand \PunkteAufgabe {m} {%
+	\ab_punkte_aufg:n {#1}
+}
+\NewDocumentCommand \PunkteTeilaufgabe {m m} {%
+	\ab_punkte_taufg:nn {#1} {#2}
+}
+
+\newcommand{\NotenverteilungFestlegen}[1]{%
+	\expandafter\DeclareGradeDistribution\expandafter{#1}
+}
+\newcommand{\NotennamenFestlegen}[1]{%
+	\seq_clear:N \l__ab_grade_names_prop
+	\ab_declare_grade_names:Nn \__ab_declare_grade_name:w {#1}
+}
+
+\newcommand{\NotenkurznamenFestlegen}[1]{%
+	\seq_clear:N \l__ab_grade_shortnames_prop
+	\ab_declare_grade_names:Nn \__ab_declare_grade_shortname:w {#1}
+}
+
+\def\Erwartungshorizont{%
+	\clearpage\clearpairofpagestyles%
+	\ihead{\KopfLinks}\chead{}\ohead{Erwartungshorizont}
+
+	\section*{Erwartungshorizont}
+	\erwartungshorizont
+
+	\iftoggle{ab@nv@anzeigen}{
+	\begin{center}
+		\Notenverteilung
+	\end{center}
+	}{}%
+}
+
+\def\Notenverteilung{%
+	\scriptsize\notenverteilung%
+}
+
+\newcommand{\ab@clearGradingTable}{
+	\seq_clear:N \l__xsim_relative_grades_prop
+}
+\ExplSyntaxOff
+
+
+\aboptionen{
+	noten=mit-tendenzen
+}

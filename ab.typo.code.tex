@@ -46,7 +46,7 @@
 	{\usekomafont{code}#1}%
 }
 \newcommand*{\programm}[1]{%
-	{\usekomafont{code}\texttt{#1}}%
+	{\usekomafont{code}\textsc{#1}}%
 }
 
 %% Anmerkungen
@@ -68,9 +68,9 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \setlist[1]{labelindent=\parindent}
 
-\newlist{smallitem}{itemize}{1}
+\newlist{smallitem}{itemize}{3}
 \setlist[smallitem]{label=\textbullet,noitemsep}
-\newlist{smallenum}{enumerate}{1}
+\newlist{smallenum}{enumerate}{3}
 \setlist[smallenum]{label=\arabic*.,noitemsep}
 \newlist{smalldescr}{description}{1}
 \setlist[smalldescr]{noitemsep}

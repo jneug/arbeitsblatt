@@ -1,6 +1,9 @@
 
 
 %% Dokumenttyp für Klassen- und Kursarbeiten
+\iftoggle{ab@layout}{%
+	\RequirePackage[includeheadfoot,top=1.69cm,left=1.69cm,bottom=1.69cm,right=1.69cm,head=30pt]{geometry}
+}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %           Optionen           %
@@ -26,7 +29,16 @@
 \RequirePackage{tikzducks}
 \ab@modul@laden{aufgaben}
 \ab@modul@laden{bewertung}
-\ab@modul@laden{varianten}
+%\ab@modul@laden{meta}
+%\ab@modul@laden{varianten}
+
+% Standard Optionen für Klassenarbeiten
+\aboptionen{
+	loesungen										= seite,
+	erwartungshorizont/anzeigen = true,
+	erwartungshorizont/stil     = tabelle,
+	noten					 							= mit-tendenzen,
+}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %            Makros            %
@@ -45,7 +57,6 @@
 
 	\Typ%
 	\ifdefempty{\ab@nummer}{}{\space Nr. \Nummer}%
-	\ifdefempty{\ab@variante}{}{\@\xspace- \Variante}%
 }
 \renewcommand{\KopfMitte}{\Datum}
 \renewcommand{\KopfRechts}{\Namensfeld}

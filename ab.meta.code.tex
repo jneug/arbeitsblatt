@@ -3,11 +3,13 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %           Optionen           %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+\def\metaTeiler{-}
+\def\metaTeiler{-}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %            Pakete            %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\RequirePackage{expl3,xparse}
 %\RequirePackage{pgfmorepages}
 %\RequirePackage{pdfpages}
 
@@ -15,10 +17,32 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %            Makros            %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Jobnamen aufteilen
-\newcommand{\jobbasename}{\jobname}
-\newcommand{\jobsuffix}{}
-\newcommand{\dateinamenTeilen}{%
-  \def\split##1--##2!!!{\def\jobbasename{##1}\def\jobsuffix{##2}}%
-  \expandafter\split\jobname!!!%
+\def\metaKursTeil{1}
+\def\metaNummerTeil{3}
+\def\metaReiheTeil{0}
+\def\metaTitelTeil{4}
+\def\metaDatumTeil{0}
+\def\metaFachTeil{0}
+
+\def\MetaKurs{\Meta{\metaKursTeil}}
+\def\MetaNummer{\Meta{\metaNummerTeil}}
+\def\MetaReihe{\Meta{\metaReiheTeil}}
+\def\MetaTitel{\Meta{\metaTitelTeil}}
+\def\MetaDatum{\Meta{\metaDatumTeil}}
+\def\MetaFach{\Meta{\metaFachTeil}}
+
+\ExplSyntaxOn
+% remove quotes from filename
+\tl_new:N \c__ab_clean_jobname_tl
+\tl_gset:NV \c__ab_clean_jobname_tl \c_sys_jobname_str
+\tl_remove_all:Nn \c__ab_clean_jobname_tl { " }
+
+\edef\MetaJobname{\c__ab_clean_jobname_tl}
+
+\cs_generate_variant:Nn \seq_set_split:NnV {NxV}
+
+\NewDocumentCommand{\Meta}{O{\metaTeiler} m}{
+	\seq_set_split:NxV \l_tmpa_seq {#1} \c__ab_clean_jobname_tl
+	\seq_item:Nn \l_tmpa_seq { #2 }
 }
+\ExplSyntaxOff

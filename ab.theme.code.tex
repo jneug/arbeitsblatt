@@ -10,7 +10,7 @@
 
 % Schriftarten
 %% Standard Textkörper (Serifenlos)
-\usepackage[sfdefault,light,scaled=.85]{FiraSans}
+\usepackage[sfdefault,light,scaled=.9]{FiraSans}
 % \usepackage[sfdefault,light]{FiraSans}
 \renewcommand*\oldstylenums[1]{{\firaoldstyle #1}}
 
@@ -21,7 +21,7 @@
 %% Monospace font
 %\usepackage{courier}
 %\usepackage[light]{noto-mono}
-\usepackage[mono,scaled=0.9]{inconsolata}
+\usepackage[mono,scaled=.9]{inconsolata}
 
 %% Math font
 %\usepackage{newtxsf}
@@ -34,11 +34,14 @@
 
 % Farben
 %% Allgemein
-\definecolor{ngb.reihe.text}{gray}{0.33}
+\definecolor{primary}{rgb}{.16, .227, .655} % {.118, .439, .412}
+\definecolor{secondary}{rgb}{.45,.02,.09}
+\farbschemaAktualisieren
+
+\definecolor{ab.kopf.text}{gray}{.20}
 
 % Koma Schriften
 \addtokomafont{title}{\Large}
-%\addtokomafont{reihe}{\normalsize}
 
 %% Informatik
 % \ifdefstring{\schule@fach}{Informatik}{
