@@ -1,0 +1,37 @@
+
+
+%% Dokumententyp Arbeitsblatt
+
+%% Ggf. wurde schon als Option ein eigener Typname gesetzt
+\ab@typnameSetzen{Protokoll}
+
+
+%% Seitenlayout
+\iftoggle{ab@layout}{%
+	\RequirePackage[includeheadfoot,top=1.69cm,left=1.69cm,bottom=1.69cm,right=1.69cm,head=30pt]{geometry}
+}
+
+\renewcommand*{\KopfLinks}{Protokoll}
+\renewcommand*{\KopfMitte}{\Titel}
+\renewcommand*{\KopfRechts}{\Datum}
+
+\renewcommand*{\FussLinks}{}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%            Makros            %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\ProtokollTitel}[1][\Titel]{%
+	\begin{center}
+		{\usekomafont{reihe}Protokoll}\\[-1ex]
+		{\usekomafont{titel}#1}
+		\titlerule
+	\end{center}%
+}
+
+\newenvironment{teilnehmer}{%
+	\begin{multicols}{2}\begin{itemize}
+}{%
+	\end{itemize}\end{multicols}
+}

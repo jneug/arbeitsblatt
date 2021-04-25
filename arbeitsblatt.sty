@@ -39,7 +39,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Listen aller Typen, Module und Fächer
 \forcsvlist{\listadd\ab@alleTypen}
-	{arbeitsblatt,klausur,klassenarbeit,test,checkup,lerntheke}
+	{arbeitsblatt,klausur,klassenarbeit,test,checkup,lerntheke,protokoll}
 \forcsvlist{\listadd\ab@alleModule}
 	{meta,typo,aufgaben,icons,boxen,muster,tabellen,theme,varianten,qrcodes}
 \forcsvlist{\listadd\ab@alleFaecher}
@@ -138,7 +138,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %            Setup             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\newcommand{\ab@typName}{Arbeitsblatt}
+\newcommand{\ab@typName}{}
 \newcommand{\ab@name}{}
 \newcommand{\ab@kuerzel}{}
 \newcommand{\ab@schule}{}
@@ -168,6 +168,7 @@
 		reihe/.store in=\ab@reihe,
 		name/.store in=\ab@name,
 		titel/.store in=\ab@titel,
+		datum/.store in=\ab@datum,
 		lizenz/.code=\ab@lizenzSetzen{#1},
 		farbe primary/.code={\colorlet{primary}{#1}\farbschemaAktualisieren},
 		farbe secondary/.code={\colorlet{secondary}{#1}\farbschemaAktualisieren},
@@ -319,7 +320,7 @@
 %% Ändern des Typnamens für Dokumenttypen
 %% (ggf. wurde schon als Option ein eigener Typname gesetzt)
 \newcommand{\ab@typnameSetzen}[1]{%
-	\ifdefstring{\ab@typName}{Arbeitsblatt}{%
+	\ifdefempty{\ab@typName}{%
 		\edef\ab@typName{#1}%
 	}{}%
 }
@@ -455,14 +456,14 @@
 
 \newcommand{\TITEL}[1][\Titel]{%
 	\begin{center}
-		\usekomafont{titel}#1
+		\usekomafont{titel}{#1}
 	\end{center}%
 }
 
 \newcommand{\ReiheTitel}[1][\Titel]{%
 	\begin{center}
-		\usekomafont{reihe}\Reihe\\[-1ex]
-		\usekomafont{titel}#1
+		\usekomafont{reihe}{\Reihe}\\[-1ex]
+		\usekomafont{titel}{#1}
 		\titlerule
 	\end{center}%
 }
