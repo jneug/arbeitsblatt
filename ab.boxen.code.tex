@@ -13,7 +13,8 @@
 %            Pakete            %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \RequirePackage{awesomebox}
-\RequirePackage{mdframed}
+\RequirePackage[framemethod=TikZ]{mdframed}
+\usetikzlibrary{shadows}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %            Makros            %
@@ -32,7 +33,7 @@
 	linecolor=black,
 	backgroundcolor=white,
 	shadow=true,
-	shadowsize=3pt,
+	shadowsize=4pt,
 	shadowcolor=black!50,
 ]{schattenbox}
 
@@ -42,9 +43,9 @@
 	linecolor=black,
 	backgroundcolor=primary.hg,
 	shadow=true,
-	shadowsize=3pt,
+	shadowsize=4pt,
 	shadowcolor=black!50,
-	roundcorner=2ex,
+	roundcorner=4,
 ]{infobox}
 
 % Anmerkungen als Boxen setzen (sofern Modul "typo" geladen wurde)
