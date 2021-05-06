@@ -3,7 +3,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \pgfkeys{
 	/absetup/.cd,
-	doku stil/.code=\ab@inf@renewDoku{#1}
+		doku/stil/.code=\ab@inf@renewDoku{#1}
 }
 
 
@@ -25,7 +25,7 @@
 % Klassendokumentation wie im Abitur NRW (ab 2021)
 \newenvironment{kdokuabineu}[1]{}{\par}
 \newcommand{\mdokuabineu}[2]{%\label{methode:#1}
-	\colorbox{gray!30}{\parbox{\dimexpr\linewidth-2\fboxsep\relax}{\bfseries\texttt{#1}}}\newline #2
+	\colorbox{gray!30}{\parbox{\dimexpr\linewidth-2\fboxsep\relax}{\bfseries\texttt{#1}}}\newline #2\par
 }
 
 \newenvironment{klassendoku}[1]{\kdokudefault{#1}\label{doku:#1}}{\endkdokudefault}

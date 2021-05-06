@@ -9,3 +9,15 @@
 %            Pakete            %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \RequirePackage{FLaAL}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%            Makros            %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newenvironment{ableitung}
+	{\tabular{rl}}
+	{\endtabular}
+\newcommand*{\produktion}[2][]{%
+	\texttt{#1} & $\rightarrow$\ \ttfamily #2 \tabularnewline
+}

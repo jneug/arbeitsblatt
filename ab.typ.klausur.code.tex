@@ -1,22 +1,21 @@
 
 
 %% Dokumenttyp für Klausuren
+\iftoggle{ab@layout}{%
+	\RequirePackage[includeheadfoot,top=1.69cm,left=1.69cm,bottom=1.69cm,right=1.69cm,head=30pt]{geometry}
+}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %           Optionen           %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\newcommand{\ab@kl@dauer}{90}
-\newcommand{\ab@kl@hmft}{0}
+\def\ab@kl@dauer{90}
+\def\ab@kl@hmft{0}
+\def\ab@kl@hmt{90}
 
 \pgfkeys{
 	/absetup/.cd,
-	dauer/.code=\ab@kl@renewTimes{#1}{\ab@kl@hmft},
-	hmft/.code=\ab@kl@renewTimes{\ab@kl@dauer}{#1},
-}
-
-\newcommand{\ab@kl@renewTimes}[2]{%
-	\renewcommand{\ab@kl@dauer}{#1}\renewcommand{\ab@kl@hmft}{#2}%
-	\pfgmathtruncatemacro{\ab@kl@hmt}{\ab@kl@dauer-\ab@kl@hmft}%
+		dauer/.code=\ab@kl@renewTimes{#1}{\ab@kl@hmft},
+		hmft/.code=\ab@kl@renewTimes{\ab@kl@dauer}{#1},
 }
 
 \ab@typnameSetzen{Klausur}
@@ -28,6 +27,18 @@
 \ab@modul@laden{bewertung}
 \ab@modul@laden{boxen}
 
+% Standard Optionen für Klassenarbeiten
+\aboptionen{
+	loesungen										= seite,
+	erwartungshorizont/anzeigen = true,
+	erwartungshorizont/stil     = tabelle, %tabelle2
+	noten					 							= kmk-punkte,
+}
+
+\newcommand{\ab@kl@renewTimes}[2]{%
+	\edef\ab@kl@dauer{#1}\edef\ab@kl@hmft{#2}%
+	\pgfmathtruncatemacro{\ab@kl@hmt}{\ab@kl@dauer-\ab@kl@hmft}%
+}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %            Makros            %
@@ -39,10 +50,31 @@
 \newcommand{\Hmt}{\makeatletter\ab@kl@hmt\makeatother\@\xspace}
 
 %% Seitenlayout
+\KOMAoptions{headsepline=.5pt}
+
+\renewcommand{\KopfLinks}{%
+	\Fach%
+	\ifdefempty{\ab@kurs}{}{\@\xspace\Kurs}%
+	\ifdefempty{\ab@kuerzel}{}{\@\xspace(\Kuerzel)}%
+
+	Name:
+}
 \renewcommand{\KopfMitte}{\relax}
+\renewcommand{\KopfRechts}{%
+	\Typ%
+	\ifdefempty{\ab@nummer}{}{\space Nr. \Nummer}%
+
+	\Datum
+}
+
 
 %% Überschriften etc.
 % https://tex.stackexchange.com/questions/223694/how-to-draw-a-text-box-with-shadow-borders-i-have-tried-the-following-but-it-gi#223738
-\newcommand{\ArbeitTitel}[1][none]{\begin{center}\LARGE\rmfamily\Titel\ifstrequal{#1}{none}{}{- #1}\end{center}}
+\newcommand{\KlausurTitel}[1][none]{%
+\begin{schattenbox}\centering\rmfamily\bfseries
+	\Large\Nummer. \Typ (\Dauer\,Minuten)\\
+	\large\Fach\ \Kurs\ (\Kuerzel)\ifstrequal{#1}{none}{}{\\
+		\textcolor{gray!50!black}{- #1 -}}
+\end{schattenbox}}
 
 \newcommand{\vielErfolg}{\begin{flushright}\bfseries Viel Erfolg\end{flushright}}

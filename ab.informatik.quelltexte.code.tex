@@ -5,23 +5,26 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \pgfkeys{
 	/absetup/.cd,
-	quelltext stil/.code = \usemintedstyle{#1},
-	minted/.code = \setminted{#1},
+		quelltext/stil/.code = \usemintedstyle{#1},
+		minted/.code = \setminted{#1},
 }
 
-\definecolor{ab.inf.quelltext.hg}{gray}{0.98}
-\definecolor{ab.inf.quelltext.rand}{gray}{0.2}
-\definecolor{ab.inf.quelltext.nummern}{gray}{0.25}
+\providecolor{ab.inf.quelltext.hg}{gray}{0.98}
+\providecolor{ab.inf.quelltext.rand}{gray}{0.2}
+\providecolor{ab.inf.quelltext.nummern}{gray}{0.25}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %            Pakete            %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\PassOptionsToPackage{newfloat=true}{minted}
 \RequirePackage{minted}
 \RequirePackage{mdframed}
 
+% \captionsetup[listing]{skip=2pt}
+
 \setminted{
 	autogobble,
-	escapeinside=§§,
+	% escapeinside=§§, % Not recognized by minted/pygments
 	numbers=left,
 	tabsize=4,
 	breaklines=true,
@@ -39,6 +42,11 @@
 	backgroundcolor=ab.inf.quelltext.hg,
 	linecolor=ab.inf.quelltext.rand
 ]{minted}
+
+
+%% Ref-Fromate für Quelltexte und Zeilen
+\newrefformat{lst}{\hyperref[#1]{Listing\,\ref*{#1}}}
+\newrefformat{line}{\hyperref[#1]{Zeile\,\ref*{#1}}}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

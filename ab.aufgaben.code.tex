@@ -3,24 +3,24 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %           Optionen           %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\newtoggle{ab@aufg@lsg@seite}
+\newtoggle{ab@aufg@lsg@seite@anzeigen}
 
 \pgfkeys{
 	/absetup/.cd,
 		loesungen/.is choice,
 		loesungen/keine/.style 	= {loesungen=ohne},
-		loesungen/ohne/.code 		= \settoggle{ab@aufg@lsg@seite}{false}\xsimsetup{loesung/print = false,loesung*/print = false},
-		loesungen/seite/.code 	= \settoggle{ab@aufg@lsg@seite}{true},
-		loesungen/folgend/.code = \settoggle{ab@aufg@lsg@seite}{false}\xsimsetup{loesung/print = true,loesung*/print = true},
+		loesungen/ohne/.code 		= {\togglefalse{ab@aufg@lsg@seite@anzeigen}\xsimsetup{loesung/print = false,loesung*/print = false}},
+		loesungen/seite/.code 	= {\toggletrue{ab@aufg@lsg@seite@anzeigen}\xsimsetup{loesung/print = false,loesung*/print = false}},
+		loesungen/folgend/.code = {\togglefalse{ab@aufg@lsg@seite@anzeigen}\xsimsetup{loesung/print = true,loesung*/print = true}},
 }
 
 \def\ab@aufg@lsg@seite{\clearpage
 	\clearpairofpagestyles\pagenumbering{Roman}%
 	\ihead{\KopfLinks}\chead{}\ohead{Lösungen}%
 	\cfoot{\Seitenzahl}%
-	\printallsolutions*%
+	\printallsolutions%*%
 }
-\AtEndDocument{\iftoggle{ab@aufg@lsg@seite}{\ab@aufg@lsg@seite}{}}
+\AtEndDocument{\iftoggle{ab@aufg@lsg@seite@anzeigen}{\ab@aufg@lsg@seite}{}}
 
 \definecolor{ab.aufgabe.icons}{named}{secondary}
 \definecolor{ab.aufgabe.nummer}{named}{primary}
@@ -82,7 +82,7 @@
 }{}
 
 \newlist{teilaufgaben}{enumerate}{1}
-\setlist[teilaufgaben,1]{label=\alph*)}
+\setlist[teilaufgaben,1]{label=\alph*),left=0pt,resume}
 
 \NewDocumentCommand \teilaufgabe {s o} {%
 	\item

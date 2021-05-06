@@ -13,11 +13,11 @@
 
 \pgfkeys{
 	/absetup/.cd,
-	dauer/.store in=\ab@kl@dauer,
-	viel erfolg/.is choice,
-	viel erfolg/tier/.code=\def\ab@kl@erfolg{Viel Erfolg \;\tier},
-	viel erfolg/ente/.code=\def\ab@kl@erfolg{\ente},
-	viel erfolg/text/.code=\def\ab@kl@erfolg{Viel Erfolg!},
+		dauer/.store in=\ab@kl@dauer,
+		viel erfolg/.is choice,
+		viel erfolg/tier/.code=\def\ab@kl@erfolg{Viel Erfolg \;\tier},
+		viel erfolg/ente/.code=\def\ab@kl@erfolg{\ente},
+		viel erfolg/text/.code=\def\ab@kl@erfolg{Viel Erfolg!},
 }
 
 %% Ggf. wurde schon als Option ein eigener Typname gesetzt
@@ -48,7 +48,6 @@
 \newcommand{\Dauer}{\makeatletter\ab@kl@dauer\makeatother\@\xspace}
 
 %% Seitenlayout
-
 
 \renewcommand{\KopfLinks}{%
 	\Fach%

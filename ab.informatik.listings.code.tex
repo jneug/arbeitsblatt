@@ -1,0 +1,114 @@
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%            Pakete            %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\RequirePackage{listings}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%          Optionen          %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\pgfkeys{
+	/absetup/.cd,
+		quelltext/stil/.code = \usemintedstyle{#1},
+		listings/.code = \lstset{#1},
+}
+
+\providecolor{ab.inf.quelltext.hg}{gray}{0.98}
+\providecolor{ab.inf.quelltext.rand}{gray}{0.2}
+\providecolor{ab.inf.quelltext.nummern}{gray}{0.25}
+
+\providecolor{ab.inf.quelltext.keyword}{rgb}{.035,.518,.992}
+\providecolor{ab.inf.quelltext.commant}{rgb}{.0,.647,.318}
+
+%
+\lstset{literate=%
+	{Ö}{{\"O}}1
+	{Ä}{{\"A}}1
+	{Ü}{{\"U}}1
+	{ß}{\ss}2
+	{ü}{{\"u}}1
+	{ä}{{\"a}}1
+	{ö}{{\"o}}1
+	{»}{{\frqq}}4
+	{«}{{\flqq}}4
+}
+%% Styling von Quelltexten
+\lstset{
+	basicstyle=\small\ttfamily,
+	keywordstyle=\color{ab.inf.quelltext.keyword}\bfseries,
+	identifierstyle=, % nothing happens
+	commentstyle=\color{ab.inf.quelltext.commant},
+	stringstyle=,
+	showstringspaces=false,
+	numbers=left,
+	numberstyle=\sffamily\scriptsize\color{ab.inf.quelltext.nummern},
+	breaklines=true,
+	tabsize=4,
+	frame=single,
+	rulecolor=\color{ab.inf.quelltext.rand},
+	backgroundcolor=\color{ab.inf.quelltext.hg}
+}
+\nottoggle{ab@farbig}{%
+	\lstset{
+		keywordstyle=\color{black}\bfseries,
+		commentstyle=\color{gray},
+	}
+}{}
+
+% Sprache LibreLogo für Quelltexte einfügen
+\lstdefinelanguage{LibreLogo}[]{Logo}{%
+	morekeywords={vor,vr,zurück,zk,links,li,rechts,re,fliegen,laufen,position,pos,richtung,ri,verbergen,zeigen,anfang,säubern,füllen,schliessen,stiftbreite,linienbreite,sb,lb,stiftfarbe,linienfarbe,sf,lf,stifttransparenz,linientransparenz,st,lt,stiftende,linienende,se,le,stiftübergang,linienübergang,sü,lü,stiftstil,linienstil,ss,ls,füllfarbe,ff,fülltransparenz,ft,füllstil,fs,kreis,ellipse,quadrat,rechteck,punkt,schreibe,text,schriftfarbe,textfarbe,schf,tf,schriftart,scha,schriftgrösse,textgrösse,schg,tg,schriftgewicht,schg,schriftstil,schs},%
+	morekeywords=[2]{wiederhole,wdh,zu,ende,wenn,bild,für,in,solange,abbruch,weiter,zähler,und,nicht,oder,ausgabe,eingabe,rückgabe,zufällig,stopp,warte,global,ganz,dezimal,zeichen,wurzel,sin,cos,log10,runde,zähle,menge,folge,liste,tupel,sortiert,ersetzt,suche,findealle,min,max},%
+	morekeywords=[3]{wahr,falsch,seite,beliebig,bel,pi},%
+	sensitive=false,
+	morecomment=[l]{;},
+	morestring=[b]",
+}[keywords]
+\lstdefinestyle{LibreLogo}{
+	language={LibreLogo},
+	showspaces=false,
+	showstringspaces=false,
+	showtabs=false,
+	tabsize=3,
+	extendedchars=true,
+	basicstyle=\ttfamily\small,		keywordstyle={\color{blue}\underbar},
+	identifierstyle=,
+	commentstyle=\color{gray},
+	backgroundcolor=\color{white},
+	numbers=left,
+	numberstyle=\sffamily\tiny\color{gray},
+	stepnumber=1,
+	numbersep=5pt,
+	captionpos=b,
+	breaklines=true
+}
+% Sprache KnowHowPC für Quelltexte einfügen
+\lstdefinelanguage{KnowHowPC}{%
+	morekeywords={isz,stp,inc,dec,jmp},
+	sensitive=false,
+	morecomment=[l]{;}
+}[keywords]
+\lstdefinestyle{KnowHowPC}{
+	language={KnowHowPC},
+	showspaces=false,
+	showstringspaces=false,
+	showtabs=false,
+	tabsize=3,
+	extendedchars=true,
+	basicstyle=\ttfamily\small,		keywordstyle={\color{blue}\underbar},
+	identifierstyle=,
+	commentstyle=\color{gray},
+	backgroundcolor=\color{white},
+	numbers=left,
+	numberstyle=\sffamily\tiny\color{gray},
+	stepnumber=1,
+	numbersep=5pt,
+	captionpos=b,
+	breaklines=true
+}
+
+
+%% Ref-Fromate für Quelltexte und Zeilen
+\newrefformat{lst}{\hyperref[#1]{Listing\,\ref*{#1}}}
+\newrefformat{line}{\hyperref[#1]{Zeile\,\ref*{#1}}}

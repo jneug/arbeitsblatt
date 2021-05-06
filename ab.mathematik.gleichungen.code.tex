@@ -3,14 +3,14 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %           Optionen           %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\pgfkeys{
-	/absetup/.cd,
-}
+% \pgfkeys{
+% 	/absetup/.cd,
+% }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %            Pakete            %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+\RequirePackage{gauss}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -41,7 +41,13 @@
 	}
 }
 
-\newenvironment{terme}{\begin{alignat*}{3}}{\end{alignat*}}
+%\newenvironment{terme}{\begin{alignat*}{3}}{\end{alignat*}}
+%\newenvironment{gleichungen}{\alignat*{3}}{\endalignat*}
+\NewEnviron{gleichungen}{
+	\begin{alignat*}{3}
+		\BODY
+	\end{alignat*}
+}
 
 \NewDocumentCommand \gl {O{\Leftrightarrow} m O{=} m} {
 	#1\quad&& #2 &#3 #4 &&

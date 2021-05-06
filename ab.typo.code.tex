@@ -21,6 +21,9 @@
 %\g@addto@macro{\UrlBreaks}{\UrlOrds}
 \RequirePackage{xurl}
 
+%% Auszeichnungen für Funktionen von Apps
+\RequirePackage{menukeys}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %      Textauszeichnungen      %
@@ -31,6 +34,9 @@
 
 % Operatoren
 \newcommand*{\operator}[1]{\textsc{#1}}
+
+% Abkürzungen
+\newcommand*{\abbr}[1]{\textsc{#1}}
 
 % Inline code
 % \code wird von anderen Paketen auch verwendet
@@ -79,5 +85,5 @@
 \setlist[enuma]{label=\alph*)}
 \newlist{enumn}{enumerate}{1}
 \setlist[enumn]{label=\arabic*)}
-\newlist{enumnn}{enumerate}{1}
-\setlist[enumnn]{label=(\arabic*)}
+\newlist{enumn*}{enumerate}{1}
+\setlist[enumn*]{label=(\arabic*)}

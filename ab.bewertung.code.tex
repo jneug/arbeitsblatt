@@ -142,6 +142,7 @@
 
 \pgfkeys{
 	/absetup/.cd,
+		teilpunkte/anzeigen/.code = \settoggle{ab@tpkt@anzeigen}{#1},
 		erwartungshorizont/.style = {erwartungshorizont/anzeigen = true},
 		erwartungshorizont/anzeigen/.code = \settoggle{ab@ew@anzeigen}{#1},
 		erwartungshorizont/stil/.code = \xsimsetup{grading-table/template=#1},
@@ -297,16 +298,20 @@
 	\addpoints*{#3}%
 }
 
-\RenewDocumentEnvironment {aufgabenteil} { s o } {%
-	\refstepcounter{teilaufgabe}%
+\RenewDocumentEnvironment {aufgabenteil} { s o } {\teilaufgaben%
+	% \refstepcounter{teilaufgabe}%
+	\item%
 	\IfNoValueTF{#2}{%
-		\tl_set:Nx \l__ab_tmpa_tl {\ab_taufg_id:nn {\GetExerciseProperty{ID}} {\alph{teilaufgabe}}}%
+		\tl_set:Nx \l__ab_tmpa_tl {\ab_taufg_id:nn {\GetExerciseProperty{ID}} {\alph{teilaufgabeni}}}%
 	}{%
 		\tl_set:Nx \l__ab_tmpa_tl {\ab_taufg_id:nn {\GetExerciseProperty{ID}} {#2}}%
 	}%
 	\ab_aufg_put_taufg:nnn {\GetExerciseProperty{ID}} {\l__ab_tmpa_tl} {\theteilaufgabe}%
-	\theteilaufgabe\label{taufg:\l__ab_tmpa_tl}
-}{}
+	%\theteilaufgabe\label{taufg:\l__ab_tmpa_tl}
+	\label{taufg:\l__ab_tmpa_tl}
+}{%
+	\endteilaufgaben
+}
 \RenewDocumentCommand \teilaufgabe {s o} {%
 	\item%
 	\IfNoValueTF{#2}{%
@@ -443,12 +448,6 @@
 	\begin{flushright}
 		\underline{\today, \hspace{3cm}}
 	\end{flushright}
-}
-
-\def\ab@ew@et@taufg#1#2{
-	\detokenize{X &}
-	#2 ~ #1
-	\detokenize{& 0 & \tabularnewline\hline}
 }
 
 
@@ -615,6 +614,21 @@
 }
 \NewDocumentCommand \PunkteTeilaufgabe {m m} {%
 	\ab_punkte_taufg:nn {#1} {#2}
+}
+\NewDocumentCommand \PunkteTeilaufgaben {m O{+}} {%
+	\seq_clear:N \l__ab_tmpa_seq
+	\ab_foreach_taufg:nn {#1} {
+		\seq_put_right:NV \l__ab_tmpa_seq {\ab_punkte_taufg:n {##1}}
+	}
+	\seq_use:Nn \l__ab_tmpa_seq {~#2~}
+}
+\NewDocumentCommand \PunkteErwartungen {m m O{+}} {%
+	\seq_clear:N \l__ab_tmpa_seq
+	\tl_set:Nx \l__ab_tmpa_tl {\ab_taufg_id:nn {#1}{#2}}
+	\ab_foreach_erwartung:nn \l__ab_tmpa_tl {
+		\seq_put_right:Nx \l__ab_tmpa_seq {##2}
+	}
+	\seq_use:Nn \l__ab_tmpa_seq {~#3~}
 }
 
 \newcommand{\NotenverteilungFestlegen}[1]{%
