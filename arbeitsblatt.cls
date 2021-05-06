@@ -1,7 +1,7 @@
 
 %% -----------------
 %%
-%% KLassen und Pakete für dne Satz von
+%% Klassen und Pakete für den Satz von
 %% Arbeitsblättern, Klassenarbeiten und
 %% anderen Materialien für die Schule.
 %%
@@ -42,4 +42,4 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %       Standard-Module        %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%\ladeModule{aufgaben}
+\ladeModule{typo,icons,aufgaben}
