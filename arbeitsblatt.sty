@@ -39,7 +39,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Listen aller Typen, Module und Fächer
 \forcsvlist{\listadd\ab@alleTypen}
-	{arbeitsblatt,klausur,klassenarbeit,test,checkup,lerntheke,protokoll}
+	{arbeitsblatt,klausur,klassenarbeit,test,checkup,lerntheke,protokoll,leer}
 \forcsvlist{\listadd\ab@alleModule}
 	{meta,typo,aufgaben,icons,boxen,muster,tabellen,theme,varianten,qrcodes}
 \forcsvlist{\listadd\ab@alleFaecher}
@@ -81,7 +81,8 @@
 \newcommand{\ab@typ@laden}[1]{%
 	\nottoggle{ab@typGeladen}{%
 		\toggletrue{ab@typGeladen}%
-		\ab@modul@laden{typ.#1}%
+		\ifdefstring{\ab@typ}{leer}{}
+			{ \ab@modul@laden{typ.#1} }%
 	}{%
 		\swarnung{Typ #1 kann nicht geladen werden: Es wurde schon ein Typ geladen!}
 	}%
@@ -185,7 +186,7 @@
 % Erweiterungen der LaTeX Grundfunktionen %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% Farben und Grafiken
+% Farben, Grafiken und Floats
 \PassOptionsToPackage{table,dvipsnames}{xcolor}
 \RequirePackage{xcolor}
 
@@ -199,6 +200,7 @@
 \RequirePackage{grffile}
 
 % Floats für Grafiken
+%\RequirePackage[skip=2pt]{caption}
 \RequirePackage{subcaption}
 
 \RequirePackage{wrapfig}
@@ -223,7 +225,6 @@
 }
 
 \RequirePackage{prettyref}
-\def\pref{\prettyref}% Kurzform für \prettyref
 
 \newrefformat{aufg}{\hyperref[#1]{Aufgabe\,\ref*{#1}}}
 \newrefformat{taufg}{\hyperref[#1]{Teilaufgabe\,\ref*{#1}}}
@@ -240,6 +241,8 @@
 	\RequirePackage{csquotes}
 	\ExecuteQuoteOptions{german=quotes}
 }
+%% Anführungszeichen für code
+\newcommand{\scquote}[1]{\textquotedbl#1\textquotedbl}
 
 % Mathematik
 \RequirePackage{amsmath}
@@ -400,11 +403,13 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %         Seitenlayout         %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\RequirePackage{scrlayer-scrpage}
-\pagestyle{scrheadings}
+\iftoggle{ab@layout}{%
+	\RequirePackage{scrlayer-scrpage}
+	\pagestyle{scrheadings}
 
-\setkomafont{pagehead}{\normalfont\small\color{ab.kopf.text}}
-\setkomafont{pagefoot}{\normalfont\small\color{ab.fuss.text}}
+	\setkomafont{pagehead}{\normalfont\small\color{ab.kopf.text}}
+	\setkomafont{pagefoot}{\normalfont\small\color{ab.fuss.text}}
+}
 
 \newcommand{\linie}[1][6cm]{\underline{\hspace{#1}}}
 \newcommand{\Datumsfeld}[1][3cm]{Datum: \linie[#1]}
