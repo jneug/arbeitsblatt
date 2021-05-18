@@ -8,6 +8,9 @@
 \toggletrue{ab@nv@anzeigen}
 \newtoggle{ab@nv@rel}
 \toggletrue{ab@nv@rel}
+\newtoggle{ab@pkt@taufg}
+\newtoggle{ab@pkt@ew}
+
 
 \def\namenKmk{
 	15 = 15, 14 = 14, 13 = 13,
@@ -142,7 +145,10 @@
 
 \pgfkeys{
 	/absetup/.cd,
-		teilpunkte/anzeigen/.code = \settoggle{ab@tpkt@anzeigen}{#1},
+		punkte/erwartungen/.initial = true,
+		punkte/erwartungen/.code = \settoggle{ab@pkt@ew}{#1},
+		punkte/teilaufgaben/.initial = true,
+		punkte/teilaufgaben/.code = \settoggle{ab@pkt@taufg}{#1},
 		erwartungshorizont/.style = {erwartungshorizont/anzeigen = true},
 		erwartungshorizont/anzeigen/.code = \settoggle{ab@ew@anzeigen}{#1},
 		erwartungshorizont/stil/.code = \xsimsetup{grading-table/template=#1},
@@ -188,8 +194,8 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% Teilaufgaben zu Aufgaben hinzufügen
-%\DeclareExerciseProperty{erwartungen}
-%\DeclareExerciseProperty{teilaufgaben}
+\DeclareExerciseProperty{erwartungen}
+%\DeclareExerciseProperty{teilpunkte}
 
 \ExplSyntaxOn
 %% Utilities
@@ -209,6 +215,10 @@
 %% Temp Variables
 \tl_new:N 	\l__ab_tmpa_tl
 \tl_new:N 	\l__ab_tmpb_tl
+
+\tl_new:N 	\l__ab_cs_aufg_tl
+\tl_new:N 	\l__ab_cs_taufg_tl
+\tl_new:N 	\l__ab_cs_ew_tl
 
 \seq_new:N 	\l__ab_tmpa_seq
 \seq_new:N 	\l__ab_tmpb_seq
@@ -298,6 +308,28 @@
 	\addpoints*{#3}%
 }
 
+\xsimsetup{
+	aufgabe/pre-hook = {%
+	},
+	aufgabe/post-hook = {%
+		\seq_clear:N \l__ab_tmpa_seq
+		% TODO: Taufg "0" berücksichtigen
+		\ab_foreach_taufg:nn {\GetExerciseProperty{ID}} {
+			\ab_foreach_erwartung:nn {#1} {
+				\seq_put_right:Nx \l__ab_tmpa_seq {
+					{#1}
+					%{##1}
+					{##2}
+				}{}
+			}
+		}
+		%
+		\SetExpandedExerciseProperty{erwartungen}{%
+			\seq_use:Nn \l__ab_tmpa_seq {,}
+		}
+	}
+}
+
 \RenewDocumentEnvironment {aufgabenteil} { s o } {\teilaufgaben%
 	% \refstepcounter{teilaufgabe}%
 	\item%
@@ -306,10 +338,12 @@
 	}{%
 		\tl_set:Nx \l__ab_tmpa_tl {\ab_taufg_id:nn {\GetExerciseProperty{ID}} {#2}}%
 	}%
-	\ab_aufg_put_taufg:nnn {\GetExerciseProperty{ID}} {\l__ab_tmpa_tl} {\theteilaufgabe}%
+	\ab_aufg_put_taufg:nnn {\GetExerciseProperty{ID}} {\l__ab_tmpa_tl} {\theteilaufgabeni}%
 	%\theteilaufgabe\label{taufg:\l__ab_tmpa_tl}
 	\label{taufg:\l__ab_tmpa_tl}
 }{%
+	%\iftoggle{ab@pkt@ew}{\par\flushright \GetExerciseProperty{ID}~\alph{teilaufgabeni}\endflushright}{}%
+	\iftoggle{ab@pkt@ew}{\par\Erwartungspunkte}{}%
 	\endteilaufgaben
 }
 \RenewDocumentCommand \teilaufgabe {s o} {%
@@ -370,9 +404,9 @@
 \cs_new:Npn \ab_foreach_taufg:nn #1#2 {
 	\cs_set:Nn \__ab_ta_loop_item:nn {#2}
 	%
-	\tl_set:Nx \l__ab_tmpa_tl {\ab__aufg_seq_cs:n {#1}}
-	\seq_if_exist:cTF {\l__ab_tmpa_tl} {
-		\seq_map_inline:cn {\l__ab_tmpa_tl} {
+	\tl_set:Nx \l__ab_cs_taufg_tl {\ab__aufg_seq_cs:n {#1}}
+	\seq_if_exist:cTF {\l__ab_cs_taufg_tl} {
+		\seq_map_inline:cn {\l__ab_cs_taufg_tl} {
 			% TODO: Was ist in item 2 gespeichert?
 			\__ab_ta_loop_item:xx
 				{\tl_item:Nn {##1} {1}}
@@ -390,9 +424,9 @@
 \cs_new:Npn \ab_foreach_erwartung:nn #1#2 {
 	\cs_set:Nn \__ab_ew_item_a:nn {#2}
 	%
-	\tl_set:Nx \l__ab_tmpb_tl {\ab__taufg_ew_seq_cs:n {#1}}
-	\seq_if_exist:cTF {\l__ab_tmpb_tl} {
-		\seq_map_inline:cn {\l__ab_tmpb_tl} {
+	\tl_set:Nx \l__ab_cs_ew_tl {\ab__taufg_ew_seq_cs:n {#1}}
+	\seq_if_exist:cTF {\l__ab_cs_ew_tl} {
+		\seq_map_inline:cn {\l__ab_cs_ew_tl} {
 			\__ab_ew_item_a:xx
 				{\tl_item:Nn {##1} {1}}
 				{\tl_item:Nn {##1} {2}}
@@ -519,6 +553,60 @@
 	#2~(#3P) \IfBooleanF{#1}{\newline}
 }
 
+\DeclareExerciseTableTemplate{schule}{\ab@ew@schule}
+\def\ab@ew@schule{
+	% ForEachUsedExerciseByID breaks for tables. Store all used IDs in
+	% a (temporary) seq first and loop over that.
+	\seq_clear:N \l_tmpa_seq
+	\ForEachUsedExerciseByID{\seq_put_right:Nn \l_tmpa_seq {##3}}
+
+	\underline{Name: \Large\hspace{6cm}}
+
+	\rowcolors{2}{ab.tabelle.zeile.ungerade}{ab.tabelle.zeile.gerade}
+	\begin{longtable}{|p{.65\linewidth}|c|c|}\hline
+			% Kopfzeile
+			\rowcolor{ab.tabelle.kopf.hg}
+			Die~Schülerin/der~Schüler\dots & mögl. Punkte & erreicht \tabularnewline\hline\hline %
+			%
+			%% Aufgaben, Teilaufgaben und Erwartungens
+			\seq_map_function:NN \l_tmpa_seq \ab@ew@schule@aufgabe
+			%&&&\\\hline % Somewhere the table ending is messed up. We need to add a blank row for some reason.
+			%
+			% Fusszeile
+			\hline
+			\rowcolor{ab.tabelle.kopf.hg}\textbf{Summe:} & \textbf{\ab_punkte_total:} & \tabularnewline\hline
+			\iftoggle{ab@nv@rel}{\rowcolor{ab.tabelle.kopf.hg}\textbf{Prozentual:} & \textbf{100\,\%} & \tabularnewline\hline}{}
+			\rowcolor{ab.tabelle.kopf.hg}\textbf{Note:} & \multicolumn{2}{c|}{} \tabularnewline\hline
+	\end{longtable}
+
+	\begin{flushright}
+		\underline{\today, \hspace{3cm}}
+	\end{flushright}
+}
+
+\newcommand{\ab@ew@schule@aufgabe}[1]{%\rowcolor{muted}
+	\rowcolor{muted}\textbf{Aufgabe~#1} &
+	\textbf{\PunkteAufgabe{#1}} &
+	%
+	\tl_set:Nx \l__ab_tmpa_tl {\ab_taufg_id:nn {#1} {0}}
+	\ab_foreach_erwartung:nn {\l__ab_tmpa_tl} {
+		\tabularnewline \hline
+		##1 & ##2 &
+	}
+	\tl_set:Nx \l__ab_cs_taufg_tl {\ab__aufg_seq_cs:n {#1}}
+	\seq_if_exist:cTF {\l__ab_cs_taufg_tl} {
+		\seq_map_inline:cn {\l__ab_cs_taufg_tl} {
+			\tl_set:Nx \l__ab_tmpa_tl {\tl_item:Nn {##1} {1}}
+			\ab_foreach_erwartung:nn {\l__ab_tmpa_tl} {
+				\tabularnewline \hline
+				\ref{taufg:\tl_item:Nn {##1} {1}}~
+				####1 & ####2 &
+			}
+		}
+	}{}
+	\tabularnewline \hline
+}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %       Notenverteilung        %
@@ -622,13 +710,44 @@
 	}
 	\seq_use:Nn \l__ab_tmpa_seq {~#2~}
 }
-\NewDocumentCommand \PunkteErwartungen {m m O{+}} {%
+\NewDocumentCommand \TeilaufgabenPunkte {O{+}} {%
 	\seq_clear:N \l__ab_tmpa_seq
+	\ab_foreach_taufg:nn {\GetExerciseProperty{ID}} {
+		\seq_put_right:NV \l__ab_tmpa_seq {\ab_punkte_taufg:n {##1}}
+	}
+	\seq_use:Nn \l__ab_tmpa_seq {~#1~}
+}
+% \NewDocumentCommand \PunkteErwartungen {m m O{+}} {%
+% 	\seq_clear:N \l__ab_tmpa_seq
+% 	\tl_set:Nx \l__ab_tmpa_tl {\ab_taufg_id:nn {#1}{#2}}
+% 	\ab_foreach_erwartung:nn \l__ab_tmpa_tl {
+% 		\seq_put_right:Nx \l__ab_tmpa_seq {##2}
+% 	}
+% 	\seq_use:Nn \l__ab_tmpa_seq {~#3~}
+% }
+\NewDocumentCommand \PunkteErwartungen {m m O{+}} {%
 	\tl_set:Nx \l__ab_tmpa_tl {\ab_taufg_id:nn {#1}{#2}}
-	\ab_foreach_erwartung:nn \l__ab_tmpa_tl {
-		\seq_put_right:Nx \l__ab_tmpa_seq {##2}
+	\seq_clear:N \l__ab_tmpa_seq
+	\seq_set_split:Nnx \l__ab_tmpb_seq {,} {\ExercisePropertyGet{aufgabe}{#1}{erwartungen}}
+	\seq_map_inline:Nn \l__ab_tmpb_seq {
+		\tl_set:Nx \l__ab_tmpb_tl {\tl_item:Nn {##1} {1}}
+		\tl_if_eq:NNTF \l__ab_tmpa_tl \l__ab_tmpb_tl {
+			\seq_put_right:Nx \l__ab_tmpa_seq {\tl_item:Nn {##1} {2}}
+		}{}
 	}
 	\seq_use:Nn \l__ab_tmpa_seq {~#3~}
+}
+\NewDocumentCommand \ErwartungenPunkte {O{+}} {%
+	\tl_set:Nx \l__ab_tmpa_tl {\ab_taufg_id:nn {\GetExerciseProperty{ID}} {\alph{teilaufgabeni}}}
+	\seq_clear:N \l__ab_tmpa_seq
+	\seq_set_split:Nnx \l__ab_tmpb_seq {,} {\GetExerciseProperty{erwartungen}}
+	\seq_map_inline:Nn \l__ab_tmpb_seq {
+		\tl_set:Nx \l__ab_tmpb_tl {\tl_item:Nn {##1} {1}}
+		\tl_if_eq:NNTF \l__ab_tmpa_tl \l__ab_tmpb_tl {
+			\seq_put_right:Nx \l__ab_tmpa_seq {\tl_item:Nn {##1} {2}}
+		}{}
+	}
+	\seq_use:Nn \l__ab_tmpa_seq {~#1~}
 }
 
 \newcommand{\NotenverteilungFestlegen}[1]{%
@@ -661,6 +780,10 @@
 \def\Notenverteilung{%
 	\scriptsize\notenverteilung%
 }
+
+\def\Erwartungspunkte{\begingroup%
+	\flushright (\ErwartungenPunkte)\endflushright
+\endgroup}
 
 \newcommand{\ab@clearGradingTable}{
 	\seq_clear:N \l__xsim_relative_grades_prop
