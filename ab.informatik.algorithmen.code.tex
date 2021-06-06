@@ -22,6 +22,56 @@
 \sBoolValue{\texttt{true}}{\texttt{false}}
 \newcommand{\ifthen}[4][8]{\ifthenelse[#1]{#2}{#3}{#4}{\sTrue}{\sFalse}}
 \newcommand{\instruction}[2][8]{\assign[#1]{#2}}
-\newcommand{\empty}[1][8]{\assign[#1]{}}
+% \newcommand{\empty}[1][8]{\assign[#1]{}}
 % \def\selse{\change}
 
+
+
+
+%% PAP in Tikz
+\usetikzlibrary{shapes}
+% \usetikzlibrary{shadows.blur}
+
+\tikzset{
+	pap/.style={
+		element/.style={},
+		startstop/.style   = {
+			rounded rectangle, draw, text centered, minimum width = 6em,
+			inner sep = 5pt, fill=green!65!white, element
+		},
+		verzweigung/.style = {
+			diamond, draw, text width=5.5em, text badly centered,
+			inner sep=0pt, fill=orange!45!white, element,
+			aspect=1.5
+		},
+		aktion/.style = {
+			rectangle, draw, text width=5em, text centered,
+			inner sep = 5pt, fill=blue!25!white,
+			element,
+		},
+		einausgabe/.style  = {
+			draw, fill=red!25!white, inner sep = 5pt,
+			trapezium, trapezium left angle=70, trapezium right angle=-70,
+			text width=5em, text centered,
+			element,
+		},
+		unterprogramm/.style = {
+			draw,rectangle split,
+			fill=magenta!35!white, element,
+			rectangle split horizontal,rectangle split parts=3,inner sep = 5pt,
+			rectangle split empty part width=.25em,
+			every two node part/.style = {text width=5em, text centered,},%Hauptteil
+		},
+		linie/.style = {
+			draw, -triangle 60, ultra thick
+		},
+		nichts/.style = {
+			draw
+		},
+	},
+}
+% Option:Farbig prüfen?
+\iftoggle{ab@farbig}
+{\tikzset{pap/.append style= {baustein/.style={}}}}
+{\tikzset{pap/.append style= {baustein/.style={fill=gray!15}}}}
+% % % % % % % % % % % TikZ Ende
