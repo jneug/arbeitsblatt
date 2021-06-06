@@ -20,4 +20,13 @@
 %            Makros            %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\newlength{\zeilenhoehe}
+\setlength{\zeilenhoehe}{2\baselineskip}
+\newlength{\ngb@rowheigh}
+\newcommand\Zeilenabstand[1][\zeilenhoehe]{\setlength{\ngb@rowheigh}{#1}%
+	\rule[-.5\ngb@rowheigh]{0pt}{\ngb@rowheigh}%
+}
+
 %% Neue Zellentypen
+\def\tabularxcolumn#1{m{#1}}
+\newcolumntype{M}[1]{>{\large\centering\arraybackslash}m{#1}}
