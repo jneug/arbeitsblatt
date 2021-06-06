@@ -116,8 +116,11 @@
 		typ/.is choice,
 		layout/.default=true,
 		layout/.code=\settoggle{ab@layout}{#1},
+		farbig/.default=true,
+		farbig/.code=\settoggle{ab@farbig}{#1},
 		farben/.default=true,
-		farben/.code=\settoggle{ab@farbig}{#1},
+		farben/.style={farbig=#1},
+		farblos/.style={farbig=false},
 		%.unknown/.code=\listadd{\ab@autoLaden}{#1}
 }
 %% Typen als Option
