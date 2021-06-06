@@ -7,6 +7,7 @@
 
 \pgfkeys{
 	/absetup/.cd,
+		aufgaben/format/.code = \aufgabenformat{#1},
 		loesungen/.is choice,
 		loesungen/keine/.style 	= {loesungen=ohne},
 		loesungen/ohne/.code 		= {\togglefalse{ab@aufg@lsg@seite@anzeigen}\xsimsetup{loesung/print = false,loesung*/print = false}},
@@ -100,4 +101,8 @@
 	solutions-name = L"osungen,
 	exercise-template = abnormal,
 	solution-template = abnormal,
+}
+
+\NewDocumentCommand \aufgabenformat { s m } {%
+	\xsimsetup{aufgabe/template = #2, aufgabe*/template = #2}
 }
