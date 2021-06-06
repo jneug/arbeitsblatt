@@ -5,4 +5,9 @@
 
 %% Ohne Titel, Ohne Punkte
 %%%
-\DeclareExerciseEnvironmentTemplate{abohne}{}{}
+\DeclareExerciseEnvironmentTemplate{abohne}{%
+	\textcolor{ab.aufgabe.icons}{\llap{%
+		\ifthenelse{\equal{\ExerciseType}{zusatzaufgabe}}
+			{\textcolor{orange}{\ifmodulgeladen{icons}{\iconStern\,}{$\star$\,}}}{}%
+		\GetExerciseProperty{icon}~}}%
+}{}
