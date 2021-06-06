@@ -24,16 +24,18 @@
 	/abcls/.cd,
 		% Paketoptionen ignorieren
 		farben/.code={},
+		farbig/.code={},
+		farblos/.code={},
 		layout/.code={},
 		typ/.code={},
 		% unbekannte Optionen werden an scrartcl weitergegeben
-		scrartcl/.code=\PassOptionsToClass{#1}{scrartcl},
+		scrartcls/.code=\edef\ab@scrartcl@options{\ab@scrartcl@options,#1},
 		.unknown/.code=\edef\ab@scrartcl@options{\ab@scrartcl@options,\pgfkeyscurrentname}
 }
 \ProcessPgfOptions{/abcls}
 
 %% KOMA-Klasse laden
-\LoadClass[\ab@scrartcl@options]{scrartcl}
+\LoadClass[\ab@scrartcl@options,ngerman]{scrartcl}
 
 %% Paket laden
 \RequirePackage{arbeitsblatt}
