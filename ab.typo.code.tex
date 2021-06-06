@@ -45,14 +45,33 @@
 }
 
 % Ordner, Dateien und Programme
-\newcommand*{\ordner}[1]{%
-	{\usekomafont{code}#1}%
-}
-\newcommand*{\datei}[1]{%
-	{\usekomafont{code}#1}%
-}
+
 \newcommand*{\programm}[1]{%
 	{\usekomafont{code}\textsc{#1}}%
+}
+
+\newmenucolortheme{abprimary}{named}{muted.hg}{primary}{primary}[primary][secondary][muted]
+\newmenucolortheme{absecondary}{named}{secondary.hg}{primary}{primary}[primary][secondary][muted]
+% Standard für Menüs
+\changemenucolortheme{menus}{abprimary}
+
+% Ordner-, Dateipfade und Tasten
+\newmenustylesimple*{ordnerpfad}[\usekomafont{code}]{\CurrentMenuElement}[/][]{abprimary}
+\newmenumacro{\ordner}[/]{ordnerpfad}
+
+\newmenustylesimple*{dateipfad}[\usekomafont{code}]{\CurrentMenuElement}[/][]{abprimary}
+\newmenumacro{\datei}[/]{dateipfad}
+
+\copymenustyle{tasten}{shadowedroundedkeys}
+\changemenucolortheme{tasten}{abprimary}
+\changemenuelement{tasten}{pre}{\usekomafont{code}}
+\newmenumacro{\tasten}[+]{tasten}
+
+\nottoggle{ab@farbig}{
+	\changemenucolortheme{menus}{gray}
+	\changemenucolortheme{tasten}{gray}
+	\changemenucolortheme{ordnerpfad}{gray}
+	\changemenucolortheme{dateipfad}{gray}
 }
 
 %% Anmerkungen

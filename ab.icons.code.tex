@@ -74,6 +74,8 @@
 \newcommand{\LizenzIcon}{\csuse{\ab@lizenzName}}
 \renewcommand{\Lizenz}{\ifcsempty{ab@lizenzName}{\makeatletter\ab@lizenz\makeatother}{\LizenzIcon}\xspace}
 
+\pretocmd\schneidekante{\raisebox{-.4\height}{\faCut}\,}{}{}
+
 %% Anpassungen für Textauszeichnungen
 \ifmodulgeladen{typo}{
 	%% Anmerkungen
@@ -86,8 +88,10 @@
 	% \renewcommand*{\ordner}[1]{{\usekomafont{code}\iconOrdner\,#1}}
 	% \renewcommand*{\datei}[1]{{\usekomafont{code}\iconDatei\,#1}}
 	%\pretocmd\ordner{{\usekomafont{code}\iconOrdner}\,}{}{}
-	\pretocmd\ordner{{\usekomafont{code}\iconOrdner}\,}{}{}
-	\pretocmd\datei{{\usekomafont{code}\iconDatei}\,}{}{}
+	% \pretocmd\ordner{{\usekomafont{code}\iconOrdner}\,}{}{}
+	% \pretocmd\datei{{\usekomafont{code}\iconDatei}\,}{}{}
+	\changemenuelement{ordnerpfad}{pre}{\usekomafont{code}\iconOrdner\,}
+	\changemenuelement{dateipfad}{pre}{\usekomafont{code}\iconDatei\,}
 }
 
 
