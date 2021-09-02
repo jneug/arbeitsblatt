@@ -218,6 +218,7 @@
 \AtEndPreamble{%
 	\RequirePackage{hyperref}%
 	\RequirePackage{hypcap}%
+	% \RequirePackage{doclicense}%
 	\hypersetup{
 		colorlinks         = true,
 		allcolors          = secondary,
@@ -356,7 +357,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %           Lizenzen           %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\RequirePackage{xmpincl}
+%\RequirePackage{xmpincl}
 
 \def\ab@lizenzName{}
 \newcommand{\ab@lizenzSetzen}[1]{
@@ -365,19 +366,29 @@
 	\def\ab@lizenzName{}
 	\ifdefstring{\ab@lizenz}{cc-by-nc-sa-eu-4}{
 		\def\ab@lizenzName{ccbyncsaeu}
-		\includexmp{\ab@lizenz}
+		% \PassOptionsToPackage{
+		% 	type={CC},
+    %   modifier={by-nc-sa-eu},
+    %   version={4.0}
+		% }{doclicense}
+		%\includexmp{\ab@lizenz}
 	}{}
 	\ifdefstring{\ab@lizenz}{cc-by-nc-sa-4}{
 		\def\ab@lizenzName{ccbyncsa}
-		\includexmp{\ab@lizenz}
+		% \PassOptionsToPackage{
+		% 	type={CC},
+    %   modifier={by-nc-sa},
+    %   version={4.0}
+		% }{doclicense}
+		%\includexmp{\ab@lizenz}
 	}{}
 	\ifdefstring{\ab@lizenz}{cc-by-sa-4}{
 		\def\ab@lizenzName{ccbysa}
-		\includexmp{\ab@lizenz}
+		%\includexmp{\ab@lizenz}
 	}{}
 	\ifdefstring{\ab@lizenz}{cc-by-4}{
 		\def\ab@lizenzName{ccby}
-		\includexmp{\ab@lizenz}
+		%\includexmp{\ab@lizenz}
 	}{}
 }
 
