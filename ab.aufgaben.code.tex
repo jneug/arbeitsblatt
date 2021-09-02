@@ -15,10 +15,9 @@
 		loesungen/folgend/.code = {\togglefalse{ab@aufg@lsg@seite@anzeigen}\xsimsetup{loesung/print = true,loesung*/print = true}},
 }
 
-\def\ab@aufg@lsg@seite{\clearpage
-	\clearpairofpagestyles\pagenumbering{Roman}%
-	\ihead{\KopfLinks}\chead{}\ohead{Lösungen}%
-	\cfoot{\Seitenzahl}%
+\def\ab@aufg@lsg@seite{\clearpage\pagenumbering{Roman}%
+	\chead{Lösungen}%
+	\ofoot{}\ifoot{}\cfoot{\Seitenzahl}%
 	\printallsolutions%*%
 }
 \AtEndDocument{\iftoggle{ab@aufg@lsg@seite@anzeigen}{\ab@aufg@lsg@seite}{}}
@@ -40,6 +39,7 @@
 %            Pakete            %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \RequirePackage{enumitem}
+\RequirePackage{ifthen}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %            Makros            %

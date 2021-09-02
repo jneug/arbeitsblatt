@@ -358,7 +358,7 @@
 }
 
 \def\tabularxcolumn#1{m{#1}}
-\newcolumntype{M}[1]{>{\large\centering\arraybackslash}m{#1}}
+% \newcolumntype{M}[1]{>{\large\centering\arraybackslash}m{#1}}
 
 
 \cs_new:Npn \ab_punkte_gesamt: {
@@ -520,6 +520,7 @@
 
 \newcommand{\ab@ew@aufgabe}[1]{
 	\textbf{#1} &
+	\int_gzero_new:N \g__ab_taufg_points
 	\tl_set:Nx \l__ab_tmpa_tl {\ab_taufg_id:nn {#1} {0}}
 	\ab_foreach_erwartung:nn {\l__ab_tmpa_tl} {\ab@ew@erwartung{##1}{##2}}
 	& \textbf{\PunkteAufgabe{#1}} & \tabularnewline \hline
@@ -533,9 +534,9 @@
 
 \NewDocumentCommand \ab@ew@teilaufgabe {s m m} {
 	\int_gzero_new:N \g__ab_taufg_points
-	\ref{taufg:#2} &
 	\tl_set:Nx \l__ab_tmpa_tl {\ab__taufg_ew_seq_cs:n {#2}}
 	\seq_if_exist:cTF {\l__ab_tmpa_tl} {
+		\ref{taufg:#2} &
 		%\seq_map_inline:cn {\l__ab_tmpa_tl} {\ab@ew@erwartung##1}
 		\int_step_inline:nn {\seq_count:c {\l__ab_tmpa_tl}} {
 			\tl_set:Nx \l_tmpb_tl {\seq_item:cn {\l__ab_tmpa_tl} {##1}}
@@ -545,8 +546,8 @@
 				\ab@ew@erwartung{\tl_item:Nn \l_tmpb_tl {1}}{\tl_item:Nn \l_tmpb_tl {2}}
 			}
 		}
+		& \int_use:N \g__ab_taufg_points & \\ \hline
 	}{~}
-	& \int_use:N \g__ab_taufg_points & \\ \hline
 }
 \NewDocumentCommand \ab@ew@erwartung {s m m} {
 	\int_gadd:Nn \g__ab_taufg_points {#3}
@@ -764,8 +765,8 @@
 }
 
 \def\Erwartungshorizont{%
-	\clearpage\clearpairofpagestyles%
-	\ihead{\KopfLinks}\chead{}\ohead{Erwartungshorizont}
+	\clearpage
+	\chead{Erwartungshorizont}\cfoot{}\ofoot{}\ifoot{}
 
 	\section*{Erwartungshorizont}
 	\erwartungshorizont
