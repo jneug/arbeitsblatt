@@ -7,6 +7,11 @@
 \definecolor{ab.tabelle.zeile.gerade}{named}{muted.hg}
 \definecolor{ab.tabelle.zeile.ungerade}{named}{white}
 
+\pgfkeys{
+	/absetup/.cd,
+		wechselnde zeilenfarben/.value forbidden,
+		wechselnde zeilenfarben/.code=\enablerowcolors,
+}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %            Pakete            %
@@ -30,3 +35,7 @@
 %% Neue Zellentypen
 \def\tabularxcolumn#1{m{#1}}
 \newcolumntype{M}[1]{>{\large\centering\arraybackslash}m{#1}}
+
+%% Wechselnde Zeilenfarben
+\newcommand{\enablerowcolors}[1][2]{%
+\rowcolors{#1}{ab.tabelle.zeile.ungerade}{ab.tabelle.zeile.gerade}}
