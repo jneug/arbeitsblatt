@@ -18,8 +18,9 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% TikZ Styles für ER Diagramme
-\tikzstyle{entity} = [rectangle,text centered,draw=black,thick,inner sep=2mm]
-\tikzstyle{relation} = [diamond,aspect=2,text centered,draw=black,thick]
-\tikzstyle{attribute} = [ellipse,text centered,draw=black,thick]
+\tikzstyle{erd} = [every path/.style={thick},every node/.style={thick}]
+\tikzstyle{entity} = [rectangle,text centered,draw=black,inner sep=2mm]
+\tikzstyle{relation} = [diamond,aspect=2,text centered,draw=black]
+\tikzstyle{attribute} = [ellipse,text centered,draw=black]
 \newcommand{\primarykey}[1]{\underline{#1}}
 \newcommand{\foreignkey}[1]{\ifmodulgeladen{icons}{\faLongArrowAltUp}{\uparrow}\,#1}
