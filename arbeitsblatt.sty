@@ -479,12 +479,19 @@
 	\end{center}%
 }
 
-\newcommand{\ReiheTitel}[1][\Titel]{%
-	\begin{center}
+\NewDocumentCommand {\ReiheTitel} { s O{\Titel} } {%
+\IfBooleanTF {#1}
+	{\begin{minipage}{.49\textwidth}%
+		\usekomafont{titel}{#2}%
+	\end{minipage}\hfill\begin{minipage}{.49\textwidth}%
+		\hspace*{\fill}\usekomafont{reihe}{\Reihe}%
+	\end{minipage}
+	\titlerule}
+	{\begin{center}
 		\usekomafont{reihe}{\Reihe}\\[-1ex]
-		\usekomafont{titel}{#1}
+		\usekomafont{titel}{#2}
 		\titlerule
-	\end{center}%
+	\end{center}}%
 }
 
 \newcommand{\Anhang}{\clearpage\appendix\chead{\centering Anhang}}
