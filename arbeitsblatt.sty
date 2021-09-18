@@ -513,3 +513,10 @@
 %        Verschiedenes         %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \NewDocumentCommand \schneidekante {} {\dotfill}
+
+\NewDocumentEnvironment {links} {O{.49}}
+	{\begin{minipage}{#1\linewidth}}
+	{\end{minipage}}
+\NewDocumentEnvironment {rechts} {O{.49}}
+	{\hfill\begin{minipage}{#1\linewidth}}
+	{\end{minipage}}
