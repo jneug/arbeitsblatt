@@ -142,7 +142,6 @@
 	 0 = {6}
 }
 
-
 \pgfkeys{
 	/absetup/.cd,
 		punkte/erwartungen/.initial = true,
@@ -391,6 +390,13 @@
 %% Loops
 %% Loop over all used exercises
 % #1: Code
+% Inside #1 the available parameters are
+% 	#1: type of exercise (e.g. "aufgabe")
+%		#2: ID
+%		#3: number (value of exercise counter)
+%		#4: subtitle (as set by subtitle=)
+%		#5: points
+%		#6: bonus-points
 \cs_new:Npn \ab_foreach_aufg:n #1 {
 	\xsim_foreach_exercise_id_type:nn {used} {#1}
 }
@@ -399,8 +405,12 @@
 \cs_generate_variant:Nn \__ab_ta_loop_item:nn {xx}
 
 %% Loop over teilaufgaben of an exercise
-% #1: ID der Aufgabe
+% #1: ID of the exercise (as set by xsim) (eg "0")
 % #2: Code
+%
+% Inside #2 the available parameters are
+% 	#1: ID of the sub-exercise
+%		#2: label
 \cs_new:Npn \ab_foreach_taufg:nn #1#2 {
 	\cs_set:Nn \__ab_ta_loop_item:nn {#2}
 	%
@@ -418,9 +428,13 @@
 \cs_new:Npn \__ab_ew_item_a:nn #1#2 {}
 \cs_generate_variant:Nn \__ab_ew_item_a:nn {xx}
 
-%% Loop over erwartungen of an exercise
-% #1: ID der Teilaufgabe
+%% Loop over ewartungen of an exercise
+% #1: ID of the (sub-)exercise (eg "aufg1-taufga")
 % #2: Code
+%
+% Inside #2 the available parameters are
+% 	#1: descriptive text
+%		#2: points
 \cs_new:Npn \ab_foreach_erwartung:nn #1#2 {
 	\cs_set:Nn \__ab_ew_item_a:nn {#2}
 	%
@@ -434,6 +448,7 @@
 	}{}
 }
 
+% erwartungshorizont/stil = tabellen
 \cs_new:Npn \ab__ew_tabellen:n #1 {
 	\seq_clear:N \l__ab_tmpa_rows_seq
 	\ab__ew_tabellen_erwartungen:n {aufg#1-taufg0}
@@ -446,9 +461,9 @@
 	% Erwartungen der Teilaufgaben
 	\ab_foreach_taufg:nn {#1} {
 		\ab__ew_tabellen_erwartungen:n {##1}
-		\seq_put_right:Nn \l__ab_tmpa_rows_seq {##2 &}
+		\seq_put_right:Nn \l__ab_tmpa_rows_seq {\ref{taufg:##1} &}
 		\seq_put_right:Nx \l__ab_tmpa_rows_seq {\seq_use:Nn \l__ab_tmpa_seq {\newline}}
-		\seq_put_right:Nn \l__ab_tmpa_rows_seq {& \ab_punkte_taufg:n #1 & \\\hline}
+		\seq_put_right:Nn \l__ab_tmpa_rows_seq {& \ab_punkte_taufg:n {##1} & \\\hline}
 	}
 }
 
@@ -464,15 +479,16 @@
 
 	\begin{center}\renewcommand{\arraystretch}{1.4}
 		%
-		\exp_args:NNx \dim_set:Nn \l_tmpa_dim {\textwidth}
-		\dim_sub:Nn \l_tmpa_dim {6cm}
+		% \exp_args:NNx \dim_set:Nn \l_tmpa_dim {\textwidth}
+		% \dim_sub:Nn \l_tmpa_dim {6cm}
 		%
 		\ab_foreach_aufg:n {
 			\ab__ew_tabellen:n {#2}
 			\begin{tabularx}{\textwidth}{|M{1cm}|X|M{1.5cm}|M{1.5cm}|} \hline
 				% Kopfzeile
 				\rowcolor{ab.tabelle.kopf.hg}
-				& \textbf{Aufgabe~#2} & \textbf{\ab_punkte_aufg:n #2} & \small  \tabularnewline\hline\hline %
+				\multicolumn{2}{|l|}{\textbf{Aufgabe~#2}~#4}
+					& \textbf{\ab_punkte_aufg:n #2} & \small  \tabularnewline\hline\hline %
 				%
 				\seq_use:Nn \l__ab_tmpa_rows_seq {}
 			\end{tabularx}\par
@@ -484,27 +500,56 @@
 	\end{flushright}
 }
 
+% erwartungshorizont/stil = tabelle
+\DeclareExerciseTableTemplate{tabelle}{\ab@ew@tabelle} % See below
 
-\DeclareExerciseTableTemplate{tabelle}{\ab@ew@tabelle}
+%%% Helper to build the table rows for exercises / sub-exercises
+\cs_new:Npn \ab__ew_tabelle: {
+	\seq_clear:N \l__ab_tmpa_rows_seq
+	\ab_foreach_aufg:n {
+		% Header and erwartungen of the exercise
+		\ab__ew_tabelle_erwartungen:n {aufg##2-taufg0}
+		%
+		\seq_put_right:Nn \l__ab_tmpa_rows_seq {\textbf{##3} &}
+		\seq_if_empty:NTF \l__ab_tmpa_seq {} {
+			\seq_put_right:Nx \l__ab_tmpa_rows_seq {\seq_use:Nn \l__ab_tmpa_seq {\newline}}
+		}
+		\seq_put_right:Nn \l__ab_tmpa_rows_seq {& \textbf{##5} & \\\hline}
+		% Erwartungen of the sub-exercises
+		\ab_foreach_taufg:nn {##2} {
+			\ab__ew_tabellen_erwartungen:n {####1}
+			\seq_put_right:Nn \l__ab_tmpa_rows_seq {\ref{taufg:####1} &}
+			\seq_put_right:Nx \l__ab_tmpa_rows_seq {\seq_use:Nn \l__ab_tmpa_seq {\newline}}
+			\seq_put_right:Nn \l__ab_tmpa_rows_seq {& \ab_punkte_taufg:n {####1} & \\\hline}
+		}
+	}
+}
+%%% Helper to get a sequence of all erwartungen for an exercise
+\cs_new:Npn \ab__ew_tabelle_erwartungen:n #1 {
+	\seq_clear:N \l__ab_tmpa_seq
+	\ab_foreach_erwartung:nn {#1} {
+		\seq_put_right:Nn \l__ab_tmpa_seq {##1}
+	}
+}
+
 \def\ab@ew@tabelle{
+	% Build table rows
+	\ab__ew_tabelle:
+	%
+	% Build table
 	\underline{Name: \Large\hspace{6cm}}
 
 	\begin{center}
 		\renewcommand{\arraystretch}{1.4}
-		\exp_args:NNx \dim_set:Nn \l_tmpa_dim {\textwidth}
-		\dim_sub:Nn \l_tmpa_dim {6cm}
+		% \exp_args:NNx \dim_set:Nn \l_tmpa_dim {\textwidth}
+		% \dim_sub:Nn \l_tmpa_dim {6cm}
 		\begin{tabularx}{\textwidth}{|M{1cm}|X|M{1.5cm}|M{1.5cm}|} \hline
 			% Kopfzeile
 			\rowcolor{ab.tabelle.kopf.hg}
 			Afg & Die~Schülerin/der~Schüler\dots & mögl.\newline Punkte & \small erreicht \tabularnewline\hline\hline %
 			%
 			%% Aufgaben, Teilaufgaben und Erwartungen
-			% ForEachUsedExerciseByID breaks for tables. Store all used IDs in
-			% a (temporary) seq first and loop over that.
-			\seq_clear:N \l_tmpa_seq
-			\ForEachUsedExerciseByID{\seq_put_right:Nn \l_tmpa_seq {##3}}
-			\seq_map_function:NN \l_tmpa_seq \ab@ew@aufgabe
-			&&&\\\hline % Somewhere the table ending is messed up. We need to add a blank row for some reason.
+			\seq_use:Nn \l__ab_tmpa_rows_seq {}
 			%
 			% Fusszeile
 			\multicolumn{2}{|r|}{Summe:} & \textbf{\ab_punkte_total:} & \tabularnewline\hline
@@ -518,60 +563,49 @@
 	\end{flushright}
 }
 
-\newcommand{\ab@ew@aufgabe}[1]{
-	\textbf{#1} &
-	\int_gzero_new:N \g__ab_taufg_points
-	\tl_set:Nx \l__ab_tmpa_tl {\ab_taufg_id:nn {#1} {0}}
-	\ab_foreach_erwartung:nn {\l__ab_tmpa_tl} {\ab@ew@erwartung{##1}{##2}}
-	& \textbf{\PunkteAufgabe{#1}} & \tabularnewline \hline
-	%
-	% \ab_foreach_taufg:nnn {#1} {\ab@ew@teilaufgabe{#1}{#2}} {\ab@ew@teilaufgabe{#1}{#2}}
-	\tl_set:Nx \l__ab_tmpb_tl {\ab__aufg_seq_cs:n {#1}}
-	\seq_if_exist:cTF {\l__ab_tmpb_tl} {
-		\seq_map_inline:cn {\l__ab_tmpb_tl} {\ab@ew@teilaufgabe##1}
-	}{~}
-}
 
-\NewDocumentCommand \ab@ew@teilaufgabe {s m m} {
-	\int_gzero_new:N \g__ab_taufg_points
-	\tl_set:Nx \l__ab_tmpa_tl {\ab__taufg_ew_seq_cs:n {#2}}
-	\seq_if_exist:cTF {\l__ab_tmpa_tl} {
-		\ref{taufg:#2} &
-		%\seq_map_inline:cn {\l__ab_tmpa_tl} {\ab@ew@erwartung##1}
-		\int_step_inline:nn {\seq_count:c {\l__ab_tmpa_tl}} {
-			\tl_set:Nx \l_tmpb_tl {\seq_item:cn {\l__ab_tmpa_tl} {##1}}
-			\int_compare:nNnTF {\seq_count:c {\l__ab_tmpa_tl}}={##1} {
-				\ab@ew@erwartung*{\tl_item:Nn \l_tmpb_tl {1}}{\tl_item:Nn \l_tmpb_tl {2}}
-			}{
-				\ab@ew@erwartung{\tl_item:Nn \l_tmpb_tl {1}}{\tl_item:Nn \l_tmpb_tl {2}}
+%% erwartungshorizont/stil = schule
+\DeclareExerciseTableTemplate{schule}{\ab@ew@schule} % See below
+
+%%% Helper to create the table rows
+\cs_new:Npn \ab__ew_schule: {
+	\ab_foreach_aufg:n {
+		% Header der Aufgabe
+		%\seq_put_right:Nx \l__ab_tmpa_rows_seq {\seq_use:Nn \l__ab_tmpa_seq {\newline}}
+		%\seq_put_right:Nn \l__ab_tmpa_rows_seq {& \ab_punkte_aufg:n #1 & \\\hline}
+		\seq_put_right:Nn \l__ab_tmpa_rows_seq {\rowcolor{muted}}
+		\seq_put_right:Nn \l__ab_tmpa_rows_seq {\textbf{Aufgabe~##3}~##4 &}
+		\seq_put_right:Nn \l__ab_tmpa_rows_seq {\textbf{##5} & \\\hline}
+		% Erwartungen der Aufgabe
+		\ab_foreach_erwartung:nn {aufg##2-taufg0} {
+			\seq_put_right:Nn \l__ab_tmpa_rows_seq {####1 &}
+			\seq_put_right:Nn \l__ab_tmpa_rows_seq {####2 & \\\hline}
+		}
+		% Erwartungen der Teilaufgaben
+		\ab_foreach_taufg:nn {##2} {
+			\ab_foreach_erwartung:nn {####1} {
+				\seq_put_right:Nn \l__ab_tmpa_rows_seq {\ref{taufg:####1}~########1 &}
+				\seq_put_right:Nn \l__ab_tmpa_rows_seq {########2 & \\\hline}
 			}
 		}
-		& \int_use:N \g__ab_taufg_points & \\ \hline
-	}{~}
-}
-\NewDocumentCommand \ab@ew@erwartung {s m m} {
-	\int_gadd:Nn \g__ab_taufg_points {#3}
-	#2~(#3P) \IfBooleanF{#1}{\newline}
+	}
 }
 
-\DeclareExerciseTableTemplate{schule}{\ab@ew@schule}
 \def\ab@ew@schule{
-	% ForEachUsedExerciseByID breaks for tables. Store all used IDs in
-	% a (temporary) seq first and loop over that.
-	\seq_clear:N \l_tmpa_seq
-	\ForEachUsedExerciseByID{\seq_put_right:Nn \l_tmpa_seq {##3}}
-
+	% Build rows for longtable environment
+	\ab__ew_schule:
+	%
 	\underline{Name: \Large\hspace{6cm}}
 
+	% Create longtable
 	\rowcolors{2}{ab.tabelle.zeile.ungerade}{ab.tabelle.zeile.gerade}
 	\begin{longtable}{|p{.65\linewidth}|c|c|}\hline
 			% Kopfzeile
 			\rowcolor{ab.tabelle.kopf.hg}
 			Die~Schülerin/der~Schüler\dots & mögl. Punkte & erreicht \tabularnewline\hline\hline %
 			%
-			%% Aufgaben, Teilaufgaben und Erwartungens
-			\seq_map_function:NN \l_tmpa_seq \ab@ew@schule@aufgabe
-			%&&&\\\hline % Somewhere the table ending is messed up. We need to add a blank row for some reason.
+			%% Aufgaben, Teilaufgaben und Erwartungen
+			\seq_use:Nn \l__ab_tmpa_rows_seq {}
 			%
 			% Fusszeile
 			\hline
@@ -583,29 +617,6 @@
 	\begin{flushright}
 		\underline{\today, \hspace{3cm}}
 	\end{flushright}
-}
-
-\newcommand{\ab@ew@schule@aufgabe}[1]{%\rowcolor{muted}
-	\rowcolor{muted}\textbf{Aufgabe~#1} &
-	\textbf{\PunkteAufgabe{#1}} &
-	%
-	\tl_set:Nx \l__ab_tmpa_tl {\ab_taufg_id:nn {#1} {0}}
-	\ab_foreach_erwartung:nn {\l__ab_tmpa_tl} {
-		\tabularnewline \hline
-		##1 & ##2 &
-	}
-	\tl_set:Nx \l__ab_cs_taufg_tl {\ab__aufg_seq_cs:n {#1}}
-	\seq_if_exist:cTF {\l__ab_cs_taufg_tl} {
-		\seq_map_inline:cn {\l__ab_cs_taufg_tl} {
-			\tl_set:Nx \l__ab_tmpa_tl {\tl_item:Nn {##1} {1}}
-			\ab_foreach_erwartung:nn {\l__ab_tmpa_tl} {
-				\tabularnewline \hline
-				\ref{taufg:\tl_item:Nn {##1} {1}}~
-				####1 & ####2 &
-			}
-		}
-	}{}
-	\tabularnewline \hline
 }
 
 
