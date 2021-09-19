@@ -24,3 +24,4 @@
 \tikzstyle{attribute} = [ellipse,text centered,draw=black]
 \newcommand{\primarykey}[1]{\underline{#1}}
 \newcommand{\foreignkey}[1]{\ifmodulgeladen{icons}{\faLongArrowAltUp}{\uparrow}\,#1}
+\newcommand{\fpkey}[1]{\foreignkey{\primarykey{#1}}}
