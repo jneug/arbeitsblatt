@@ -1,0 +1,59 @@
+
+
+%% Dokumenttyp für Lernzielkontrollen (Tests)
+\iftoggle{ab@layout}{%
+	\RequirePackage[includeheadfoot,top=1.69cm,left=1.69cm,bottom=1.69cm,right=1.69cm,head=30pt]{geometry}
+	}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%           Optionen           %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\def\ab@kl@dauer{90}
+
+\pgfkeys{
+	/absetup/.cd,
+	dauer/.store in=\ab@kl@dauer
+}
+
+%% Ggf. wurde schon als Option ein eigener Typname gesetzt
+\ab@typnameSetzen{Lernzielkontrolle}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%            Pakete            %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\ab@modul@laden{aufgaben}
+\ab@modul@laden{bewertung}
+%\ab@modul@laden{meta}
+%\ab@modul@laden{varianten}
+
+% Standard Optionen für Klassenarbeiten
+\aboptionen{
+	loesungen					= seite,
+	erwartungshorizont/anzeigen	= false,
+	erwartungshorizont/stil		= tabelle,
+	noten					 	= mit-tendenzen,
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%            Makros            %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Metadaten
+\newcommand{\Dauer}{\makeatletter\ab@kl@dauer\makeatother\@\xspace}
+
+%% Seitenlayout
+
+\renewcommand{\KopfLinks}{%
+	\Fach%
+	\ifdefempty{\ab@kurs}{}{\@\xspace\Kurs}%
+	\ifdefempty{\ab@kuerzel}{}{\@\xspace(\Kuerzel)}%
+
+	\Typ%
+	\ifdefempty{\ab@nummer}{}{\space Nr. \Nummer}%
+}
+\renewcommand{\KopfMitte}{\Datum}
+\renewcommand{\KopfRechts}{\Namensfeld}
+
+%% Überschriften etc.
+% https://tex.stackexchange.com/questions/223694/how-to-draw-a-text-box-with-shadow-borders-i-have-tried-the-following-but-it-gi#223738
+\newcommand{\TestTitel}[1][none]{\begin{center}\LARGE\rmfamily\Titel\ifstrequal{#1}{none}{}{- #1}\end{center}}
