@@ -106,3 +106,9 @@
 \NewDocumentCommand \aufgabenformat { s m } {%
 	\xsimsetup{aufgabe/template = #2, aufgabe*/template = #2}
 }
+
+\NewDocumentCommand \luecke { s m O{} } {%
+	\IfBooleanTF{#1}
+		{\framebox[#2]{\strut#3}}
+		{\blank[width=#2]{#3}}%
+}
