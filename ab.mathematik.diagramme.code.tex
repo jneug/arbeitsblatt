@@ -7,10 +7,15 @@
 	/absetup/.cd,
 }
 
+\providecolor{ab.diagramme.anteile}{gray}{0.80}
+\providecolor{ab.diagramme.winkel}{named}{yellow}
+\providecolor{ab.diagramme.winkel2}{named}{red}
+\providecolor{ab.diagramme.ball}{gray}{0.20}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %            Pakete            %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+\RequirePackage{pgfmath}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %            Makros            %
@@ -19,19 +24,22 @@
 \NewDocumentCommand \tikzRechteck {O{} D(){0,0} m} {\draw[#1] (#2) |- +(#3) |- (#2);}
 \NewDocumentCommand \tikzQuadrat {O{} D(){0,0} m} {\draw[#1] (#2) |- +(#3,#3) |- (#2);}
 
-\def\tikzAnteilFarbe{black!20}
-
+% #1: (x,y) coordinates
+% #2: [xdim,ydim] dimensions
+% #3: {width} Number of parts in x direction
+% #3: {height} Number y parts
+% #3: {num} Number of parts to highlight
 \newcounter{ngb@anteile}
 \NewDocumentCommand \tikzAnteile {s >{\SplitArgument{1}{,}}D(){0,0} >{\SplitArgument{1}{,}}o m m m} {%
 	\IfNoValueTF{#3}{%
 		\IfBooleanTF{#1}{%
-			\@tikzAnteileZeichnen #2 {#4} {#5} {#4} {#5} {#6-(#4*#5)+1}
+			\@tikzAnteileZeichnen #2 {#4} {#5} {#4} {#5} {#6-(sign(#6)*#4*#5)}
 		}{%
 			\@tikzAnteileZeichnen #2 {#4} {#5} {#4} {#5} {#6}
 		}
 	}{%
 		\IfBooleanTF{#1}{%
-			\@tikzAnteileZeichnen #2 #3 {#4} {#5} {#6-(#4*#5)+1}
+			\@tikzAnteileZeichnen #2 #3 {#4} {#5} {#6-(sign(#6)*#4*#5)}
 		}{%
 			\@tikzAnteileZeichnen #2 #3 {#4} {#5} {#6}
 		}
@@ -42,15 +50,19 @@
 	\pgfmathsetmacro \yMax {#6-1}
 	\pgfmathsetmacro \xs {#3/#5}
 	\pgfmathsetmacro \ys {#4/#6}
-	\pgfmathsetmacro \d {sign(#7)*-1}
-	\setcounter{ngb@anteile}{#7-1}
+	\pgfmathtruncatemacro \d {sign(#7)*-1}
+	\pgfmathtruncatemacro \q {#7}
+	\setcounter{ngb@anteile}{\q}
+	\ifnum\value{ngb@anteile}<0\relax
+		\addtocounter{ngb@anteile}{-1}%
+	\fi
 	\tikzRechteck(#1,#2){#3,#4};
 	\foreach \x in {0,...,\xMax} {%
 		\foreach \y in {0,...,\yMax} {%
-			\ifnum\value{ngb@anteile}<0
+			\ifnum\value{ngb@anteile}<0\relax
 				\tikzRechteck(#1+\x*\xs,#2+\y*\ys){\xs,\ys};
 			\else
-				\tikzRechteck[fill=\tikzAnteilFarbe](#1+\x*\xs,#2+\y*\ys){\xs,\ys}
+				\tikzRechteck[fill=ab.diagramme.anteile](#1+\x*\xs,#2+\y*\ys){\xs,\ys}
 			\fi
 			\addtocounter{ngb@anteile}{\d}
 		}
@@ -64,7 +76,7 @@
 	\pgfmathsetmacro \r {#6}
 	\draw (#2) circle (#3);
 	\foreach \i in {1,...,\a} {%
-		\draw[fill=\tikzAnteilFarbe] (#2) -- +({(\i-1)*\ang+\r}:#3) arc ({(\i-1)*\ang+\r}:{\i*\ang+\r}:#3) -- cycle;
+		\draw[fill=ab.diagramme.anteile] (#2) -- +({(\i-1)*\ang+\r}:#3) arc ({(\i-1)*\ang+\r}:{\i*\ang+\r}:#3) -- cycle;
 	}
 	\foreach \i in {\a,...,\b} {%
 		\draw (#2) -- +({(\i-1)*\ang+\r}:#3);
@@ -72,11 +84,11 @@
 }
 
 \NewDocumentCommand \tikzWinkel {s D(){0,0} O{1} m} {%
-	\fill[yellow,fill opacity=.5,draw=red,thick] (#2) -- +(0:{#3/2}) arc (0:#4:{#3/2}) -- cycle;
-	\IfBooleanT{#1}{\draw[draw=red,thick,->] (#2)+(0:{#3/2}) arc (0:#4:{#3/2});}
+	\fill[ab.diagramme.winkel,fill opacity=.5,draw=ab.diagramme.winkel2,thick] (#2) -- +(0:{#3/2}) arc (0:#4:{#3/2}) -- cycle;
+	\IfBooleanT{#1}{\draw[draw=ab.diagramme.winkel2,thick,->] (#2)+(0:{#3/2}) arc (0:#4:{#3/2});}
 	\draw[thick] (#2)+(#4:#3) -- (#2) -- +(#3,0);
 }
 
-\NewDocumentCommand \tikzBall {s D(){0,0} m O{black!80}} {%
+\NewDocumentCommand \tikzBall {s D(){0,0} m O{ab.diagramme.ball}} {%
 	\shade[ball color=#4] (#2) circle (#3);
 }

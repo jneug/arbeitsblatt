@@ -22,7 +22,9 @@
 \renewcommand{\umldrawcolor}{black}
 \renewcommand{\umlfillcolor}{white}
 
-\newenvironment{klassendiagramm}{\begin{tikzpicture}}{\end{tikzpicture}}
+\NewDocumentEnvironment{klassendiagramm}{ O{} }{%
+	\begin{tikzpicture}[baseline,#1]}{%
+	\end{tikzpicture}}
 
 %% Notizen/Templates für Inhaltsobjekte!
 \newcommand{\contentobject}[2]{\node[draw,dashed,rectangle,fill=white,anchor=west,xshift=-1cm] at (#1.north east) {#2};}
