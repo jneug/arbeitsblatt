@@ -1,0 +1,259 @@
+
+
+%% Dokumententyp Lerntheke
+
+%% Ggf. wurde schon als Option ein eigener Typname gesetzt
+\ab@typnameSetzen{Lerntheke}
+
+
+%% Seitenlayout
+\iftoggle{ab@layout}{%
+	\RequirePackage[
+		margin=1cm,
+		includeall,
+		headsep=5mm,
+		headheight=1.5cm,
+		footskip=1.1em,
+		footnotesep=0pt,
+		marginparwidth=7mm,
+		marginparsep=-3mm,
+	]{geometry}
+}
+
+%\RequirePackage[automark,headwidth=195mm]{scrlayer-scrpage}
+\PassOptionsToPackage{automark,headwidth=195mm}{scrlayer-scrpage}
+\RequirePackage{scrhack}
+
+\pagestyle{scrheadings}
+
+%\RequirePackage[usenames,dvipsnames]{xcolor}
+\RequirePackage{tikz}
+\usetikzlibrary{shapes,shapes.misc,positioning}
+
+\RequirePackage{marginnote}
+\RequirePackage{tcolorbox}
+\tcbuselibrary{breakable}
+
+\newrefformat{karte}{Station\,\ref{#1}}
+\newrefformat{hilfe}{Hilfekarte\,\ref{#1}}
+\newrefformat{lsg}{Lösung zu Station\,\ref{#1}}
+
+%\RequirePackage[colorlinks=true,linkcolor=black]{hyperref}
+
+%\usepackage{pgfmorepages}
+%\pgfmorepagesloadextralayouts
+%\pgfpagesuselayout{4 on 2, odd then even}[a4paper]
+
+\tikzset{
+	header/.style={ % requires library shapes.misc
+		draw,
+		ultra thick,
+		chamfered rectangle,
+		chamfered rectangle angle=30,
+		chamfered rectangle xsep=2cm,
+		chamfered rectangle ysep=.38cm,
+		minimum width=\textwidth-4cm,
+		minimum height=1.5cm,
+		font=\sffamily\bfseries\large,
+	},
+	type1/.style={
+		shading=axis,
+		bottom color=green!70!black,
+		top color=green!40!black,
+		shading angle=180,
+	},
+	type2/.style={
+		shading=axis,
+		bottom color=yellow!90!black,
+		top color=yellow!70!black,
+		shading angle=180,
+	},
+	type3/.style={
+		shading=axis,
+		bottom color=red!70!gray,
+		top color=red!40!black,
+		shading angle=180,
+	},
+	side/.style={
+		draw,
+		ultra thick,
+		fill=gray!10,
+		signal,
+		signal pointer angle=120,
+		minimum width=2.5cm,
+		minimum height=1.5cm,
+		font=\sffamily\bfseries\large,
+		shading=axis,
+		bottom color=gray!40,
+		top color=gray!80,
+		shading angle=180,
+	},
+	left side/.style={
+		side,
+		signal from=east,
+		signal to=west,
+	},
+	right side/.style={
+		side,
+		signal from=west,
+		signal to=east,
+	},
+	side label/.style={
+		font=\sffamily\bfseries\Large,
+	},
+	side label right/.style={
+		font=\sffamily\bfseries\Huge,
+	},
+	side label left/.style={
+		side label
+	},
+	solution/.style={
+		fill=yellow!30!white,
+		minimum width=\textwidth,
+	},
+	help/.style={
+		shading=axis,
+		bottom color=violet!80!white,
+		top color=violet!40!black,
+		shading angle=180,
+		text=white,
+	},
+	help mark/.style={
+		draw,
+		black,
+		rectangle,
+		thick,
+		fill=violet,
+		text=white,
+		minimum size=9mm,
+		font=\sffamily\bfseries\large,
+		rounded corners=2mm,
+	},
+}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%         Karteikarten         %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcounter{karte}
+\newcommand{\karteKopfLinks}{\refstepcounter{karte}%
+	\tikz[]{\node[left side,label={[side label left]center:\thekarte}] (left) {};}%
+}
+\def\Kartennummer{\thekarte}
+
+\def\Kartentitel{}
+\def\Kartenart{type1}
+\newcommand{\karteKopfMitte}{\addcontentsline{toc}{section}{\Kartentitel}%
+\tikz{\node[header,\Kartenart] (header) {\Kartentitel};}%
+}
+
+\def\Kartensymbol{}
+\newcommand{\karteKopfRechts}[1]{%
+\tikz[]{\node[right side,label={[side label right]center:\Kartensymbol}] (right) {};}%
+}
+
+\newcommand{\karteKopf}[3][]{\def\Kartensymbol{#1}\def\Kartenart{type#2}\def\Kartentitel{#3}%
+\ihead*{\karteKopfLinks}\chead*{\karteKopfMitte}\ohead*{\karteKopfRechts}%
+}
+
+\newenvironment{karte}[3][]{%
+\karteKopf[#1]{#2}{#3}%
+\begin{tcolorbox}[colframe=black,colback=white,rounded corners,width=\textwidth,height=\textheight,left=2mm,right=2mm]}{\end{tcolorbox}\clearpage}
+
+\newenvironment{karte1}[2][]{%
+\begin{karte}[#1]{1}{#2}}{\end{karte}}
+\newenvironment{karte2}[2][]{%
+\begin{karte}[#1]{2}{#2}}{\end{karte}}
+\newenvironment{karte3}[2][]{%
+\begin{karte}[#1]{3}{#2}}{\end{karte}}
+
+% https://zhiganglu.com/post/latex-insert-blank-page/
+\newcommand\leereKarte{
+    \null
+    \thispagestyle{empty}
+    \addtocounter{page}{-1}
+    \newpage
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%        Lösungskarten         %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\loesungKopfMitte}[1]{%
+\tikz{\node[header,solution] (header) {\MakeUppercase{#1}};}%
+}
+
+\newcommand{\loesungKopf}[1]{%
+\ihead*{}\chead*{\loesungKopfMitte{#1}}\ohead*{}%
+}
+\newenvironment{loesungskarte}[1][Lösung]{%
+\loesungKopf{#1}%
+\begin{tcolorbox}[colframe=black,colback=white,rounded corners,width=\textwidth,height=\textheight,left=2mm,right=2mm]}{\end{tcolorbox}\clearpage}
+
+% Farbdefinitionen für Lösungen
+\def\lsgFarbe{orange}
+\def\lsg{\color{\lsgFarbe}}
+\def\lsgText#1{\textcolor{\lsgFarbe}{#1}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%         Hilfekarten          %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcounter{hilfekarte}
+\renewcommand*{\thehilfekarte}{H\arabic{hilfekarte}}
+\newcommand{\hilfekarteKopfLinks}{%
+\tikz{\node[left side,label={[side label]center:\thehilfekarte}] (left) {};}%
+}
+
+\newcommand{\hilfekarteKopf}[2][H]{\def\Kartensymbol{#1}\def\Kartenart{help}\def\Kartentitel{#2}%
+\ihead*{\hilfekarteKopfLinks}\chead*{\karteKopfMitte}\ohead*{\karteKopfRechts}%
+}
+
+\newenvironment{hilfekarte}[3][\iconHilfe]{%
+\refstepcounter{hilfekarte}\hilfekarteKopf[#1]{#2}\label{hilfe:#3}%
+\begin{tcolorbox}[colframe=black,colback=white,rounded corners,width=\textwidth,height=\textheight,left=2mm,right=2mm]}{\end{tcolorbox}\clearpage}
+
+%\newcommand{\hilfeMarke}[1]{\marginnote{\begin{tikzpicture}
+%\foreach \hm in {#1}
+%	\node at (0,{\hm*-8mm}) [help mark] {\hm};
+%\end{tikzpicture}}}
+\newlength{\markeOffset}\setlength{\markeOffset}{0cm}
+\newcommand{\hilfeMarke}[1]{\marginnote{\begin{tikzpicture}
+\node at (0,0) [help mark] {\ref{hilfe:#1}};
+\end{tikzpicture}}[\markeOffset]\addtolength{\markeOffset}{1.1cm}}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%      Header und Footer       %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\def\@karteFooter{}
+\newcommand{\infotext}[1]{\gdef\@karteFooter{#1}\thispagestyle{plain.scrheadings}}
+\def\dieloesung#1{\infotext{\raisebox{\depth}{\rotatebox[origin=c]{180}{#1}}}}
+
+\clearmainofpairofpagestyles
+\addtokomafont{pagefoot}{\scriptsize\color{black!40}}
+%\ihead*{\karteKopfLinks}
+%\chead*{\karteKopfMitte}
+%\ohead*{\karteKopfRechts}
+\ifoot*{\Kurs.\Nummer: \Titel, v\Version}
+\cfoot*{\Lizenz}
+\ofoot[\@karteFooter]{}
+
+%\RequirePackage{rotating}
+%\ofoot[\rotatebox{180}{\@karteFooter}]{}
+
+% \renewcommand*{\KopfLinks}{Protokoll}
+% \renewcommand*{\KopfMitte}{\Titel}
+% \renewcommand*{\KopfRechts}{\Datum}
+
+% \renewcommand*{\FussLinks}{}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%      Weitere Makros          %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Fix der negativen Einrückung für Symbole
+\newcommand{\achtung}[1]{\textbf{\usym{26A0}\space Achtung:}
+	\space #1}
+\newcommand{\hinweis}[1]{\textbf{\usym{1F4A1}\space Hinweis:}
+	\space #1}
