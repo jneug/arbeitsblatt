@@ -10,6 +10,8 @@
 \toggletrue{ab@nv@rel}
 \newtoggle{ab@pkt@taufg}
 \newtoggle{ab@pkt@ew}
+\newtoggle{ab@komp@anzeigen}
+\toggletrue{ab@komp@anzeigen}
 
 
 \def\namenKmk{
@@ -177,7 +179,8 @@
 		noten/verteilung/.code = {%
 			\ab@clearGradingTable%
 			\NotenverteilungFestlegen{#1}%
-		}
+		},
+		kompetenzen/anzeigen/.code = \settoggle{ab@komp@anzeigen}{#1},
 }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -232,6 +235,9 @@
 \seq_new:N	\l__ab_tmpb_rows_seq
 
 %% Variables
+% Kompetenzen
+\seq_new:N \g__ab_competencies_seq
+
 % Notennamen
 \prop_new:N \l__ab_grade_names_prop
 \prop_new:N \l__ab_grade_shortnames_prop
@@ -256,7 +262,8 @@
 	\seq_if_exist:cTF {\l__ab_tmpb_tl}{}{
 		\seq_gclear_new:c {\l__ab_tmpb_tl}
 	}
-	\seq_gput_right:cx {\l__ab_tmpb_tl} {{#2}{#3}}
+	%\seq_gput_right:cx {\l__ab_tmpb_tl} {{#2}{#3}}
+	\seq_gput_right:cn {\l__ab_tmpb_tl} {{#2}{#3}}
 }
 
 %% Noten
@@ -296,6 +303,7 @@
 		\l__ab_tmpb_tl
 }
 
+% Kommandos für Erwartungen
 \NewDocumentEnvironment {erwartungen} {}
 	{}
 	{}
@@ -305,6 +313,14 @@
 		{\tl_set:Nx \l__ab_tmpa_tl {\ab_taufg_id:nn {\GetExerciseProperty{ID}} {#1}}}
 	\ab_taufg_put_ew:nnn {\l__ab_tmpa_tl} {#2} {#3}
 	\addpoints*{#3}%
+}
+
+% Kommandos für Kompetenzen
+\NewDocumentEnvironment {kompetenzen} {}
+	{}
+	{}
+\NewDocumentCommand \kompetenz { m }{%
+	\seq_gput_right:Nx \g__ab_competencies_seq {#1}%
 }
 
 \xsimsetup{
@@ -787,10 +803,27 @@
 		\Notenverteilung
 	\end{center}
 	}{}%
+	%
+	\iftoggle{ab@komp@anzeigen}{
+	\seq_if_empty:NTF {\g__ab_competencies_seq} {} {
+		\Kompetenzerwartungen
+	}
+	}{}%
 }
 
 \def\Notenverteilung{%
 	\scriptsize\notenverteilung%
+}
+
+\def\Kompetenzerwartungen{%
+\begin{center}
+	\renewcommand{\arraystretch}{1.2}
+	\begin{tabularx}{\textwidth}{|m{9cm}|X>{\raggedleft\arraybackslash}m{1.5cm}|} \hline
+		\rowcolor{ab.tabelle.kopf.hg}
+		Kompetenz & \tiny Kannst~du\newline sehr~gut & \tiny Musst~du~intensiv~üben \\ \hline \hline
+		\seq_use:Nn {\g__ab_competencies_seq} {& & \\ \hline} & & \\ \hline
+	\end{tabularx}
+\end{center}
 }
 
 \def\Erwartungspunkte{\begingroup%
