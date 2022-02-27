@@ -17,6 +17,10 @@
 	separator symbol = {;\,},
 }
 
+\RequirePackage{xlop}
+\opset{decimalsepsymbol={,},%
+voperation=top,voperator=bottom,%
+lastcarry,carrysub=true}
 
 % Pseudo-Einheiten für Paket siunitx
 \DeclareSIUnit\le{LE}
