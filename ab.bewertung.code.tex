@@ -527,16 +527,18 @@
 		\ab__ew_tabelle_erwartungen:n {aufg##2-taufg0}
 		%
 		\seq_put_right:Nn \l__ab_tmpa_rows_seq {\textbf{##3} &}
-		\seq_if_empty:NTF \l__ab_tmpa_seq {} {
+		\seq_if_empty:NTF \l__ab_tmpa_seq {
+			\seq_put_right:Nn \l__ab_tmpa_rows_seq {& & \\\hline}
+		} {
 			\seq_put_right:Nx \l__ab_tmpa_rows_seq {\seq_use:Nn \l__ab_tmpa_seq {\newline}}
+			\seq_put_right:Nn \l__ab_tmpa_rows_seq {& \textbf{##5} & \\\hline}
 		}
-		\seq_put_right:Nn \l__ab_tmpa_rows_seq {& \textbf{##5} & \\\hline}
 		% Erwartungen of the sub-exercises
 		\ab_foreach_taufg:nn {##2} {
 			\ab__ew_tabellen_erwartungen:n {####1}
 			\seq_put_right:Nn \l__ab_tmpa_rows_seq {\ref{taufg:####1} &}
 			\seq_put_right:Nx \l__ab_tmpa_rows_seq {\seq_use:Nn \l__ab_tmpa_seq {\newline}}
-			\seq_put_right:Nn \l__ab_tmpa_rows_seq {& \ab_punkte_taufg:n {####1} & \\\hline}
+			\seq_put_right:Nn \l__ab_tmpa_rows_seq {& \textbf{\ab_punkte_taufg:n {####1}} & \\\hline}
 		}
 	}
 }
