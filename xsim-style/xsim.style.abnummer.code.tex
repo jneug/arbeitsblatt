@@ -1,0 +1,26 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%      xsim Aufgabenstile      %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\xsimstyle{abnummer}
+
+%% "Kompakt"
+%%% Aufgabe 1 (Subtile): ...
+%%%
+\DeclareExerciseEnvironmentTemplate{abnummer} {%
+	\addpenalty{-3000}\smallskip\noindent\textbf{\rmfamily%
+		% Falls Zusatzaufgabe:
+		\textcolor{ab.aufgabe.icons}{\ifthenelse{\equal{\ExerciseType}{zusatzaufgabe}}{\llap{\GetExerciseProperty{icon}\textcolor{orange}{\ifmodulgeladen{icons}{\,\iconStern}{\,$\star$}}}~}{\llap{\GetExerciseProperty{icon}~}}}%
+		\colorbox{gray!30}{\bfseries\GetExerciseProperty{counter}}\addcontentsline{toc}{section}{\XSIMmixedcase{\GetExerciseName}\nobreakspace\GetExerciseProperty{counter}}%
+		\IfInsideSolutionF{%
+			\IfExercisePropertySetT{subtitle}{
+				{\nobreakspace\GetExercisePropertyT{subtitle}{ (\PropertyValue})}}% Subtitle setzten
+		}%
+		\GetExercisePropertyTF{points}{%
+			\nobreakspace(\PropertyValue
+			\GetExercisePropertyT{bonus-points}
+			{\nobreakspace(+\PropertyValue)}% Kleinere Bonuspunkte?
+			)
+		}{}\xspace%
+	}
+}
+{\IfInsideSolutionT{\par}}%
