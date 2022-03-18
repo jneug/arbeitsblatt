@@ -7,11 +7,11 @@
 %%% Aufgabe 1 (Subtile): ...
 %%%
 \DeclareExerciseEnvironmentTemplate{abkompakt} {%
-	\addpenalty{-3000}\smallskip\noindent{\usekomafont{aufgabe}%
+	\addpenalty{-3000}\smallskip\noindent\textbf{\rmfamily%
 		% Falls Zusatzaufgabe:
-		\ifthenelse{\equal{\ExerciseType}{zusatzaufgabe}}{\llap{\GetExerciseProperty{icon}}~}{\llap{\GetExerciseProperty{icon}~}}%
-		\XSIMmixedcase{\GetExerciseName}\nobreakspace
-		\GetExerciseProperty{counter}\addcontentsline{toc}{section}{\XSIMmixedcase{\GetExerciseName}\nobreakspace\GetExerciseProperty{counter}}%
+		\textcolor{ab.aufgabe.icons}{\ifthenelse{\equal{\ExerciseType}{zusatzaufgabe}}{\llap{\GetExerciseProperty{icon}\textcolor{orange}{\ifmodulgeladen{icons}{\,\iconStern}{\,$\star$}}}~}{\llap{\GetExerciseProperty{icon}~}}}%
+		\textcolor{ab.aufgabe.nummer}{\XSIMmixedcase{\GetExerciseName}\nobreakspace
+		\GetExerciseProperty{counter}}\addcontentsline{toc}{section}{\XSIMmixedcase{\GetExerciseName}\nobreakspace\GetExerciseProperty{counter}}%
 		\IfInsideSolutionF{%
 			\IfExercisePropertySetT{subtitle}{
 				{\nobreakspace\GetExercisePropertyT{subtitle}{ (\PropertyValue})}}% Subtitle setzten

@@ -246,7 +246,12 @@
 	\ExecuteQuoteOptions{german=quotes}
 }
 %% Anführungszeichen für code
-\newcommand{\scquote}[1]{\textquotedbl#1\textquotedbl}
+% \newcommand{\scquote}[1]{\textquotedbl#1\textquotedbl}
+\NewDocumentCommand \scquote {s m} {%
+\IfBooleanTF {#1}
+	{'#2'}
+	{\textquotedbl#2\textquotedbl}%
+}
 
 % Mathematik
 \RequirePackage{amsmath,amssymb}
@@ -311,7 +316,7 @@
 }
 
 %% Mehrere Spalten
-\RequirePackage{multicol}
+\RequirePackage[colaction]{multicol}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %            Module            %
