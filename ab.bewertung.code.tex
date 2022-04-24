@@ -315,6 +315,14 @@
 	\addpoints*{#3}%
 }
 
+\NewDocumentCommand \zusatzpunkte { m m m }{%
+	\begin{aufgabe}[ID=#1,subtitle=#2,points=#3,print=false,use=true]
+		% Empty
+	\end{aufgabe}%
+}
+
+\NewDocumentCommand \ordnungspunkte { m }{\zusatzpunkte{OP}{Ordnungspunkte}{#1}}
+
 % Kommandos für Kompetenzen
 \NewDocumentEnvironment {kompetenzen} {}
 	{}
@@ -525,10 +533,18 @@
 	\ab_foreach_aufg:n {
 		% Header and erwartungen of the exercise
 		\ab__ew_tabelle_erwartungen:n {aufg##2-taufg0}
-		%
-		\seq_put_right:Nn \l__ab_tmpa_rows_seq {\textbf{##3} &}
+		% ggf. User-ID statt Nummer anzeigen, falls gesetzt
+		\seq_put_right:Nn \l__ab_tmpa_rows_seq {\ExercisePropertyIfSetTF{##1}{##2}{ID}{\textbf{\ExercisePropertyGet{##1}{##2}{ID}}}{\textbf{##3}} &}
+		% Gibt es Erwartungen der Aufgabe direkt (nicht Taufg)
 		\seq_if_empty:NTF \l__ab_tmpa_seq {
-			\seq_put_right:Nn \l__ab_tmpa_rows_seq {& & \\\hline}
+			\seq_put_right:Nn \l__ab_tmpa_rows_seq {&}
+			% Falls es keine Teilaufgaben gibt, Punkte bei der Aufgabe anzeigen
+			\tl_set:Nx \l__ab_cs_taufg_tl {\ab__aufg_seq_cs:n {##2}}
+			\seq_if_exist:cTF {\l__ab_cs_taufg_tl} {
+				\seq_put_right:Nn \l__ab_tmpa_rows_seq {& \\\hline}
+			}{
+				\seq_put_right:Nn \l__ab_tmpa_rows_seq {\textbf{##5} & \\\hline}
+			}
 		} {
 			\seq_put_right:Nx \l__ab_tmpa_rows_seq {\seq_use:Nn \l__ab_tmpa_seq {\newline}}
 			\seq_put_right:Nn \l__ab_tmpa_rows_seq {& \textbf{##5} & \\\hline}
@@ -795,7 +811,9 @@
 
 \def\Erwartungshorizont{%
 	\clearpage
-	\chead{Erwartungshorizont}\cfoot{}\ofoot{}\ifoot{}
+	\ifmodulgeladen{varianten}{\let\Nummer\ab@vari@nummer}{}
+	\chead{}\ohead{}\cfoot{}\ofoot{}\ifoot{}
+	%\thispagestyle{empty}
 
 	\section*{Erwartungshorizont}
 	\erwartungshorizont
