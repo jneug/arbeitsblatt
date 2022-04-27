@@ -13,3 +13,4 @@ und diese Projekt folgt [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - Format `tabelle` für Erwartungshorizonte angepasst:
 	- Die Summe der Teilpunkte einer Aufgabe wird nicht mehr angezeigt, wenn Teilaufgaben vorhanden sind. Dies hat bei den SuS zu Verwirrung geführt, da die Zwischensummen in die Gesamtsumme mit eingerechnet wurden.
 	- Wenn eine Aufgabe eine Benutzer-ID hat, wird diese statt der Aufgabennummer angezeigt. (Wird im Zusammenhang mit <code>\zusatzpunkte</code> verwendet.)
+- Kopfzeile des Erwartungshorizonts angepasst. (Variante und Namensfeld entfernt.)
