@@ -14,3 +14,10 @@ und diese Projekt folgt [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 	- Die Summe der Teilpunkte einer Aufgabe wird nicht mehr angezeigt, wenn Teilaufgaben vorhanden sind. Dies hat bei den SuS zu Verwirrung geführt, da die Zwischensummen in die Gesamtsumme mit eingerechnet wurden.
 	- Wenn eine Aufgabe eine Benutzer-ID hat, wird diese statt der Aufgabennummer angezeigt. (Wird im Zusammenhang mit <code>\zusatzpunkte</code> verwendet.)
 - Kopfzeile des Erwartungshorizonts angepasst. (Variante und Namensfeld entfernt.)
+
+### FIXED
+- Varianten-Umgebungen auf das `comment` Paket umgestellt.
+
+	Die Umgebungen `variA`, `variB`und `variC` aus dem Modul `varianten` wurden bisher mit dem Paket `environ` und dem `\BODY` Makro definiert. Dies führte zu Problemen bei der Kombination mit `minted` Codeblöcken. Das `comment` Paket löst dieses Problem.
+
+	Das Paket erzeugt Hilfsdateien mit der Endung `.cut`, die beim Säubern gelöscht werden müssen.

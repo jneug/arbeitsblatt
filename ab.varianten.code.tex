@@ -16,6 +16,7 @@
 %            Pakete            %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \RequirePackage{expl3}
+\RequirePackage{comment}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -54,9 +55,12 @@
 		\renewcommand{\C}[1]{}%
 		\renewcommand{\AB}[2]{##1}%
 		\renewcommand{\ABC}[3]{##1}%
-		\RenewEnviron{variA}{\BODY}%
-		\RenewEnviron{variB}{}%
-		\RenewEnviron{variC}{}%
+		\includecomment{variA}%
+		\excludecomment{variB}%
+		\excludecomment{variC}%
+		%\RenewEnviron{variA}{zo\BODY}%
+		%\RenewEnviron{variB}{}%
+		%\RenewEnviron{variC}{}%
 	}{}
 	\ifstrequal{#1}{B}{%
 		\renewcommand*{\ab@variante}{B}%
@@ -65,9 +69,12 @@
 		\renewcommand{\C}[1]{}%
 		\renewcommand{\AB}[2]{##2}%
 		\renewcommand{\ABC}[3]{##2}%
-		\RenewEnviron{variA}{}%
-		\RenewEnviron{variB}{\BODY}%
-		\RenewEnviron{variC}{}%
+		\excludecomment{variA}%
+		\includecomment{variB}%
+		\excludecomment{variC}%
+		% \RenewEnviron{variA}{}%
+		% \RenewEnviron{variB}{\BODY}%
+		% \RenewEnviron{variC}{}%
 	}{}
 	\ifstrequal{#1}{C}{%
 		\renewcommand*{\ab@variante}{C}%
@@ -76,9 +83,12 @@
 		\renewcommand{\C}[1]{##1}%
 		\renewcommand{\AB}[2]{}%
 		\renewcommand{\ABC}[3]{##3}%
-		\RenewEnviron{variA}{}%
-		\RenewEnviron{variB}{}%
-		\RenewEnviron{variC}{\BODY}%
+		\excludecomment{variA}%
+		\excludecomment{variB}%
+		\includecomment{variC}%
+		% \RenewEnviron{variA}{}%
+		% \RenewEnviron{variB}{}%
+		% \RenewEnviron{variC}{\BODY}%
 	}{}
 }
 
@@ -88,6 +98,9 @@
 \newcommand{\C}[1]{}
 \newcommand{\AB}[2]{#1}
 \newcommand{\ABC}[3]{#1}
-\NewEnviron{variA}{\BODY}
-\NewEnviron{variB}{}
-\NewEnviron{variC}{}
+%\NewEnviron{variA}{\BODY}
+%\NewEnviron{variB}{}
+%\NewEnviron{variC}{}
+\includecomment{variA}
+\excludecomment{variB}
+\excludecomment{variC}
