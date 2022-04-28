@@ -16,12 +16,50 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %            Makros            %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\providecolor{ab.inf.erd.rand}{gray}{0}
+\providecolor{ab.inf.erd.hg}{gray}{1}
 
 %% TikZ Styles für ER Diagramme
-\tikzstyle{erd} = [every path/.style={thick},every node/.style={thick}]
-\tikzstyle{entity} = [rectangle,text centered,draw=black,inner sep=2mm]
-\tikzstyle{relation} = [diamond,aspect=2,text centered,draw=black]
-\tikzstyle{attribute} = [ellipse,text centered,draw=black]
+\tikzset{
+	erd/.style = {
+		every path/.style = {thick},
+		every node/.style = {thick},
+		entity/.style = {
+			rectangle,
+			text centered,
+			inner sep = 2mm,
+			draw = ab.inf.erd.rand,
+			fill = ab.inf.erd.hg
+		},
+		relation/.style = {
+			diamond,
+			aspect = 2,
+			text centered,
+			draw = ab.inf.erd.rand,
+			fill = ab.inf.erd.hg
+		},
+		attribute/.style = {
+			ellipse,
+			text centered,
+			draw = ab.inf.erd.rand,
+			fill = ab.inf.erd.hg
+		}
+	}
+}
+
+\NewDocumentCommand {\erdentity} { s O{} d() m} {
+	\node (#4) at (#3) [entity,#2] {#4};
+}
+\NewDocumentCommand {\erdattr} { s O{} d() m m } {
+	\node (#4#5) at (#3) [attribute,#2] {\IfBooleanTF{#1}{\primarykey{#5}}{#5}};
+	\draw (#4#5) -- (#4);
+}
+\NewDocumentCommand {\erdrel} { s O{} d() m d() m d() m} {
+	\node (#6) at (#3) [relation,#2] {#6};
+	\draw (#4) --node[above]{#5} (#6) --node[below]{#7} (#8);
+}
+
+
 \newcommand{\primarykey}[1]{\underline{#1}}
 \newcommand{\foreignkey}[1]{\ifmodulgeladen{icons}{\faLongArrowAltUp}{\uparrow}\,#1}
 \newcommand{\fpkey}[1]{\foreignkey{\primarykey{#1}}}
